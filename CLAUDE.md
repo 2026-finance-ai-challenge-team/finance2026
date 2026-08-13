@@ -4,8 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 저장소 상태
 
-코드가 아직 없다. 추적 파일은 `README.md`, `.gitignore`(Python용)뿐이고 `AGENTS.md`는 아직 커밋되지 않았다.
-빌드·테스트·린트·실행 명령이 존재하지 않으므로 만들어내지 말 것. 첫 코드를 넣을 때 실제 동작하는 명령을 이 파일에 기록한다.
+현재 `apps/web`에 React 19 + TypeScript + vinext/Vite 기반 합성 클릭 데모가 있다. 실제 OCR·LLM·규칙 엔진·외부 API는 아직 연결하지 않았다.
+
+- 개발: `cd apps/web && npm run dev`
+- 빌드: `cd apps/web && npm run build`
+- 린트: `cd apps/web && npm run lint`
+- 서버 렌더 검사: `cd apps/web && npm test`
 
 **`AGENTS.md`가 이 저장소의 규범 문서다.** 제품 범위, 판정 규칙, 대회 제출 요건, 개인정보 원칙이 전부 거기 있다.
 아래는 그 문서 중 **코드 작성 시 실제로 구속력이 있는 부분**만 추린 것이다. 기획·문구·일정 관련 판단이 필요하면 `AGENTS.md`를 직접 읽는다.
@@ -45,8 +49,8 @@ LLM 추론만으로 `준비 완료`를 내면 안 된다. 공식 근거가 없�
 
 ## 기술 선택
 
-- 스택 미확정. README의 기술 배지는 **후보이지 설치된 의존성이 아니다.** 배지를 근거로 프레임워크를 미리 도입하지 않는다.
-- `.gitignore`가 Python 기준이다. 첫 업무 하나를 완주하는 데 필요한 최소 구조만 만든다.
+- 현재 웹 스택은 `apps/web/package.json`을 기준으로 한다. 백엔드·OCR·LLM은 미확정이며 한 업무를 완주하는 데 필요한 공급자만 도입한다.
+- Python과 Node 산출물이 함께 있으므로 루트 `.gitignore`를 확인한다. 첫 업무 하나를 완주하는 데 필요한 최소 구조만 만든다.
 - OCR, 지도, ZIP, PDF 텍스트 추출은 검증된 라이브러리·공식 API를 쓴다. 직접 구현하지 않는다.
 
 ## 검증

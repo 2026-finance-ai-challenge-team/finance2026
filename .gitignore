@@ -209,6 +209,18 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# ProofBridge web app
+node_modules/
+.next/
+.wrangler/
+apps/web/dist/
+apps/web/tmp-*.log
+tmp/
+
+# The root Python template ignores every build directory, but Sites needs this file.
+!apps/web/build/
+!apps/web/build/sites-vite-plugin.ts
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

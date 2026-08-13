@@ -2,7 +2,7 @@
 
 <br>
 
-# 🗂️ ProofBridge (가제)
+# 🗂️ ProofBridge
 
 ### 흩어진 증빙과 금융 업무 사이를 연결합니다
 
@@ -15,20 +15,24 @@
 
 <br>
 
+[공개 데모](https://proofbridge-finance-2026.ryuky0896.chatgpt.site) · [프로젝트 제안서 PDF](output/pdf/proofbridge-project-proposal.pdf) · [차별화 조사](docs/DIFFERENTIATION.md) · [API 가입 체크리스트](docs/API_ONBOARDING.md)
+
+> 현재 데모는 링크를 아는 누구나 접속할 수 있습니다. 실제 개인정보 문서는 업로드하지 말고 합성 샘플만 사용해 주세요.
+
 </div>
 
 ---
 
 ## 서류는 이미 있는데, 무엇을 내야 할지 모를 때
 
-ProofBridge는 가지고 있는 문서를 한꺼번에 올리면 목적·기관별 공식 요건과 대조해 **쓸 수 있는 서류와 부족한 서류를 구분하고, 발급부터 방문·출력까지 다음 행동을 안내하는 AI 증빙 준비 웹서비스**입니다.
+ProofBridge는 먼저 **공공 마이데이터로 제출할 수 있는 증빙은 공식 경로로 안내**하고, 그 밖의 사문서·사진·원본은 한꺼번에 올려 목적·은행별 요건과 대조한 뒤 **디지털 제출·일괄인쇄·영업점 방문에 맞는 준비 완료 키트**로 만드는 AI 금융업무 준비 웹서비스입니다.
 
-| 🗂️ 한 번에 모으고 | 🔎 근거로 확인하고 | 🌉 제출 직전까지 연결합니다 |
+| 🏛️ 보낼 것은 보내고 | 🗂️ 나머지만 채우고 | ✅ 준비 완료로 만듭니다 |
 | :--: | :--: | :--: |
-| 서류명을 몰라도 PDF·사진을 한꺼번에 업로드 | 공식 요건으로 누락·만료·불일치를 판정 | 발급 경로·제출 순서·방문·출력을 안내 |
+| 공공 마이데이터 대상은 공식 제출 경로로 안내 | 사문서·사진을 분석해 누락·만료·불일치를 판정 | 디지털·인쇄·방문 채널에 맞는 실행 키트 생성 |
 
 <p align="center">
-  <b>업무 선택</b>　→　<b>전체 파일 업로드</b>　→　<b>자동 분류·검증</b>　→　<b>제출 묶음 완성</b>
+  <b>업무 선택</b>　→　<b>마이데이터 가능분 분리</b>　→　<b>나머지 문서 검증</b>　→　<b>준비 완료</b>
 </p>
 
 ### 결과는 다섯 가지로 단순하게
@@ -36,6 +40,15 @@ ProofBridge는 가지고 있는 문서를 한꺼번에 올리면 목적·기관�
 `준비 완료`　·　`추가 필요`　·　`기한 만료`　·　`정보 불일치`　·　`이번 업무에는 불필요`
 
 > 첫 MVP는 **금융거래 목적 증빙 및 한도제한계좌 해제 준비**를 끝까지 완주하는 데 집중합니다.
+
+### 현재 만들어진 데모
+
+- 로그인 없이 `카카오뱅크 · 생활비/공과금` 합성 시나리오를 클릭해 완주
+- 공공 경로·직접 준비 문서·현장 지참물 분리
+- `준비 완료`·`추가 필요`·`정보 불일치`·`이번 업무에는 불필요` 예시와 공식 근거 표시
+- 공공·디지털·인쇄·방문 키트 미리보기, 큰 글자 전환, 제안서 PDF 열기
+
+현재 버전은 **합성 데이터 기반 프론트엔드 청사진**입니다. 실제 파일 업로드, OCR·LLM, 규칙 엔진, ZIP, 즉시 삭제, 지도 API는 아직 연결하지 않았으며 화면에서도 구현 예정으로 구분합니다.
 
 <br>
 
@@ -87,15 +100,16 @@ ProofBridge는 가지고 있는 문서를 한꺼번에 올리면 목적·기관�
 ---
 
 <details>
-<summary><b>🎯 MVP 범위와 판정 원칙</b></summary>
+<summary><b>🎯 목표 MVP 범위와 판정 원칙</b></summary>
 
 ### 지원 범위
 
 - **대상 금융기관**: KB국민은행, 우리은행, 카카오뱅크
 - **대표 거래 목적**: 급여 수령, 생활비·공과금, 사업, 해외 사용
+- **공공 증빙**: 공공 마이데이터·전자증명서로 처리 가능한 자료와 공식 경로 안내
 - **입력**: 여러 PDF·JPG·PNG 파일의 일괄 업로드
 - **처리**: 문서 종류·발급기관·명의·발급일·유효기간·핵심 필드 인식
-- **결과**: 판정 근거, 부족 서류 발급 안내, 원본 보존 제출용 ZIP, 방문·출력 안내
+- **결과**: 판정 근거, 부족 서류 발급 안내, 디지털 제출용 ZIP, 일괄인쇄 순서, 영업점 방문 체크리스트
 
 ### 다섯 가지 판정 상태
 
@@ -119,33 +133,34 @@ ProofBridge는 가지고 있는 문서를 한꺼번에 올리면 목적·기관�
 ```mermaid
 graph LR
     A[사용자] --> B[웹서비스]
-    B --> C[문서 업로드]
-    C --> D[AI 문서 분류 및 정보 추출]
-    D --> E[공식 규칙 기반 요건 대조]
-    F[(공식 요건 데이터)] --> E
-    E --> G[다섯 상태와 판정 근거]
-    G --> H[발급·제출 준비 안내]
-    H --> I[원본 보존 제출용 ZIP]
-    H --> J[채널·지점·출력 안내]
-    B --> K[즉시 삭제 및 세션 종료 삭제]
+    B --> C[은행 업무 및 사용자 조건]
+    C --> D[공공 마이데이터 가능분 분리]
+    D --> E[공식 제출 경로 안내]
+    C --> F[나머지 문서 일괄 업로드]
+    F --> G[AI 문서 분류 및 정보 추출]
+    G --> H[공식 규칙 기반 요건 대조]
+    I[(은행별 업무·채널 규칙)] --> H
+    E --> J[전체 준비 상태]
+    H --> J
+    J --> K[디지털 제출 키트]
+    J --> L[일괄인쇄 키트]
+    J --> M[영업점 방문 키트]
+    B --> N[즉시 삭제 및 세션 종료 삭제]
 ```
 
 </details>
 
 <details>
-<summary><b>🛠️ 기술 스택 후보</b></summary>
+<summary><b>🛠️ 현재 기술 스택</b></summary>
 
 <br>
 
-[![Python](https://img.shields.io/badge/Python-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B.svg?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6.svg?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Git](https://img.shields.io/badge/Git-F05032.svg?style=flat&logo=git&logoColor=white)](https://git-scm.com/)
+- React 19 + TypeScript
+- vinext + Vite
+- CSS 기반 반응형·접근성 UI
+- Cloudflare Workers 호환 Sites 배포 구조
 
-웹 UI는 빠른 MVP에 적합한 Streamlit과 HTML 기반 프론트엔드 중에서 확정할 예정입니다. 후보 배지는 현재 설치된 의존성을 의미하지 않습니다.
+백엔드·OCR·LLM은 아직 도입하지 않았습니다. 합성 정답표와 공식 규칙 구조가 준비된 뒤 필요한 공급자 하나씩만 연결합니다.
 
 </details>
 
@@ -155,9 +170,31 @@ graph LR
 ```bash
 git clone https://github.com/bbcc1017/finance2026.git
 cd finance2026
+cd apps/web
+npm install
+npm run dev
 ```
 
-프로젝트 구조와 기술 스택이 확정되면 의존성 설치, 환경 변수와 실행 명령을 추가합니다.
+Node.js `>=22.13.0`이 필요합니다. `http://localhost:3000`에서 확인하고, 전체 빌드·렌더 검증은 `npm test`로 실행합니다. 현재 합성 데모에는 환경변수가 필요하지 않습니다.
+
+</details>
+
+<details>
+<summary><b>📁 저장소 구조</b></summary>
+
+```text
+finance2026/
+├─ apps/web/                 # 현재 클릭 데모
+│  ├─ app/                   # 화면·스타일·메타데이터
+│  ├─ public/                # 제안서 PDF·소셜 이미지
+│  ├─ tests/                 # 서버 렌더 안전 경계 검사
+│  └─ worker/                # Sites/Cloudflare 진입점
+├─ docs/                     # 차별화 조사·API 가입 가이드
+├─ output/pdf/               # 검수 완료 제안서
+└─ scripts/                  # 제안서 재생성 스크립트
+```
+
+실제 API·규칙·합성 샘플 코드는 구현 시점에 필요한 디렉터리만 추가합니다.
 
 </details>
 
@@ -165,10 +202,11 @@ cd finance2026
 <summary><b>🗓️ 개발 로드맵</b></summary>
 
 - [x] 서비스 문제 정의 및 MVP 범위 설정
-- [ ] 금융기관별 공식 제출 요건 조사
+- [x] 공개 서비스 차별화 조사와 공공 마이데이터 역할 구분
+- [x] 클릭 가능한 프론트엔드 청사진과 제안서 PDF
+- [ ] 금융기관별 최신 공식 제출 요건 확정
 - [ ] 문서 분류·정보 추출 방식 검증
 - [ ] 제출 요건 판정 규칙 구현
-- [ ] 웹 UI 기술 스택 확정 및 프로토타입 구현
 - [ ] 원본 보존 제출용 ZIP과 FIN MAP 안내 구현
 - [ ] 개인정보 삭제·마스킹 및 접근성 검증
 - [ ] 사용자 테스트와 문서화
@@ -182,6 +220,7 @@ cd finance2026
 - 세션 종료 후 원본과 파생 데이터를 삭제하고, 로그에 민감한 원문을 남기지 않습니다.
 - 민감 문서를 제3자 인쇄소로 자동 전송하지 않습니다.
 - ProofBridge는 금융기관의 심사나 승인 여부를 보장하지 않습니다.
+- 공공 마이데이터 이용기관 승인을 받기 전에는 실제 연동·전송이 아니라 공식 이용 경로를 안내합니다.
 - 결과는 `승인 가능`이 아니라 **공개 기준 사전 점검 결과**로 안내합니다.
 
 </details>
