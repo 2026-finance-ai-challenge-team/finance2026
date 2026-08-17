@@ -72,7 +72,7 @@ ProofBridge는 먼저 **공공 마이데이터로 제출할 수 있는 증빙은
         <b>오영민</b>
       </a><br>
       <sub><a href="https://github.com/oymin2001">@oymin2001</a></sub><br>
-      <sub><a href="mailto:oymin2001@inha.ac.kr">oymin2001@inha.ac.kr</a></sub>
+      <sub><a href="mailto:oymin2001@inha.edu">oymin2001@inha.edu</a></sub>
     </td>
     <td align="center" width="200">
       <a href="https://github.com/chanbro0524">
