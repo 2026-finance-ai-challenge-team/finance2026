@@ -1,0 +1,138 @@
+{
+  "_comment": "합성 데이터입니다. 실제 개인정보가 아닙니다. General OCR V2 응답 형태만 재현했습니다.",
+  "version": "V2",
+  "requestId": "00000000-0000-4000-8000-000000000000",
+  "timestamp": 1755400000000,
+  "images": [
+    {
+      "uid": "0000000000000000000000000000000",
+      "name": "sample_bankbook",
+      "inferResult": "SUCCESS",
+      "message": "SUCCESS",
+      "validationResult": { "result": "NO_REQUESTED" },
+      "convertedImageInfo": { "width": 1280, "height": 1147, "pageIndex": 0 },
+      "fields": [
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 74, "y": 148 }, { "x": 474, "y": 148 }, { "x": 474, "y": 190 }, { "x": 74, "y": 190 }] },
+          "inferText": "KB나라사랑우대통장",
+          "inferConfidence": 0.9987,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 74, "y": 218 }, { "x": 214, "y": 218 }, { "x": 214, "y": 272 }, { "x": 74, "y": 272 }] },
+          "inferText": "홍길동",
+          "inferConfidence": 0.9421,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 228, "y": 220 }, { "x": 281, "y": 220 }, { "x": 281, "y": 270 }, { "x": 228, "y": 270 }] },
+          "inferText": "님",
+          "inferConfidence": 0.9903,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 72, "y": 405 }, { "x": 236, "y": 405 }, { "x": 236, "y": 442 }, { "x": 72, "y": 442 }] },
+          "inferText": "계좌번호",
+          "inferConfidence": 0.9994,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 798, "y": 403 }, { "x": 1208, "y": 403 }, { "x": 1208, "y": 444 }, { "x": 798, "y": 444 }] },
+          "inferText": "123456-78-901234",
+          "inferConfidence": 0.9856,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 72, "y": 513 }, { "x": 194, "y": 513 }, { "x": 194, "y": 552 }, { "x": 72, "y": 552 }] },
+          "inferText": "결산일",
+          "inferConfidence": 0.9971,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 664, "y": 511 }, { "x": 1208, "y": 511 }, { "x": 1208, "y": 554 }, { "x": 664, "y": 554 }] },
+          "inferText": "결산일 2,5,8,11월 제2금요일",
+          "inferConfidence": 0.7412,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 72, "y": 622 }, { "x": 260, "y": 622 }, { "x": 260, "y": 662 }, { "x": 72, "y": 662 }] },
+          "inferText": "신규가입일",
+          "inferConfidence": 0.9982,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 968, "y": 620 }, { "x": 1208, "y": 620 }, { "x": 1208, "y": 663 }, { "x": 968, "y": 663 }] },
+          "inferText": "2019.06.24",
+          "inferConfidence": 0.9765,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 72, "y": 731 }, { "x": 262, "y": 731 }, { "x": 262, "y": 771 }, { "x": 72, "y": 771 }] },
+          "inferText": "계좌관리점",
+          "inferConfidence": 0.9958,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 1102, "y": 729 }, { "x": 1208, "y": 729 }, { "x": 1208, "y": 772 }, { "x": 1102, "y": 772 }] },
+          "inferText": "가양역",
+          "inferConfidence": 0.6893,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 72, "y": 840 }, { "x": 236, "y": 840 }, { "x": 236, "y": 880 }, { "x": 72, "y": 880 }] },
+          "inferText": "문의전화",
+          "inferConfidence": 0.9949,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 906, "y": 838 }, { "x": 1208, "y": 838 }, { "x": 1208, "y": 881 }, { "x": 906, "y": 881 }] },
+          "inferText": "02-0000-0000",
+          "inferConfidence": 0.9812,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 74, "y": 1043 }, { "x": 530, "y": 1043 }, { "x": 530, "y": 1082 }, { "x": 74, "y": 1082 }] },
+          "inferText": "SWIFT CODE : CZNBKRSE",
+          "inferConfidence": 0.9534,
+          "type": "NORMAL",
+          "lineBreak": false
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": { "vertices": [{ "x": 820, "y": 1040 }, { "x": 1085, "y": 1040 }, { "x": 1085, "y": 1085 }, { "x": 820, "y": 1085 }] },
+          "inferText": "KB 국민은행",
+          "inferConfidence": 0.9668,
+          "type": "NORMAL",
+          "lineBreak": true
+        }
+      ]
+    }
+  ]
+}
