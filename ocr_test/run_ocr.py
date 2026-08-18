@@ -73,6 +73,9 @@ def section(title: str) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Windows 콘솔 기본 인코딩(cp949)은 신고서의 ☑ 같은 문자를 못 찍고 죽는다.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     args = parse_args(argv)
 
     # .env는 이 스크립트 폴더 → 저장소 루트 순으로 찾는다.
