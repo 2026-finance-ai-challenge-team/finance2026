@@ -272,6 +272,48 @@ def test_리포트에_원문이_새지_않는다():
     assert "임시값" in report, "미검증 경고가 빠졌다"
 
 
+def test_샘플_JSON이_계약을_지킨다():
+    """웹이 붙을 샘플이 깨지면 화면도 깨진다. 계약 위반을 여기서 잡는다."""
+    import json
+
+    from modules.doc_classify.schema import validate
+
+    path = Path(__file__).resolve().parent / "examples" / "classify-result.sample.json"
+    sample = json.loads(path.read_text(encoding="utf-8"))
+    validate(sample)
+
+    statuses = {d["relevance"]["status"] for d in sample["documents"]}
+    assert statuses == {"관련", "이번 업무에는 불필요", "판단 불가"}, (
+        f"샘플이 세 가지 관련성을 모두 보여줘야 화면 케이스가 다 검증된다: {statuses}"
+    )
+
+
+def test_계약이_분류실패를_불필요로_내보내지_못하게_막는다():
+    """스키마 검증이 실제로 위험한 조합을 거른다."""
+    from modules.doc_classify.schema import SCHEMA_VERSION, SchemaError, validate
+
+    bad = {
+        "schema_version": SCHEMA_VERSION,
+        "task_id": "t",
+        "checked_at": "2026-08-19",
+        "documents": [
+            {
+                "file_id": "f01",
+                "source_name": "a.pdf",
+                "media": {"kind": "pdf", "pages": 1},
+                "classification": {"doc_type": None, "confidence": 0.1, "evidence": []},
+                "relevance": {"status": "이번 업무에는 불필요"},
+            }
+        ],
+    }
+    try:
+        validate(bad)
+    except SchemaError as exc:
+        assert "판단 불가" in str(exc), exc
+    else:
+        raise AssertionError("분류 실패를 '불필요'로 내보냈는데 통과했다")
+
+
 def run(name: str, fn) -> bool:
     try:
         fn()

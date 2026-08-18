@@ -76,14 +76,20 @@ def visual_title(fields: list[dict[str, Any]]) -> str:
     # ponytail: 필드가 적은 문서(신분증, 짧은 영수증)는 제목 글자가 중앙값을 지배해
     #           아무것도 안 잡힌다. 그때는 아래 fallback(상단 N자)으로 넘어간다.
     median = heights[len(heights) // 2]
-    page_bottom = max(top + height for _, top, height in spans)
-    if not page_bottom:
+
+    # '상단'은 이미지 좌표가 아니라 **글자가 실제로 있는 영역** 기준으로 잰다.
+    # 사진은 문서 위아래에 여백·배경이 들어가서 이미지 좌표를 쓰면 기준이 밀린다.
+    text_top = min(top for _, top, _ in spans)
+    text_bottom = max(top + height for _, top, height in spans)
+    text_height = text_bottom - text_top
+    if text_height <= 0:
         return ""
 
     picked = [
         f
         for f, top, height in spans
-        if height >= median * TITLE_MIN_RATIO and top <= page_bottom * TITLE_TOP_RATIO
+        if height >= median * TITLE_MIN_RATIO
+        and (top - text_top) <= text_height * TITLE_TOP_RATIO
     ]
     if not picked:
         return ""

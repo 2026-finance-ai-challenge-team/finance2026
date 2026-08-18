@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from .extract import Extracted, apply_ocr, extract, needs_ocr
+from .schema import SCHEMA_VERSION, validate
 
 HERE = Path(__file__).resolve().parent
 SIGNATURE_DIR = HERE / "signatures"
@@ -317,12 +318,15 @@ def classify_files(
         for bucket in ("required", "conditional", "alternatives")
     }
 
-    return {
-        "task_id": task_id,
-        "task_label": task.get("label_ko", task_id),
-        "task_verified": task.get("verified", False),
-        "checked_at": date.today().isoformat(),
-        "ocr_calls_total": sum(d["ocr_calls"] for d in documents),
-        "missing": missing,
-        "documents": documents,
-    }
+    return validate(
+        {
+            "schema_version": SCHEMA_VERSION,
+            "task_id": task_id,
+            "task_label": task.get("label_ko", task_id),
+            "task_verified": task.get("verified", False),
+            "checked_at": date.today().isoformat(),
+            "ocr_calls_total": sum(d["ocr_calls"] for d in documents),
+            "missing": missing,
+            "documents": documents,
+        }
+    )
