@@ -6,9 +6,14 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+# OCR 응답 캐시. 문서 원문이 들어가므로 .gitignore 대상이다.
+CACHE_DIR = Path(__file__).resolve().parents[2] / ".ocr_cache"
 
 # 페이지가 이 글자 수 미만이면 텍스트 레이어가 없다고 보고 OCR로 넘긴다.
 # ponytail: 실제 발급 문서 표본으로 조정할 값. 정부24 등본은 0자, 홈택스 신고서는 1583자라
@@ -128,25 +133,45 @@ def _embedded_pages(path: Path) -> list[Page]:
     return pages
 
 
+def _cache_path(path: Path) -> Path:
+    """파일 내용 해시로 캐시 위치를 정한다. 이름이 달라도 같은 파일이면 같은 캐시다."""
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()[:32]
+    return CACHE_DIR / f"{digest}.json"
+
+
 def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
     """파일 하나를 OCR에 한 번만 보내고 페이지별 (전체 텍스트, 시각적 제목)을 돌려준다.
 
     CLOVA General은 PDF를 통째로 받아 images[]에 페이지별 결과를 준다.
     페이지마다 따로 호출하지 않으므로 호출 수는 파일당 1회다.
+
+    응답은 파일 해시로 캐시한다. 무료 한도가 월 100건이라 같은 파일을 다시 돌릴 때
+    한도를 또 쓰면 안 된다. 캐시에는 문서 원문이 들어가므로 `.gitignore` 대상이다.
     """
     from ocr_test import clova_ocr
 
-    for candidate in (Path(__file__).resolve().parents[2] / ".env", Path("ocr_test/.env")):
-        clova_ocr.load_dotenv(candidate)
-
-    config = clova_ocr.OcrConfig.from_env(timeout=timeout)
-    response, _elapsed = clova_ocr.call_general_ocr(path, config)
+    cached = _cache_path(path)
+    if cached.is_file():
+        response = json.loads(cached.read_text(encoding="utf-8"))
+    else:
+        for candidate in (Path(__file__).resolve().parents[2] / ".env", Path("ocr_test/.env")):
+            clova_ocr.load_dotenv(candidate)
+        config = clova_ocr.OcrConfig.from_env(timeout=timeout)
+        response, _elapsed = clova_ocr.call_general_ocr(path, config)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cached.write_text(json.dumps(response, ensure_ascii=False), encoding="utf-8")
 
     out: dict[int, tuple[str, str]] = {}
     for i, image in enumerate(response.get("images") or [], start=1):
         fields = image.get("fields") or []
         out[i] = ("\n".join(clova_ocr.fields_to_lines(fields)), visual_title(fields))
     return out
+
+
+def is_cached(path: str | Path) -> bool:
+    """이 파일의 OCR 응답이 이미 캐시에 있나(= 호출이 필요 없나)."""
+    path = Path(path).expanduser()
+    return path.is_file() and _cache_path(path).is_file()
 
 
 def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) -> Extracted:
@@ -190,13 +215,18 @@ def apply_ocr(extracted: Extracted, *, timeout: float = 30.0) -> Extracted:
     if not targets:
         return extracted
 
+    # 캐시에 있으면 API를 안 쓴다. 호출 수 집계에도 넣지 않는다.
+    from_cache = is_cached(extracted.path)
     try:
         ocr_pages = _ocr_whole_file(extracted.path, timeout)
     except Exception as exc:
         extracted.notes.append(f"OCR 실패: {exc}")
         return extracted
 
-    extracted.ocr_calls += 1
+    if from_cache:
+        extracted.notes.append("OCR 캐시 사용 (API 호출 없음)")
+    else:
+        extracted.ocr_calls += 1
     for page in targets:
         text, title = ocr_pages.get(page.index) or ("", "")
         text = text.strip()

@@ -1,0 +1,17 @@
+{
+  "doc_type": "health_insurance_certificate",
+  "label_ko": "건강보험 자격득실 확인서",
+  "issuer": "국민건강보험공단",
+  "issuer_aliases": ["정부24", "건강보험공단"],
+  "title_patterns": ["건강보험\\s*자격득실\\s*확인서", "자격득실\\s*확인서"],
+  "required_anchors": ["국민건강보험공단", "가입자|자격취득|자격상실"],
+  "negative_anchors": ["납부확인서", "자격확인서\\s*\\(피부양자"],
+  "doc_number_label": "문서확인번호",
+  "issued_at_labels": ["발급일자", "증명일"],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "실제 정부24 발급본 1건으로 앵커 확인(2026-08-18). 제목이 글자 크기로 깨끗하게 잡힌다. 한도제한계좌 해제 증빙으로 가장 자주 언급되는 서류이므로 찬형 조사에서 요건 확인이 필요하다."
+}
