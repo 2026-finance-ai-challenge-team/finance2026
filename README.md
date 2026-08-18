@@ -175,7 +175,59 @@ npm install
 npm run dev
 ```
 
-Node.js `>=22.13.0`이 필요합니다. `http://localhost:3000`에서 확인하고, 전체 빌드·렌더 검증은 `npm test`로 실행합니다. 현재 합성 데모에는 환경변수가 필요하지 않습니다.
+Node.js `>=22.13.0`이 필요합니다. `http://localhost:3000`에서 확인하고, 전체 빌드·렌더 검증은 `npm test`로 실행합니다. 웹 데모에는 환경변수가 필요하지 않습니다.
+
+**문서 분류 모듈 (Python)**
+
+```bash
+python -m venv finance
+finance\Scripts\activate          # macOS/Linux: source finance/bin/activate
+pip install -r requirements.txt
+copy .env.example .env            # macOS/Linux: cp .env.example .env
+```
+
+`.env`에 CLOVA OCR 값을 채웁니다(발급 방법은 아래 토글 참고). 그다음:
+
+```bash
+python modules/doc_classify/test_doc_classify.py          # 합성 데이터 자체 검증
+python -m modules.doc_classify.cli <파일_또는_폴더>       # 문서 분류 실행
+python -m modules.doc_classify.cli <경로> --no-ocr        # API 호출 없이 실행
+```
+
+</details>
+
+<details>
+<summary><b>🔑 API 키 발급 방법</b></summary>
+
+키는 `.env`에만 둡니다. 이 파일은 `.gitignore` 대상이라 커밋되지 않습니다. **코드·문서·커밋 메시지에 키를 적지 않습니다.** 노출됐다면 콘솔에서 즉시 재발급합니다.
+
+### 네이버 클라우드 CLOVA OCR (현재 유일한 필수 키)
+
+스캔본·사진 문서에서 텍스트를 뽑을 때 씁니다. 텍스트 레이어가 있는 PDF는 OCR을 호출하지 않으므로, 키 없이도 `--no-ocr`로 상당 부분 테스트할 수 있습니다.
+
+1. [네이버 클라우드 플랫폼](https://www.ncloud.com/)에 가입하고 결제수단을 등록합니다. CLOVA OCR은 무료 티어가 없어 등록이 필요합니다.
+2. 콘솔에서 **Services → AI Services → CLOVA OCR**로 이동합니다.
+3. **도메인 생성**을 누르고 아래를 고릅니다.
+   - 서비스 타입 `General` — 정해진 서식이 없는 일반 문서용입니다. `Document`(템플릿) 타입과 응답 형식이 다르므로 반드시 General로 만듭니다.
+   - 인식 언어 `Korean`
+4. 생성된 도메인의 목록에서 두 값을 복사합니다.
+   - **APIGW Invoke URL** → `NCP_OCR_INVOKE_URL` (`.../general`로 끝납니다)
+   - **Secret Key** → `NCP_OCR_SECRET_KEY` (요청 헤더 `X-OCR-SECRET`에 그대로 들어갑니다)
+5. `.env`에 붙여넣습니다.
+
+> **두 값은 반드시 같은 도메인의 것이어야 합니다.** 섞으면 `401`/`403`이 납니다. 다른 도메인의 URL과 Key를 조합하는 것이 이 API에서 가장 흔한 실수입니다.
+
+연결 확인:
+
+```bash
+python -m modules.doc_classify.cli <스캔본_PDF_경로>
+```
+
+`텍스트 N자 (ocr)`이 찍히면 정상입니다. `OCR 실패`가 보이면 위 4번의 도메인 짝을 다시 확인합니다.
+
+### 아직 필요 없는 키
+
+지도·지점 안내(금융결제원 FIN MAP, Kakao Local)와 설명 생성용 LLM 키는 해당 기능을 구현할 때 추가합니다. 지금 발급받을 필요는 없습니다.
 
 </details>
 
@@ -189,12 +241,17 @@ finance2026/
 │  ├─ public/                # 제안서 PDF·소셜 이미지
 │  ├─ tests/                 # 서버 렌더 안전 경계 검사
 │  └─ worker/                # Sites/Cloudflare 진입점
-├─ docs/                     # 차별화 조사·API 가입 가이드
+├─ modules/                  # 담당별로 분리한 처리 모듈
+│  └─ doc_classify/          # 문서 분류 — 형식 판별·텍스트 확보·유형 결정
+│     ├─ signatures/         # 문서 서식 시그니처 (찬형 DB 연동 전 임시값)
+│     └─ tasks/              # 업무별 필요 서류 정의
+├─ ocr_test/                 # CLOVA OCR 클라이언트와 응답 파싱
+├─ docs/                     # 설계 문서·차별화 조사·API 가입 가이드
 ├─ output/pdf/               # 검수 완료 제안서
 └─ scripts/                  # 제안서 재생성 스크립트
 ```
 
-실제 API·규칙·합성 샘플 코드는 구현 시점에 필요한 디렉터리만 추가합니다.
+담당이 나뉜 작업은 `modules/<이름>/` 아래에서 각자 진행하고, 모듈 사이의 입출력 계약은 `docs/DOC_CLASSIFY.md`에 적습니다. 실제 개인정보가 든 파일은 저장소에 넣지 않습니다.
 
 </details>
 

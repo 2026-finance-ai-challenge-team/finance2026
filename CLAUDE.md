@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 저장소 상태
 
-현재 `apps/web`에 React 19 + TypeScript + vinext/Vite 기반 합성 클릭 데모가 있다. 실제 OCR·LLM·규칙 엔진·외부 API는 아직 연결하지 않았다.
+현재 두 갈래가 있다. `apps/web`은 React 19 + TypeScript + vinext/Vite 기반 합성 클릭 데모이고, `ocr_test/`는 CLOVA OCR General API에 실제로 연결된 문서 인식 하네스다. 규칙 엔진과 LLM은 아직 없다.
+
+파이썬 작업은 저장소 루트의 `finance` 가상환경을 쓴다. 의존성은 루트 `requirements.txt`.
+
+- 파이썬 환경: `finance/Scripts/python.exe` (설치: `pip install -r requirements.txt`)
+- OCR 테스트: `finance/Scripts/python.exe ocr_test/test_parse.py`
+- OCR 실행: `finance/Scripts/python.exe ocr_test/run_ocr.py <경로> --mask`
+
+`ocr_test/.env`에 NCP 자격증명이 있다. `.gitignore` 대상이며 값을 코드·문서·커밋에 옮기지 않는다.
 
 - 개발: `cd apps/web && npm run dev`
 - 빌드: `cd apps/web && npm run build`
