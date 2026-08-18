@@ -1,0 +1,28 @@
+{
+  "doc_type": "bankbook_copy",
+  "label_ko": "통장 사본",
+  "issuer": "",
+  "issuer_aliases": [
+    "국민은행",
+    "KB",
+    "신한은행",
+    "우리은행",
+    "하나은행",
+    "농협",
+    "기업은행",
+    "카카오뱅크",
+    "토스뱅크",
+    "케이뱅크"
+  ],
+  "title_patterns": ["통장", "예금거래\\s*기본약관", "입출금통장"],
+  "required_anchors": ["계좌번호", "계좌관리점|신규가입일|결산일|예금주"],
+  "negative_anchors": ["거래내역조회", "거래명세"],
+  "doc_number_label": null,
+  "issued_at_labels": ["발급일", "출력일"],
+  "validity_days": null,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "실제 통장사본 1건으로 앵커 확인. 제목 영역에 상품명이 오므로 '통장' 부분 일치로 잡는다. 계좌번호 값 자체는 추출하지 않는다."
+}

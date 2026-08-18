@@ -94,6 +94,7 @@ class Extracted:
     kind: str                      # pdf | jpg | png | tiff | unknown
     pages: list[Page] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    ocr_calls: int = 0              # 이 파일에 쓴 OCR API 호출 수 (무료 한도 추적용)
 
     @property
     def full_text(self) -> str:
@@ -149,7 +150,11 @@ def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
 
 
 def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) -> Extracted:
-    """파일 하나에서 페이지별 텍스트를 확보한다."""
+    """1차 추출. 내장 텍스트만 읽는다. `use_ocr=True`면 부족한 페이지를 OCR로 채운다.
+
+    OCR 호출을 아끼려면 `use_ocr=False`로 먼저 부르고, 분류가 확정되지 않을 때만
+    `apply_ocr()`를 호출한다. `classify_files()`가 그렇게 동작한다.
+    """
     path = Path(path).expanduser()
     kind = detect_kind(path)
     result = Extracted(path=path, kind=kind)
@@ -167,25 +172,36 @@ def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) ->
     else:
         result.pages = [Page(index=1, text="", method="none")]
 
-    need_ocr = [p for p in result.pages if p.chars < MIN_CHARS_PER_PAGE]
-    if not need_ocr:
-        return result
+    if use_ocr and needs_ocr(result):
+        apply_ocr(result, timeout=timeout)
+    return result
 
-    if not use_ocr:
-        result.notes.append(f"텍스트 없는 페이지 {len(need_ocr)}개 — OCR 꺼져 있음(--no-ocr)")
-        return result
+
+def needs_ocr(extracted: Extracted) -> bool:
+    """텍스트가 부족한 페이지가 남아 있나."""
+    if extracted.kind == "unknown":
+        return False
+    return any(p.chars < MIN_CHARS_PER_PAGE for p in extracted.pages)
+
+
+def apply_ocr(extracted: Extracted, *, timeout: float = 30.0) -> Extracted:
+    """텍스트가 없는 페이지만 OCR로 채운다. **여기서만 API를 호출한다** (파일당 1회)."""
+    targets = [p for p in extracted.pages if p.chars < MIN_CHARS_PER_PAGE]
+    if not targets:
+        return extracted
 
     try:
-        ocr_pages = _ocr_whole_file(path, timeout)
+        ocr_pages = _ocr_whole_file(extracted.path, timeout)
     except Exception as exc:
-        result.notes.append(f"OCR 실패: {exc}")
-        return result
+        extracted.notes.append(f"OCR 실패: {exc}")
+        return extracted
 
-    for page in need_ocr:
+    extracted.ocr_calls += 1
+    for page in targets:
         text, title = ocr_pages.get(page.index) or ("", "")
         text = text.strip()
         if text:
             page.text, page.method = text, "ocr"
             page.chars = len(text)
             page.title = title
-    return result
+    return extracted

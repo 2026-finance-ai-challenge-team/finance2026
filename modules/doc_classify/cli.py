@@ -12,6 +12,7 @@ import unicodedata
 from pathlib import Path
 
 from .classify import TASK_DIR, classify_files, load_signatures
+from .pack import build_report, pack
 
 SUPPORTED_SUFFIXES = {".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff"}
 
@@ -66,6 +67,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--no-ocr", action="store_true", help="OCR을 호출하지 않는다 (API 사용량 0)")
     parser.add_argument("--json", metavar="PATH", help="결과 JSON을 파일로 저장")
+    parser.add_argument("--pack", metavar="DIR", help="제출 묶음(요약·체크리스트·이름 정리본)을 만든다")
+    parser.add_argument("--report", action="store_true", help="한 장짜리 요약을 화면에 출력")
     parser.add_argument("--quiet", action="store_true", help="헤더 없이 결과만 출력")
     args = parser.parse_args(argv)
 
@@ -114,8 +117,23 @@ def main(argv: list[str] | None = None) -> int:
         status = doc["relevance"]["status"]
         counts[status] = counts.get(status, 0) + 1
     print("요약: " + " · ".join(f"{k} {v}건" for k, v in counts.items()))
+    print(f"OCR 호출: {result.get('ocr_calls_total', 0)}회 / 검토 파일 {len(result['documents'])}개")
     if not result["task_verified"]:
         print("주의: 업무 요건이 미검증 임시값입니다. 이 결과로 준비 완료를 판단하면 안 됩니다.")
+
+    if args.report:
+        print("\n" + "=" * 60)
+        print(build_report(result, signatures))
+
+    if args.pack:
+        packed = pack(result, paths, Path(args.pack), signatures)
+        print(f"\n제출 묶음: {packed['out_dir']}")
+        if packed["zip"]:
+            print(f"  ZIP: {packed['zip']}")
+        print("  파일명 정리:")
+        for row in packed["mapping"]:
+            print(f"    {row['원래 이름']}  ->  {row['제출용 이름']}")
+        print("  ! 원본은 수정하지 않았습니다. '원본/'에 그대로 있습니다.")
 
     if args.json:
         Path(args.json).write_text(

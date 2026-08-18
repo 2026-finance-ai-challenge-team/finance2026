@@ -187,6 +187,91 @@ def test_낱자로_쪼개진_제목도_분류된다():
     assert not result["needs_user_confirm"]
 
 
+def test_유효기간을_계산한다():
+    from datetime import date
+
+    from modules.doc_classify.classify import expiry_of
+
+    def check(issued: str, confident: bool):
+        return expiry_of(
+            {
+                "doc_type": "resident_registration_copy",
+                "fields": {"issued_at": issued, "issued_at_confident": confident},
+            },
+            SIGNATURES,
+            today=date(2026, 8, 18),
+        )
+
+    # 등본 유효기간 90일. 2026-08-11 발급 → 2026-11-09 만료.
+    fresh = check("2026-08-11", True)
+    assert fresh["expires_at"] == "2026-11-09", fresh
+    assert fresh["days_left"] == 83 and fresh["note"] == "83일 남음", fresh
+
+    stale = check("2026-01-01", True)
+    assert stale["days_left"] < 0 and stale["note"] == "기한 만료", stale
+
+    # 발급일이 추정이면 '유효함'을 단정하지 않는다. 거짓 준비 완료를 막는 방향이다.
+    guessed_ok = check("2026-08-11", False)
+    assert guessed_ok["estimated"] is True, guessed_ok
+    assert "확인 필요" in guessed_ok["note"], guessed_ok
+
+    # 추정이어도 만료 쪽은 알려준다. 그쪽으로 틀리는 건 안전하다.
+    guessed_expired = check("2026-01-01", False)
+    assert "지났을 수 있음" in guessed_expired["note"], guessed_expired
+
+    # 발급일을 못 읽으면 만료를 단정하지 않는다.
+    unknown = expiry_of(
+        {"doc_type": "resident_registration_copy", "fields": {}}, SIGNATURES, today=date(2026, 8, 18)
+    )
+    assert unknown["expires_at"] is None and "발급일" in unknown["note"], unknown
+
+
+def test_파일명을_안전하게_정규화한다():
+    from modules.doc_classify.pack import safe_component, submission_name
+
+    assert safe_component('주민등록표 등본<>:"/\\|?*') == "주민등록표등본"
+    assert safe_component("") == "미상"
+
+    doc = {
+        "source_name": "정부24 - 주민등록표 등본(초본) 발급 _ 문서출력.pdf",
+        "classification": {"label_ko": "주민등록표 초본"},
+        "fields": {"issued_at": "2026-08-11"},
+    }
+    assert submission_name(doc, 1) == "2026-08-11_주민등록표초본_01.pdf"
+
+    # 분류 실패는 원본 이름을 살리되 눈에 띄게 표시한다
+    unknown = {"source_name": "IMG_2931.jpg", "classification": {"label_ko": None}, "fields": {}}
+    assert submission_name(unknown, 7).startswith("확인필요_IMG_2931")
+
+
+def test_리포트에_원문이_새지_않는다():
+    from modules.doc_classify.pack import build_report
+
+    result = {
+        "task_id": "t",
+        "task_label": "테스트 업무",
+        "checked_at": "2026-08-18",
+        "task_verified": False,
+        "ocr_calls_total": 0,
+        "missing": {"required": ["utility_bill"], "conditional": [], "alternatives": []},
+        "documents": [
+            {
+                "source_name": "a.pdf",
+                "classification": {"doc_type": "resident_registration_copy", "label_ko": "주민등록표 등본"},
+                "fields": {"issuer": "행정안전부", "issued_at": "2026-08-11"},
+                "validity": {"expires_at": "2026-11-09", "days_left": 83, "note": "83일 남음"},
+                "relevance": {"status": "관련"},
+                "confirm_reason": None,
+            }
+        ],
+    }
+    report = build_report(result, SIGNATURES)
+    assert "주민등록표 등본" in report
+    assert "공공요금" in report, "부족한 서류가 리포트에 안 나온다"
+    assert "2026-11-09" in report
+    assert "임시값" in report, "미검증 경고가 빠졌다"
+
+
 def run(name: str, fn) -> bool:
     try:
         fn()
