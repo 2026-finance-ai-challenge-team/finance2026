@@ -1,0 +1,219 @@
+"""2~3, 5단계 · 신호 수집 → 시그니처 대조 → 업무 관련성.
+
+원칙 두 가지 (`docs/DOC_CLASSIFY.md` §4, §6):
+- **"모른다"와 "필요 없다"를 섞지 않는다.** 분류 실패는 `판단 불가`로 남긴다.
+- **출력에 원문 텍스트를 담지 않는다.** 매칭한 패턴과 위치만 근거로 남긴다.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+from typing import Any
+
+from .extract import Extracted, extract
+
+HERE = Path(__file__).resolve().parent
+SIGNATURE_DIR = HERE / "signatures"
+TASK_DIR = HERE / "tasks"
+
+# 이 점수 미만이면 확정하지 않고 사용자에게 묻는다.
+CONFIRM_THRESHOLD = 0.60
+# 1등과 2등이 이 차이 안이면 헷갈린 것으로 보고 역시 묻는다. (등본/초본 같은 쌍)
+AMBIGUOUS_GAP = 0.15
+# 제목은 문서 상단에서만 인정한다. 본문 하단 안내문에 다른 서류 이름이 등장하는 일이
+# 실제로 있다 — 정부24 발급 페이지 하단에서 '가족관계증명서'가 잡혀 오분류가 났었다.
+# ponytail: 글자 수로 자르는 근사치. 좌표 기반 상단 영역이 정확하지만 OCR bbox가 필요하다.
+TITLE_HEAD_CHARS = 500
+
+_DATE = re.compile(r"(20\d{2})\s*[.\-년/]\s*(\d{1,2})\s*[.\-월/]\s*(\d{1,2})")
+
+
+def load_signatures(directory: Path | None = None) -> list[dict[str, Any]]:
+    directory = directory or SIGNATURE_DIR
+    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted(directory.glob("*.json"))]
+
+
+def load_task(task_id: str, directory: Path | None = None) -> dict[str, Any]:
+    directory = directory or TASK_DIR
+    path = directory / f"{task_id}.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"업무 정의가 없습니다: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _search(patterns: list[str], text: str) -> str | None:
+    for pattern in patterns:
+        if re.search(pattern, text):
+            return pattern
+    return None
+
+
+def score_signature(signature: dict[str, Any], text: str) -> tuple[float, list[dict[str, Any]]]:
+    """시그니처 하나와 문서 텍스트를 대조해 (점수, 근거)를 낸다.
+
+    negative_anchors가 하나라도 걸리면 즉시 0점이다. 등본/초본처럼 제목이 거의 같은
+    쌍은 '없어야 할 단어'로만 갈린다.
+    """
+    evidence: list[dict[str, Any]] = []
+
+    for negative in signature.get("negative_anchors") or []:
+        if re.search(negative, text):
+            return 0.0, [{"kind": "negative_anchor", "value": negative}]
+
+    score = 0.0
+
+    patterns = signature.get("title_patterns") or []
+    title = _search(patterns, text[:TITLE_HEAD_CHARS])
+    if title:
+        score += 0.60
+        evidence.append({"kind": "title_match", "pattern": title})
+    else:
+        # 상단 밖에서 나온 서류 이름은 제목이 아니라 언급일 뿐이다. 약한 신호로만 센다.
+        mention = _search(patterns, text)
+        if mention:
+            score += 0.10
+            evidence.append({"kind": "title_mention", "pattern": mention})
+
+    issuers = [signature.get("issuer", "")] + list(signature.get("issuer_aliases") or [])
+    issuer = _search([re.escape(i) for i in issuers if i], text)
+    if issuer:
+        score += 0.15
+        evidence.append({"kind": "issuer_match", "pattern": issuer})
+
+    anchors = signature.get("required_anchors") or []
+    hit = [a for a in anchors if re.search(a, text)]
+    if anchors:
+        score += 0.20 * (len(hit) / len(anchors))
+        evidence.append({"kind": "anchors", "matched": len(hit), "total": len(anchors)})
+
+    label = signature.get("doc_number_label")
+    if label and re.search(re.escape(label), text):
+        score += 0.05
+        evidence.append({"kind": "doc_number_label", "pattern": label})
+
+    return min(score, 0.99), evidence
+
+
+def _fields(signature: dict[str, Any], text: str) -> dict[str, Any]:
+    """분류에 필요한 최소 필드만 뽑는다. 명의·주소·소득은 뽑지 않는다."""
+    fields: dict[str, Any] = {}
+
+    if signature.get("issuer") and signature["issuer"] in text:
+        fields["issuer"] = signature["issuer"]
+
+    for label in signature.get("issued_at_labels") or []:
+        at = text.find(label)
+        if at == -1:
+            continue
+        match = _DATE.search(text, at, at + 80)
+        if match:
+            y, m, d = match.groups()
+            fields["issued_at"] = f"{y}-{int(m):02d}-{int(d):02d}"
+            break
+
+    label = signature.get("doc_number_label")
+    fields["doc_number_present"] = bool(label and label in text)
+    return fields
+
+
+def classify_one(extracted: Extracted, signatures: list[dict[str, Any]]) -> dict[str, Any]:
+    text = extracted.full_text
+    scored = []
+    for signature in signatures:
+        score, evidence = score_signature(signature, text)
+        if score > 0:
+            scored.append((score, signature, evidence))
+    scored.sort(key=lambda row: row[0], reverse=True)
+
+    if not scored or scored[0][0] < CONFIRM_THRESHOLD:
+        return {
+            "doc_type": None,
+            "label_ko": None,
+            "confidence": round(scored[0][0], 2) if scored else 0.0,
+            "decided_by": None,
+            "evidence": scored[0][2] if scored else [],
+            "alternatives": [],
+            "fields": {},
+            "needs_user_confirm": True,
+            "confirm_reason": "일치하는 문서 서식을 찾지 못했습니다.",
+        }
+
+    best_score, best, evidence = scored[0]
+    runner_up = scored[1] if len(scored) > 1 else None
+    ambiguous = bool(runner_up and best_score - runner_up[0] < AMBIGUOUS_GAP)
+
+    return {
+        "doc_type": best["doc_type"],
+        "label_ko": best.get("label_ko"),
+        "confidence": round(best_score, 2),
+        "decided_by": "anchor",
+        "evidence": evidence,
+        "alternatives": [
+            {"doc_type": s[1]["doc_type"], "confidence": round(s[0], 2)} for s in scored[1:3]
+        ],
+        "fields": _fields(best, text),
+        "needs_user_confirm": ambiguous,
+        "confirm_reason": (
+            f"{runner_up[1]['doc_type']}와 점수가 비슷합니다." if ambiguous else None
+        ),
+        "unverified_signature": not best.get("verified", False),
+    }
+
+
+def judge_relevance(doc_type: str | None, task: dict[str, Any]) -> dict[str, Any]:
+    """분류 실패(`판단 불가`)와 업무 무관(`이번 업무에는 불필요`)을 절대 합치지 않는다."""
+    if doc_type is None:
+        return {"status": "판단 불가", "matched_rule": None}
+
+    for bucket in ("required", "conditional", "alternatives"):
+        if doc_type in (task.get(bucket) or []):
+            return {"status": "관련", "matched_rule": bucket}
+    return {"status": "이번 업무에는 불필요", "matched_rule": None}
+
+
+def classify_files(
+    paths: list[str | Path],
+    task_id: str,
+    *,
+    use_ocr: bool = True,
+    signatures: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """모듈의 공개 API. 파일 목록과 업무 ID를 받아 분류 결과 JSON을 만든다."""
+    signatures = signatures if signatures is not None else load_signatures()
+    task = load_task(task_id)
+
+    documents = []
+    for i, path in enumerate(paths, start=1):
+        extracted = extract(path, use_ocr=use_ocr)
+        classification = classify_one(extracted, signatures)
+        documents.append(
+            {
+                "file_id": f"f{i:02d}",
+                "source_name": Path(path).name,
+                "media": {
+                    "kind": extracted.kind,
+                    "pages": len(extracted.pages),
+                    "detected_by": "magic",
+                },
+                "text_source": [
+                    {"page": p.index, "method": p.method, "chars": p.chars}
+                    for p in extracted.pages
+                ],
+                "classification": {
+                    k: v for k, v in classification.items() if k not in {"fields", "needs_user_confirm", "confirm_reason"}
+                },
+                "fields": classification["fields"],
+                "relevance": judge_relevance(classification["doc_type"], task),
+                "needs_user_confirm": classification["needs_user_confirm"],
+                "confirm_reason": classification["confirm_reason"],
+                "notes": extracted.notes,
+            }
+        )
+
+    return {
+        "task_id": task_id,
+        "task_verified": task.get("verified", False),
+        "documents": documents,
+    }

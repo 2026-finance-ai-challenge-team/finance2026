@@ -1,0 +1,30 @@
+{
+  "doc_type": "resident_registration_abstract",
+  "label_ko": "주민등록표 초본",
+  "issuer": "행정안전부",
+  "issuer_aliases": [
+    "정부24",
+    "민원24"
+  ],
+  "title_patterns": [
+    "주민등록표\\s*\\(?\\s*초본",
+    "주민등록\\s*초본"
+  ],
+  "required_anchors": [
+    "주소\\s*변동|변동일|변동사유"
+  ],
+  "negative_anchors": [
+    "주민등록표\\s*\\(?\\s*등본"
+  ],
+  "doc_number_label": "문서확인번호",
+  "issued_at_labels": [
+    "발급일자",
+    "발급일"
+  ],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "등본과 제목이 거의 같다. negative_anchors로만 갈린다."
+}

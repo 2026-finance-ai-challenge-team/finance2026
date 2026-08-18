@@ -1,0 +1,18 @@
+{
+  "task_id": "kakaobank.limit_release.living_expense",
+  "label_ko": "카카오뱅크 한도제한계좌 해제 · 생활비/공과금",
+  "required": [
+    "utility_bill"
+  ],
+  "conditional": [
+    "resident_registration_copy"
+  ],
+  "alternatives": [
+    "family_relation_certificate"
+  ],
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "임시 배치다. 실제 요건은 찬형 조사 결과로 교체한다. 이 값으로 사용자에게 준비 완료를 말하면 안 된다."
+}

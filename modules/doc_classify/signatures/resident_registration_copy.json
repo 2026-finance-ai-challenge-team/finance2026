@@ -1,0 +1,31 @@
+{
+  "doc_type": "resident_registration_copy",
+  "label_ko": "주민등록표 등본",
+  "issuer": "행정안전부",
+  "issuer_aliases": [
+    "정부24",
+    "민원24"
+  ],
+  "title_patterns": [
+    "주민등록표\\s*\\(?\\s*등본",
+    "주민등록\\s*등본"
+  ],
+  "required_anchors": [
+    "세대주",
+    "세대원|세대구성원|세대주와의\\s*관계"
+  ],
+  "negative_anchors": [
+    "주민등록표\\s*\\(?\\s*초본"
+  ],
+  "doc_number_label": "문서확인번호",
+  "issued_at_labels": [
+    "발급일자",
+    "발급일"
+  ],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "찬형 DB 연동 전 임시 시그니처. 공식 출처 확인 후 교체 필요."
+}

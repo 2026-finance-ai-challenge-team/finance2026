@@ -1,0 +1,35 @@
+{
+  "doc_type": "utility_bill",
+  "label_ko": "공공요금 고지서·납부확인서",
+  "issuer": "",
+  "issuer_aliases": [
+    "한국전력공사",
+    "한전",
+    "도시가스",
+    "수도사업소",
+    "한국수자원공사"
+  ],
+  "title_patterns": [
+    "전기\\s*요금\\s*(청구서|고지서|납부확인서)",
+    "도시가스\\s*요금",
+    "수도\\s*요금",
+    "요금\\s*납부\\s*(영수증|확인서)"
+  ],
+  "required_anchors": [
+    "청구금액|납부금액|사용요금",
+    "고객번호|납부자번호|계약번호"
+  ],
+  "negative_anchors": [],
+  "doc_number_label": null,
+  "issued_at_labels": [
+    "청구일",
+    "발행일",
+    "납부일"
+  ],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "발행처가 제각각이라 패턴이 넓다. 오탐 가능성 높음 — 실제 표본으로 좁혀야 함."
+}

@@ -1,0 +1,29 @@
+{
+  "doc_type": "employment_certificate",
+  "label_ko": "재직증명서",
+  "issuer": "",
+  "issuer_aliases": [],
+  "title_patterns": [
+    "재\\s*직\\s*증\\s*명\\s*서"
+  ],
+  "required_anchors": [
+    "소속|부서",
+    "직위|직급|담당업무",
+    "재직기간|입사일|재직\\s*중"
+  ],
+  "negative_anchors": [
+    "경력증명서",
+    "퇴직증명서"
+  ],
+  "doc_number_label": null,
+  "issued_at_labels": [
+    "발급일",
+    "발행일"
+  ],
+  "validity_days": 30,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "사문서라 서식이 회사마다 다르다. AI 분류(5순위 신호)가 필요한 대표 사례."
+}
