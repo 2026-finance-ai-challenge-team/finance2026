@@ -15,6 +15,18 @@ from typing import Any
 #           그 사이 어디든 되지만, 머리글만 있는 스캔본을 걸러내려면 0보다 커야 한다.
 MIN_CHARS_PER_PAGE = 30
 
+# --- 시각적 제목 검출 -------------------------------------------------------
+# 문서 제목은 본문보다 크게 인쇄된다. OCR이 주는 글자 높이로 이걸 직접 잡는다.
+# 실측(정부24 등본): 중앙값 21px, 제목 33~40px(1.6~1.9배), 상단 8~12% 위치.
+# 크기만으로는 부족하다 — 하단 발급기관 직인도 39px로 크다. 그래서 상단 조건을 같이 건다.
+TITLE_MIN_RATIO = 1.5    # 글자 높이가 페이지 중앙값의 이 배율 이상
+TITLE_TOP_RATIO = 0.30   # 그리고 페이지 위에서 이 비율 안에 있을 것
+
+# 텍스트 PDF는 글자 크기 정보가 없다. 그때만 상단 N자로 근사한다.
+# ponytail: pypdf의 visitor_text로 폰트 크기를 받을 수 있다. 텍스트 PDF 오분류가
+#           실제로 나오면 그때 넣는다. 지금은 사진·스캔본이 우선이다.
+TITLE_FALLBACK_CHARS = 500
+
 _MAGIC: tuple[tuple[bytes, str], ...] = (
     (b"%PDF-", "pdf"),
     (b"\xff\xd8\xff", "jpg"),
@@ -32,9 +44,48 @@ class Page:
     text: str
     method: str         # embedded | ocr | none
     chars: int = 0
+    title: str = ""     # 시각적으로 두드러진 제목 (OCR 페이지만 채워진다)
 
     def __post_init__(self) -> None:
         self.chars = len(self.text.strip())
+
+
+def _vertical_span(field: dict[str, Any]) -> tuple[float, float]:
+    """필드의 (윗변 y, 글자 높이)."""
+    vertices = ((field.get("boundingPoly") or {}).get("vertices")) or []
+    ys = [float(v.get("y", 0.0)) for v in vertices]
+    return (min(ys), max(ys) - min(ys)) if ys else (0.0, 0.0)
+
+
+def visual_title(fields: list[dict[str, Any]]) -> str:
+    """페이지에서 '크게 인쇄된 상단 글자'만 골라 읽기 순서로 이어 붙인다.
+
+    CLOVA는 자간이 넓은 제목을 낱자로 쪼개 주기 때문에(주/민/등/록/표),
+    좌표로 다시 줄을 세워야 문자열이 된다.
+    """
+    spans = [(f, *_vertical_span(f)) for f in fields]
+    heights = sorted(h for _, _, h in spans if h > 0)
+    if not heights:
+        return ""
+
+    # ponytail: 필드가 적은 문서(신분증, 짧은 영수증)는 제목 글자가 중앙값을 지배해
+    #           아무것도 안 잡힌다. 그때는 아래 fallback(상단 N자)으로 넘어간다.
+    median = heights[len(heights) // 2]
+    page_bottom = max(top + height for _, top, height in spans)
+    if not page_bottom:
+        return ""
+
+    picked = [
+        f
+        for f, top, height in spans
+        if height >= median * TITLE_MIN_RATIO and top <= page_bottom * TITLE_TOP_RATIO
+    ]
+    if not picked:
+        return ""
+
+    from ocr_test import clova_ocr
+
+    return " ".join(clova_ocr.fields_to_lines(picked))
 
 
 @dataclass
@@ -47,6 +98,14 @@ class Extracted:
     @property
     def full_text(self) -> str:
         return "\n".join(p.text for p in self.pages)
+
+    @property
+    def title_text(self) -> str:
+        """제목으로 볼 영역. OCR 페이지는 글자 크기로 잡은 제목, 그 외는 상단 텍스트."""
+        visual = "\n".join(p.title for p in self.pages if p.title)
+        if visual:
+            return visual
+        return self.full_text[:TITLE_FALLBACK_CHARS]
 
 
 def detect_kind(path: Path) -> str:
@@ -68,8 +127,8 @@ def _embedded_pages(path: Path) -> list[Page]:
     return pages
 
 
-def _ocr_whole_file(path: Path, timeout: float) -> dict[int, str]:
-    """파일 하나를 OCR에 한 번만 보내고 페이지별 텍스트를 돌려준다.
+def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
+    """파일 하나를 OCR에 한 번만 보내고 페이지별 (전체 텍스트, 시각적 제목)을 돌려준다.
 
     CLOVA General은 PDF를 통째로 받아 images[]에 페이지별 결과를 준다.
     페이지마다 따로 호출하지 않으므로 호출 수는 파일당 1회다.
@@ -82,10 +141,10 @@ def _ocr_whole_file(path: Path, timeout: float) -> dict[int, str]:
     config = clova_ocr.OcrConfig.from_env(timeout=timeout)
     response, _elapsed = clova_ocr.call_general_ocr(path, config)
 
-    out: dict[int, str] = {}
+    out: dict[int, tuple[str, str]] = {}
     for i, image in enumerate(response.get("images") or [], start=1):
-        lines = clova_ocr.fields_to_lines(image.get("fields") or [])
-        out[i] = "\n".join(lines)
+        fields = image.get("fields") or []
+        out[i] = ("\n".join(clova_ocr.fields_to_lines(fields)), visual_title(fields))
     return out
 
 
@@ -123,8 +182,10 @@ def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) ->
         return result
 
     for page in need_ocr:
-        text = (ocr_pages.get(page.index) or "").strip()
+        text, title = ocr_pages.get(page.index) or ("", "")
+        text = text.strip()
         if text:
             page.text, page.method = text, "ocr"
             page.chars = len(text)
+            page.title = title
     return result

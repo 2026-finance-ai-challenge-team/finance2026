@@ -50,13 +50,29 @@ def _search(patterns: list[str], text: str) -> str | None:
     return None
 
 
-def score_signature(signature: dict[str, Any], text: str) -> tuple[float, list[dict[str, Any]]]:
-    """시그니처 하나와 문서 텍스트를 대조해 (점수, 근거)를 낸다.
+def _search_title(patterns: list[str], title_text: str) -> str | None:
+    """제목은 공백을 지운 형태로도 대조한다.
+
+    OCR은 자간이 넓은 큰 제목을 낱자로 쪼개 준다. 실측 예: '주 민 등 록 표 ( 초 본 )'.
+    공백을 지우면 '주민등록표(초본)'이 되어 일반 패턴으로 잡힌다.
+    """
+    return _search(patterns, title_text) or _search(patterns, re.sub(r"\s+", "", title_text))
+
+
+def score_signature(
+    signature: dict[str, Any], text: str, title_text: str | None = None
+) -> tuple[float, list[dict[str, Any]]]:
+    """시그니처 하나와 문서를 대조해 (점수, 근거)를 낸다.
+
+    `title_text`는 '크게 인쇄된 상단 글자'다(OCR 좌표로 뽑는다). 이게 있으면 제목 판정에
+    그것만 쓴다. 본문 안내문에 다른 서류 이름이 나와도 제목으로 오인하지 않는다.
 
     negative_anchors가 하나라도 걸리면 즉시 0점이다. 등본/초본처럼 제목이 거의 같은
     쌍은 '없어야 할 단어'로만 갈린다.
     """
     evidence: list[dict[str, Any]] = []
+    if title_text is None:
+        title_text = text[:TITLE_HEAD_CHARS]
 
     for negative in signature.get("negative_anchors") or []:
         if re.search(negative, text):
@@ -65,12 +81,12 @@ def score_signature(signature: dict[str, Any], text: str) -> tuple[float, list[d
     score = 0.0
 
     patterns = signature.get("title_patterns") or []
-    title = _search(patterns, text[:TITLE_HEAD_CHARS])
+    title = _search_title(patterns, title_text)
     if title:
         score += 0.60
         evidence.append({"kind": "title_match", "pattern": title})
     else:
-        # 상단 밖에서 나온 서류 이름은 제목이 아니라 언급일 뿐이다. 약한 신호로만 센다.
+        # 제목 영역 밖에서 나온 서류 이름은 제목이 아니라 언급일 뿐이다. 약한 신호로만 센다.
         mention = _search(patterns, text)
         if mention:
             score += 0.10
@@ -120,9 +136,10 @@ def _fields(signature: dict[str, Any], text: str) -> dict[str, Any]:
 
 def classify_one(extracted: Extracted, signatures: list[dict[str, Any]]) -> dict[str, Any]:
     text = extracted.full_text
+    title_text = extracted.title_text
     scored = []
     for signature in signatures:
-        score, evidence = score_signature(signature, text)
+        score, evidence = score_signature(signature, text, title_text)
         if score > 0:
             scored.append((score, signature, evidence))
     scored.sort(key=lambda row: row[0], reverse=True)
@@ -201,6 +218,8 @@ def classify_files(
                     {"page": p.index, "method": p.method, "chars": p.chars}
                     for p in extracted.pages
                 ],
+                # 글자 크기로 잡은 제목. 문서 종류를 나타내는 문구라 개인정보가 아니다.
+                "visual_title": " / ".join(p.title for p in extracted.pages if p.title),
                 "classification": {
                     k: v for k, v in classification.items() if k not in {"fields", "needs_user_confirm", "confirm_reason"}
                 },

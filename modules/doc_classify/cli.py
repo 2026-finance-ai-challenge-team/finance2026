@@ -94,6 +94,8 @@ def main(argv: list[str] | None = None) -> int:
 
         print(f"[{STATUS_MARK.get(status, ' ')}] {pad(doc['source_name'], name_width)}  {status}")
         print(f"     {doc['media']['kind']} {doc['media']['pages']}쪽 · 텍스트 {chars}자 ({methods})")
+        if doc.get("visual_title"):
+            print(f"     제목(글자 크기 기준): {doc['visual_title']}")
         print(f"     분류: {label}  신뢰도 {cls['confidence']}")
         if cls["evidence"]:
             print(f"     근거: {describe_evidence(cls['evidence'])}")

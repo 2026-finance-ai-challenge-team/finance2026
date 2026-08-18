@@ -18,7 +18,7 @@ from modules.doc_classify.classify import (  # noqa: E402
     load_task,
     score_signature,
 )
-from modules.doc_classify.extract import Extracted, Page  # noqa: E402
+from modules.doc_classify.extract import Extracted, Page, visual_title  # noqa: E402
 
 SIGNATURES = load_signatures()
 TASK = load_task("kakaobank.limit_release.living_expense")
@@ -142,6 +142,49 @@ def test_출력에_원문_텍스트가_없다():
     blob = repr(classify_one(build(DEUNGBON), SIGNATURES))
     assert "홍길동" not in blob, "출력에 원문이 새고 있다"
     assert "김영희" not in blob, "출력에 원문이 새고 있다"
+
+
+def ocr_field(text: str, *, top: float, height: float, left: float = 0.0) -> dict:
+    """CLOVA 응답 형태의 필드 하나를 만든다."""
+    return {
+        "inferText": text,
+        "boundingPoly": {
+            "vertices": [
+                {"x": left, "y": top},
+                {"x": left + 20 * len(text), "y": top},
+                {"x": left + 20 * len(text), "y": top + height},
+                {"x": left, "y": top + height},
+            ]
+        },
+    }
+
+
+def test_글자_크기로_제목을_찾는다():
+    """실측 재현: 큰 제목은 낱자로 쪼개지고, 하단 직인도 제목만큼 크다."""
+    fields = [
+        # 상단의 큰 제목 — CLOVA가 낱자로 쪼갠 형태
+        *[ocr_field(ch, top=90, height=38, left=i * 40) for i, ch in enumerate("주민등록표")],
+        *[ocr_field(ch, top=130, height=36, left=i * 40) for i, ch in enumerate("(초본)")],
+        # 본문 (작은 글씨). 실제 문서는 필드가 수백 개라 중앙값이 본문 크기에서 잡힌다.
+        *[ocr_field(f"본문{i}", top=300 + i * 14, height=21) for i in range(40)],
+        *[ocr_field(w, top=400, height=21, left=200) for w in ["주소", "변동일", "변동사유"]],
+        # 하단 발급기관 직인 — 제목만큼 크지만 아래에 있다
+        ocr_field("서울특별시 구로구청장", top=880, height=39),
+    ]
+    title = visual_title(fields)
+    squeezed = title.replace(" ", "")
+    assert "주민등록표" in squeezed, title
+    assert "초본" in squeezed, title
+    assert "구로구청장" not in squeezed, f"하단 직인이 제목에 섞였다: {title}"
+
+
+def test_낱자로_쪼개진_제목도_분류된다():
+    """'주 민 등 록 표 ( 초 본 )' 형태가 시그니처에 걸려야 한다."""
+    page = Page(1, "주소 변동 사항\n변동일 2024-03-02\n문서확인번호 1234", "ocr")
+    page.title = "주 민 등 록 표 ( 초 본 ) 서울특별시"
+    result = classify_one(Extracted(path=Path("사진.jpg"), kind="jpg", pages=[page]), SIGNATURES)
+    assert result["doc_type"] == "resident_registration_abstract", result["doc_type"]
+    assert not result["needs_user_confirm"]
 
 
 def run(name: str, fn) -> bool:
