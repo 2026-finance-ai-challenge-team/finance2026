@@ -238,3 +238,6 @@ ocr_test/*.png
 ocr_test/*.pdf
 ocr_test/*.tif
 ocr_test/*.tiff
+
+# 로컬 파이썬 가상환경 (이름: finance)
+/finance/
