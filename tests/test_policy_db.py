@@ -61,6 +61,35 @@ class PolicyDatabaseTest(unittest.TestCase):
         seed_database(self.connection)
         self.assertEqual(database_summary(self.connection), EXPECTED_COUNTS)
 
+    def test_documents_schema_uses_agreed_field_names(self) -> None:
+        column_names = [
+            row["name"]
+            for row in self.connection.execute("PRAGMA table_info(documents)")
+        ]
+        self.assertEqual(
+            column_names,
+            [
+                "id",
+                "doc_type",
+                "label_ko",
+                "issuer",
+                "issuer_aliases",
+                "title_patterns",
+                "required_anchors",
+                "negative_anchors",
+                "doc_number_label",
+                "issued_at_labels",
+                "validity_days",
+                "source_url",
+                "as_of",
+                "last_checked",
+                "verified",
+                "notes",
+            ],
+        )
+        self.assertNotIn("code", column_names)
+        self.assertNotIn("name_ko", column_names)
+
     def test_representative_branch_minimum_is_exact(self) -> None:
         result = find_requirements(
             self.connection,

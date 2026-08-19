@@ -142,32 +142,32 @@ def seed_database(
             connection.execute(
                 """
                 INSERT INTO documents (
-                    code, name_ko, issuer, issuer_aliases_json,
-                    title_patterns_json, required_anchors_json,
-                    negative_anchors_json, doc_number_label,
-                    issued_at_labels_json, validity_days, source_url,
-                    as_of, last_checked, signature_verified, notes
+                    doc_type, label_ko, issuer, issuer_aliases,
+                    title_patterns, required_anchors,
+                    negative_anchors, doc_number_label,
+                    issued_at_labels, validity_days, source_url,
+                    as_of, last_checked, verified, notes
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT(code) DO UPDATE SET
-                    name_ko = excluded.name_ko,
+                ON CONFLICT(doc_type) DO UPDATE SET
+                    label_ko = excluded.label_ko,
                     issuer = excluded.issuer,
-                    issuer_aliases_json = excluded.issuer_aliases_json,
-                    title_patterns_json = excluded.title_patterns_json,
-                    required_anchors_json = excluded.required_anchors_json,
-                    negative_anchors_json = excluded.negative_anchors_json,
+                    issuer_aliases = excluded.issuer_aliases,
+                    title_patterns = excluded.title_patterns,
+                    required_anchors = excluded.required_anchors,
+                    negative_anchors = excluded.negative_anchors,
                     doc_number_label = excluded.doc_number_label,
-                    issued_at_labels_json = excluded.issued_at_labels_json,
+                    issued_at_labels = excluded.issued_at_labels,
                     validity_days = excluded.validity_days,
                     source_url = excluded.source_url,
                     as_of = excluded.as_of,
                     last_checked = excluded.last_checked,
-                    signature_verified = excluded.signature_verified,
+                    verified = excluded.verified,
                     notes = excluded.notes
                 """,
                 (
-                    document["code"],
-                    document["name_ko"],
+                    document["doc_type"],
+                    document["label_ko"],
                     document.get("issuer"),
                     _json_text(document.get("issuer_aliases", [])),
                     _json_text(document.get("title_patterns", [])),
@@ -224,9 +224,9 @@ def seed_database(
             for sort_order, document_rule in enumerate(requirement["documents"], start=1):
                 document_id = _required_id(
                     connection,
-                    "SELECT id FROM documents WHERE code = ?",
-                    (document_rule["document_code"],),
-                    document_rule["document_code"],
+                    "SELECT id FROM documents WHERE doc_type = ?",
+                    (document_rule["doc_type"],),
+                    document_rule["doc_type"],
                 )
                 original_required = document_rule.get("original_required")
                 connection.execute(

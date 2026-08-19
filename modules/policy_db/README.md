@@ -29,6 +29,11 @@ data/seeds/hana_corporate_account.json, 스키마는 schema.sql이다.
 현재 시그니처는 문서 이름과 초안 패턴만 입력한 상태라 모두
 verified = false다. 실제 표본 검증 전에는 준비 완료 판정 근거로 사용하지 않는다.
 
+documents 테이블과 시드 JSON은 같은 필드명을 사용한다. 문서 식별자는
+doc_type, 한글 표시는 label_ko이며 배열 필드도 issuer_aliases,
+title_patterns, required_anchors, negative_anchors, issued_at_labels라는
+합의된 이름을 그대로 사용한다. SQLite에서는 배열 값만 JSON 문자열로 저장한다.
+
 ## 데이터 원칙
 
 - 영업점 대표자·대리인의 공식 최소서류를 분리한다.

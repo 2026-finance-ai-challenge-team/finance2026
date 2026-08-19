@@ -79,7 +79,7 @@ def find_requirements(
         document_rows = connection.execute(
             """
             SELECT
-                d.code AS doc_type, d.name_ko AS label_ko,
+                d.doc_type, d.label_ko,
                 rd.original_required, rd.issued_within_days,
                 rd.submission_method, rd.choice_group, rd.notes
             FROM requirement_documents AS rd
@@ -163,7 +163,7 @@ def list_document_signatures(connection: sqlite3.Connection) -> list[dict[str, A
         """
         SELECT *
         FROM documents
-        ORDER BY code
+        ORDER BY doc_type
         """
     ).fetchall()
 
@@ -171,20 +171,20 @@ def list_document_signatures(connection: sqlite3.Connection) -> list[dict[str, A
     for row in rows:
         signatures.append(
             {
-                "doc_type": row["code"],
-                "label_ko": row["name_ko"],
+                "doc_type": row["doc_type"],
+                "label_ko": row["label_ko"],
                 "issuer": row["issuer"],
-                "issuer_aliases": json.loads(row["issuer_aliases_json"]),
-                "title_patterns": json.loads(row["title_patterns_json"]),
-                "required_anchors": json.loads(row["required_anchors_json"]),
-                "negative_anchors": json.loads(row["negative_anchors_json"]),
+                "issuer_aliases": json.loads(row["issuer_aliases"]),
+                "title_patterns": json.loads(row["title_patterns"]),
+                "required_anchors": json.loads(row["required_anchors"]),
+                "negative_anchors": json.loads(row["negative_anchors"]),
                 "doc_number_label": row["doc_number_label"],
-                "issued_at_labels": json.loads(row["issued_at_labels_json"]),
+                "issued_at_labels": json.loads(row["issued_at_labels"]),
                 "validity_days": row["validity_days"],
                 "source_url": row["source_url"],
                 "as_of": row["as_of"],
                 "last_checked": row["last_checked"],
-                "verified": bool(row["signature_verified"]),
+                "verified": bool(row["verified"]),
                 "notes": row["notes"],
             }
         )
