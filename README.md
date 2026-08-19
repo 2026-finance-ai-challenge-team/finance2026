@@ -48,7 +48,11 @@ ProofBridge는 먼저 **공공 마이데이터로 제출할 수 있는 증빙은
 - `준비 완료`·`추가 필요`·`정보 불일치`·`이번 업무에는 불필요` 예시와 공식 근거 표시
 - 공공·디지털·인쇄·방문 키트 미리보기, 큰 글자 전환, 제안서 PDF 열기
 
-현재 버전은 **합성 데이터 기반 프론트엔드 청사진**입니다. 실제 파일 업로드, OCR·LLM, 규칙 엔진, ZIP, 즉시 삭제, 지도 API는 아직 연결하지 않았으며 화면에서도 구현 예정으로 구분합니다.
+웹 데모 화면은 **분류 모듈의 출력 계약(v1.0)을 읽어 그립니다**. 하드코딩한 결과가 아니라 실제 스키마에서 계산된 값입니다. 다만 화면에서의 파일 업로드는 아직 연결하지 않았고, 지금은 합성 샘플 JSON을 읽습니다.
+
+문서 분류는 별도 파이썬 모듈(`modules/doc_classify/`)에서 **실제로 동작합니다.** CLOVA OCR이 연결돼 있고, 정부24 발급 문서로 검증했습니다. 규칙 엔진, 지도 API, 즉시 삭제는 아직 없으며 화면에서도 구현 예정으로 구분합니다.
+
+> `준비 완료`와 `정보 불일치`는 규칙 엔진이 판정하는 상태입니다. 규칙 엔진이 없는 현재 화면은 이 둘을 만들어내지 않습니다.
 
 <br>
 
@@ -155,12 +159,20 @@ graph LR
 
 <br>
 
+**웹**
+
 - React 19 + TypeScript
 - vinext + Vite
 - CSS 기반 반응형·접근성 UI
 - Cloudflare Workers 호환 Sites 배포 구조
 
-백엔드·OCR·LLM은 아직 도입하지 않았습니다. 합성 정답표와 공식 규칙 구조가 준비된 뒤 필요한 공급자 하나씩만 연결합니다.
+**문서 분류 모듈**
+
+- Python 3.14 · `pypdf`(내장 텍스트) · 네이버 CLOVA OCR General API
+- 시그니처 대조 기반 분류. 최종 판정은 하지 않습니다
+- 출력 계약 v1.0을 웹과 공유합니다
+
+LLM과 규칙 엔진은 아직 도입하지 않았습니다. 합성 정답표와 공식 규칙 구조가 준비된 뒤 필요한 공급자 하나씩만 연결합니다.
 
 </details>
 
@@ -189,10 +201,13 @@ copy .env.example .env            # macOS/Linux: cp .env.example .env
 `.env`에 CLOVA OCR 값을 채웁니다(발급 방법은 아래 토글 참고). 그다음:
 
 ```bash
-python modules/doc_classify/test_doc_classify.py          # 합성 데이터 자체 검증
-python -m modules.doc_classify.cli <파일_또는_폴더>       # 문서 분류 실행
-python -m modules.doc_classify.cli <경로> --no-ocr        # API 호출 없이 실행
+python modules/doc_classify/test_doc_classify.py               # 합성 데이터 자체 검증
+python -m modules.doc_classify.cli demo_docs --no-ocr --report # 합성 문서로 전체 흐름 보기
+python -m modules.doc_classify.cli <경로> --report --pack out  # 요약 + 제출 묶음 생성
 ```
+
+`demo_docs/`의 합성 문서는 텍스트 PDF라 **OCR을 호출하지 않습니다**(API 사용량 0).
+실제 문서로 시험할 때는 `.gitignore` 대상인 로컬 폴더를 쓰고 저장소에 넣지 않습니다.
 
 </details>
 
@@ -244,7 +259,9 @@ finance2026/
 ├─ modules/                  # 담당별로 분리한 처리 모듈
 │  └─ doc_classify/          # 문서 분류 — 형식 판별·텍스트 확보·유형 결정
 │     ├─ signatures/         # 문서 서식 시그니처 (찬형 DB 연동 전 임시값)
-│     └─ tasks/              # 업무별 필요 서류 정의
+│     ├─ tasks/              # 업무별 필요 서류 정의
+│     └─ examples/           # 출력 계약 샘플 JSON
+├─ demo_docs/                # 데모·테스트용 합성 문서 (실제 개인정보 금지)
 ├─ ocr_test/                 # CLOVA OCR 클라이언트와 응답 파싱
 ├─ docs/                     # 설계 문서·차별화 조사·API 가입 가이드
 ├─ output/pdf/               # 검수 완료 제안서
