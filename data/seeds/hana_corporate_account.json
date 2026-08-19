@@ -62,8 +62,8 @@
   ],
   "documents": [
     {
-      "code": "business_registration_certificate",
-      "name_ko": "사업자등록증",
+      "doc_type": "business_registration_certificate",
+      "label_ko": "사업자등록증",
       "issuer": "국세청",
       "issuer_aliases": ["국세청", "홈택스"],
       "title_patterns": ["사업자\\s*등록증"],
@@ -79,8 +79,8 @@
       "notes": "하나은행 요구 서류명은 확인했으나 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "business_registration_verification",
-      "name_ko": "사업자등록증명",
+      "doc_type": "business_registration_verification",
+      "label_ko": "사업자등록증명",
       "issuer": "국세청",
       "issuer_aliases": ["국세청", "홈택스"],
       "title_patterns": ["사업자\\s*등록증명"],
@@ -96,8 +96,8 @@
       "notes": "하나은행 요구 서류명은 확인했으나 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "corporate_registry_certificate",
-      "name_ko": "법인등기사항전부증명서",
+      "doc_type": "corporate_registry_certificate",
+      "label_ko": "법인등기사항전부증명서",
       "issuer": "대한민국 법원",
       "issuer_aliases": ["인터넷등기소", "등기소"],
       "title_patterns": ["법인\\s*등기사항전부증명서", "등기사항전부증명서"],
@@ -113,8 +113,8 @@
       "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "corporate_seal_certificate",
-      "name_ko": "법인인감증명서",
+      "doc_type": "corporate_seal_certificate",
+      "label_ko": "법인인감증명서",
       "issuer": "대한민국 법원",
       "issuer_aliases": ["인터넷등기소", "등기소"],
       "title_patterns": ["법인\\s*인감증명서"],
@@ -130,8 +130,8 @@
       "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "power_of_attorney",
-      "name_ko": "법인 위임장",
+      "doc_type": "power_of_attorney",
+      "label_ko": "법인 위임장",
       "issuer": "해당 법인",
       "issuer_aliases": [],
       "title_patterns": ["위\\s*임\\s*장"],
@@ -147,8 +147,8 @@
       "notes": "법인인감 날인이 필요하며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "shareholder_registry",
-      "name_ko": "주주명부",
+      "doc_type": "shareholder_registry",
+      "label_ko": "주주명부",
       "issuer": "해당 법인",
       "issuer_aliases": [],
       "title_patterns": ["주\\s*주\\s*명\\s*부"],
@@ -164,8 +164,8 @@
       "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "share_change_statement",
-      "name_ko": "주식등변동상황명세서",
+      "doc_type": "share_change_statement",
+      "label_ko": "주식등변동상황명세서",
       "issuer": "해당 법인",
       "issuer_aliases": ["국세청", "홈택스"],
       "title_patterns": ["주식등변동상황명세서"],
@@ -181,8 +181,8 @@
       "notes": "주주명부의 대체 문서이며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "articles_of_incorporation",
-      "name_ko": "정관",
+      "doc_type": "articles_of_incorporation",
+      "label_ko": "정관",
       "issuer": "해당 법인",
       "issuer_aliases": [],
       "title_patterns": ["정\\s*관"],
@@ -198,8 +198,8 @@
       "notes": "고객확인 보조자료이며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "vat_tax_base_certificate",
-      "name_ko": "부가가치세과세표준증명",
+      "doc_type": "vat_tax_base_certificate",
+      "label_ko": "부가가치세과세표준증명",
       "issuer": "국세청",
       "issuer_aliases": ["국세청", "홈택스"],
       "title_patterns": ["부가가치세\\s*과세표준증명"],
@@ -215,8 +215,8 @@
       "notes": "비대면 매출 증빙 후보이며 분류 패턴은 실물 검증 전이다."
     },
     {
-      "code": "standard_financial_statement_certificate",
-      "name_ko": "표준재무제표증명",
+      "doc_type": "standard_financial_statement_certificate",
+      "label_ko": "표준재무제표증명",
       "issuer": "국세청",
       "issuer_aliases": ["국세청", "홈택스"],
       "title_patterns": ["표준재무제표\\s*증명"],
@@ -243,7 +243,7 @@
       "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대표자 방문 기본 준비사항이다.",
       "documents": [
         {
-          "document_code": "business_registration_certificate",
+          "doc_type": "business_registration_certificate",
           "original_required": true,
           "issued_within_days": null,
           "submission_method": "original",
@@ -274,7 +274,7 @@
       "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대리인 방문 기본 준비사항이다.",
       "documents": [
         {
-          "document_code": "business_registration_certificate",
+          "doc_type": "business_registration_certificate",
           "original_required": true,
           "issued_within_days": null,
           "submission_method": "original",
@@ -282,7 +282,7 @@
           "notes": "법인 사업자등록증 원본"
         },
         {
-          "document_code": "corporate_seal_certificate",
+          "doc_type": "corporate_seal_certificate",
           "original_required": true,
           "issued_within_days": null,
           "submission_method": "original",
@@ -290,7 +290,7 @@
           "notes": "계좌개설 FAQ에는 발급기한이 별도로 기재되지 않았다."
         },
         {
-          "document_code": "power_of_attorney",
+          "doc_type": "power_of_attorney",
           "original_required": true,
           "issued_within_days": null,
           "submission_method": "original",
@@ -321,7 +321,7 @@
       "notes": "계좌개설 FAQ의 공통 필수목록이 아니라 고객확인과 기업뱅킹 공식 안내에 근거한 추가 준비자료다.",
       "documents": [
         {
-          "document_code": "corporate_registry_certificate",
+          "doc_type": "corporate_registry_certificate",
           "original_required": true,
           "issued_within_days": 90,
           "submission_method": "original",
@@ -329,7 +329,7 @@
           "notes": "최근 3개월 이내 발급분 준비 권장"
         },
         {
-          "document_code": "corporate_seal_certificate",
+          "doc_type": "corporate_seal_certificate",
           "original_required": true,
           "issued_within_days": 90,
           "submission_method": "original",
@@ -337,7 +337,7 @@
           "notes": "최근 3개월 이내 발급분 준비 권장"
         },
         {
-          "document_code": "shareholder_registry",
+          "doc_type": "shareholder_registry",
           "original_required": null,
           "issued_within_days": 365,
           "submission_method": "original",
@@ -345,7 +345,7 @@
           "notes": "실제소유자 확인자료, 최근 1년 이내 발급분 준비 권장"
         },
         {
-          "document_code": "articles_of_incorporation",
+          "doc_type": "articles_of_incorporation",
           "original_required": null,
           "issued_within_days": null,
           "submission_method": "original_or_copy",
@@ -376,7 +376,7 @@
       "notes": "하나은행 비대면 법인계좌 개설 안내가 직접 명시한 준비사항이다.",
       "documents": [
         {
-          "document_code": "business_registration_verification",
+          "doc_type": "business_registration_verification",
           "original_required": false,
           "issued_within_days": null,
           "submission_method": "auto_submit",
@@ -384,7 +384,7 @@
           "notes": "본점 사업장 기준"
         },
         {
-          "document_code": "corporate_registry_certificate",
+          "doc_type": "corporate_registry_certificate",
           "original_required": false,
           "issued_within_days": 90,
           "submission_method": "photo_or_pdf",
@@ -392,7 +392,7 @@
           "notes": "발급용, 등기기록 전부 중 유효부분, 주민등록번호 미공개"
         },
         {
-          "document_code": "shareholder_registry",
+          "doc_type": "shareholder_registry",
           "original_required": false,
           "issued_within_days": 90,
           "submission_method": "photo_or_pdf",
@@ -400,7 +400,7 @@
           "notes": "대표자를 제외한 주주의 주민등록번호 뒷자리 마스킹"
         },
         {
-          "document_code": "share_change_statement",
+          "doc_type": "share_change_statement",
           "original_required": false,
           "issued_within_days": 90,
           "submission_method": "photo_or_pdf",
@@ -408,7 +408,7 @@
           "notes": "주주명부와 대체 관계"
         },
         {
-          "document_code": "vat_tax_base_certificate",
+          "doc_type": "vat_tax_base_certificate",
           "original_required": false,
           "issued_within_days": null,
           "submission_method": "auto_submit",
@@ -416,7 +416,7 @@
           "notes": "100만원 이상 매출 증빙"
         },
         {
-          "document_code": "standard_financial_statement_certificate",
+          "doc_type": "standard_financial_statement_certificate",
           "original_required": false,
           "issued_within_days": null,
           "submission_method": "auto_submit",

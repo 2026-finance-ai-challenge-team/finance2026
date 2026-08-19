@@ -58,20 +58,20 @@ CREATE TABLE IF NOT EXISTS requirement_sets (
 
 CREATE TABLE IF NOT EXISTS documents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT NOT NULL UNIQUE,
-    name_ko TEXT NOT NULL,
+    doc_type TEXT NOT NULL UNIQUE,
+    label_ko TEXT NOT NULL,
     issuer TEXT,
-    issuer_aliases_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(issuer_aliases_json)),
-    title_patterns_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(title_patterns_json)),
-    required_anchors_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(required_anchors_json)),
-    negative_anchors_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(negative_anchors_json)),
+    issuer_aliases TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(issuer_aliases)),
+    title_patterns TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(title_patterns)),
+    required_anchors TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(required_anchors)),
+    negative_anchors TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(negative_anchors)),
     doc_number_label TEXT,
-    issued_at_labels_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(issued_at_labels_json)),
+    issued_at_labels TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(issued_at_labels)),
     validity_days INTEGER CHECK (validity_days IS NULL OR validity_days >= 0),
     source_url TEXT,
     as_of TEXT NOT NULL,
     last_checked TEXT NOT NULL,
-    signature_verified INTEGER NOT NULL DEFAULT 0 CHECK (signature_verified IN (0, 1)),
+    verified INTEGER NOT NULL DEFAULT 0 CHECK (verified IN (0, 1)),
     notes TEXT
 );
 
