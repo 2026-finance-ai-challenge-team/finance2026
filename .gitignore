@@ -238,3 +238,10 @@ ocr_test/*.png
 ocr_test/*.pdf
 ocr_test/*.tif
 ocr_test/*.tiff
+
+# macOS
+.DS_Store
+
+# eval — 서식 참고용 실물 문서. 실제 법인 정보가 들어 있어 커밋하지 않는다.
+# 합성 결과(eval/samples/)는 가짜 데이터라 커밋한다.
+eval/example_file/
