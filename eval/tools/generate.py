@@ -1,13 +1,12 @@
-"""합성 법인서류 PDF와 `labels.csv`를 만든다.
+"""합성 법인서류 PDF와 `labels.csv` 생성.
 
-대상 조합은 하나은행 / 법인계좌 개설 / 대면 / 본인 하나뿐이다.
-여기서 만드는 건 전부 가짜 법인·가짜 번호다. 실물 서류를 넣지 않는다.
+대상: 하나은행 / 법인계좌 개설 / 대면 / 본인 조합 하나. 전부 가짜 법인·가짜 번호.
 
-분류 모듈은 문서 종류만 정하고 내용 필드는 뽑지 않는다. 그래서 `labels.csv`에도
-명의·주소·금액을 적지 않고 `expected_doc_type`과 `expected_relevance`만 남긴다.
+분류 모듈은 문서 종류만 판정하고 내용 필드는 미추출. 따라서 `labels.csv`도
+명의·주소·금액 없이 `expected_doc_type`·`expected_relevance`만 기록.
 
-    python generate.py                 # 오늘 기준
-    python generate.py --as-of 2026-09-01
+    python tools/generate.py
+    python tools/generate.py --as-of 2026-09-01
 """
 
 from __future__ import annotations
@@ -22,13 +21,13 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[1]
 TEMPLATE_DIR = BASE_DIR / "templates"
-SAMPLE_DIR = BASE_DIR / "samples"
-LABELS_CSV = BASE_DIR / "labels.csv"
+SAMPLE_DIR = BASE_DIR / "data" / "samples"
+LABELS_CSV = BASE_DIR / "data" / "labels.csv"
 MANIFEST = SAMPLE_DIR / "_generation.json"
 
-# 분류 모듈이 찾는 문자열. 렌더 후 실제 추출 텍스트에 있는지 확인한다.
+# 분류 모듈이 찾는 문자열. 렌더 후 추출 텍스트에 실재하는지 확인
 ANCHORS: dict[str, tuple[str, ...]] = {
     "business_registration_certificate": ("사업자등록증", "사업자등록번호", "상호", "대표자"),
     "business_registration_verification": ("사업자등록증명", "사업자등록번호", "상호", "대표자"),
@@ -42,13 +41,13 @@ ANCHORS: dict[str, tuple[str, ...]] = {
     "standard_financial_statement_certificate": ("표준재무제표증명", "사업자등록번호", "사업연도", "재무제표"),
 }
 
-# 실물 서식에 그 문자열이 그대로 없는 앵커. 억지로 넣으면 없는 서식을 만들어내는 셈이라
-# 생성은 실물대로 두고, 대신 DB 쪽에 고칠 거리로 보고한다.
+# 실물 서식에 없는 앵커. 억지로 넣으면 없는 서식을 지어내는 셈.
+# 샘플은 실물대로 두고 DB 수정 거리로만 보고
 KNOWN_ANCHOR_GAPS: dict[tuple[str, str], str] = {
-    ("corporate_registry_certificate", "법인등록번호"): "등기사항전부증명서 표기는 `등록번호`다",
+    ("corporate_registry_certificate", "법인등록번호"): "등기사항전부증명서 표기는 `등록번호`",
 }
 
-# 가상의 법인 하나로 통일한다. 교차 확인 필드가 문서마다 어긋나면 그건 별개의 시나리오다.
+# 가상 법인 하나로 통일. 문서 간 교차 확인 필드 불일치는 별개 시나리오
 COMPANY = {
     "corp_name": "주식회사 한빛물류",
     "ceo": "김민준",
@@ -80,7 +79,7 @@ def dash(d: date) -> str:
 
 
 def build_docs(as_of: date) -> list[dict]:
-    """생성할 문서 목록. 날짜는 전부 기준일에서 역산해 정답표가 시간에 안 썩게 한다."""
+    """생성 목록. 날짜는 기준일에서 역산 — 시간이 지나도 정답표 유효."""
     ago = lambda n: as_of - timedelta(days=n)  # noqa: E731
 
     registry_fresh = {
@@ -100,7 +99,7 @@ def build_docs(as_of: date) -> list[dict]:
             "context": {
                 "doc_title": "사업자등록증",
                 "opened_ko": ko(date(2022, 3, 2)),
-                "issued_ko": ko(ago(410)),  # 사업자등록증은 재발급 전까지 갱신되지 않는다
+                "issued_ko": ko(ago(410)),  # 재발급 전까지 갱신 없음
             },
         },
         {
@@ -123,7 +122,7 @@ def build_docs(as_of: date) -> list[dict]:
             "context": {"doc_title": "등기사항전부증명서", **registry_fresh},
         },
         {
-            # 기한 만료 케이스. issued_within_days가 무엇이든 1년이면 걸려야 한다.
+            # 기한 만료 케이스. issued_within_days가 얼마든 1년이면 검출 대상
             "file": "법인등기부_기한만료.pdf",
             "doc_type": "corporate_registry_certificate",
             "template": "corporate_registry_certificate.html",
@@ -214,8 +213,8 @@ def build_docs(as_of: date) -> list[dict]:
             },
         },
         {
-            # 함정 1 — 10종에 없는 문서. 법인인감증명서로 오인하면 안 되고,
-            # 못 알아본 걸 '이번 업무에는 불필요'로 내보내도 안 된다.
+            # 함정 1 — 10종 밖. 법인인감으로 오인 금지,
+            # 못 알아본 것을 '이번 업무에는 불필요'로 내보내는 것도 금지
             "file": "개인인감증명서.pdf",
             "doc_type": None,
             "template": "personal_seal_certificate.html",
@@ -256,7 +255,7 @@ def render_all(docs: list[dict], out_dir: Path) -> None:
 
 
 def inspect(pdf_path: Path) -> dict:
-    """추출 텍스트와 제목 후보(가장 큰 글자)의 크기·위치를 돌려준다."""
+    """추출 텍스트와 제목 후보(최대 글자)의 크기·위치 반환."""
     import pymupdf
 
     with pymupdf.open(pdf_path) as doc:
@@ -286,7 +285,10 @@ def inspect(pdf_path: Path) -> dict:
 
 
 def verify(docs: list[dict], out_dir: Path) -> tuple[list[str], list[str]]:
-    """생성물이 분류 모듈이 기대하는 모양인지 스스로 점검한다."""
+    """생성물이 분류 모듈의 기대와 맞는지 자체 점검.
+
+    없으면 샘플 결함과 분류기 결함을 구분 불가.
+    """
     problems: list[str] = []
     gaps: list[str] = []
     for doc in docs:
@@ -321,9 +323,9 @@ def main() -> int:
         "--as-of",
         type=date.fromisoformat,
         default=date.today(),
-        help="기준일(YYYY-MM-DD). 문서 날짜를 여기서 역산한다. 기본값은 오늘",
+        help="기준일(YYYY-MM-DD). 문서 날짜의 역산 기준. 기본값 오늘",
     )
-    parser.add_argument("--keep", action="store_true", help="samples/를 비우지 않고 덮어쓴다")
+    parser.add_argument("--keep", action="store_true", help="samples/ 삭제 없이 덮어쓰기")
     args = parser.parse_args()
 
     docs = build_docs(args.as_of)
@@ -358,7 +360,7 @@ def main() -> int:
 
     problems, gaps = verify(docs, SAMPLE_DIR)
     if gaps:
-        print("\n[DB 앵커 확인 필요] 실물 서식에 그 문자열이 없다")
+        print("\n[DB 앵커 확인 필요] 실물 서식에 없는 문자열")
         for line in gaps:
             print(f"  {line}")
     if problems:

@@ -1,16 +1,16 @@
-"""`labels.csv` + `scenarios.csv`로 파이프라인을 두드리고 채점한다.
+"""`labels.csv` + `scenarios.csv`로 파이프라인을 두드리고 채점.
 
-보는 건 전체 정확도가 아니라 틀린 방향이다.
+전체 정확도가 아니라 틀린 방향을 측정.
 
-- 부족한데 부족하다고 안 함        → 치명. 사용자가 믿고 은행에 갔다가 거절당한다
-- 못 알아본 문서를 '불필요'로 처리 → 치명. 필수 서류가 조용히 빠진다
-- 유사쌍을 반대쪽으로 분류         → 치명. 낸 적 없는 서류를 냈다고 세게 된다
-- 과잉 요구                        → 기록만. 서류 한 장 더 떼면 된다
+- 부족한데 부족하다고 안 함        → 치명. 사용자가 믿고 갔다가 은행에서 거절
+- 못 알아본 문서를 '불필요'로 처리 → 치명. 필수 서류가 조용히 누락
+- 유사쌍을 반대쪽으로 분류         → 치명. 낸 적 없는 서류를 냈다고 계수
+- 과잉 요구                        → 기록만. 서류 한 장 추가 발급으로 해결
 
-치명이 하나라도 있으면 종료 코드 1.
+치명 1건 이상이면 종료 코드 1.
 
-    python evaluate.py                 # 어댑터 자동 탐색
-    python evaluate.py --adapter demo  # 파이프라인 없이 채점기만 확인
+    python tools/evaluate.py                 # 어댑터 자동 탐색
+    python tools/evaluate.py --adapter demo  # 파이프라인 없이 채점기만 확인
 """
 
 from __future__ import annotations
@@ -26,17 +26,17 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = BASE_DIR.parent
-SAMPLE_DIR = BASE_DIR / "samples"
-LABELS_CSV = BASE_DIR / "labels.csv"
-SCENARIOS_CSV = BASE_DIR / "scenarios.csv"
+SAMPLE_DIR = BASE_DIR / "data" / "samples"
+LABELS_CSV = BASE_DIR / "data" / "labels.csv"
+SCENARIOS_CSV = BASE_DIR / "data" / "scenarios.csv"
 REPORT_DIR = BASE_DIR / "reports"
 
 UNKNOWN = "판단 불가"
 NOT_NEEDED = "이번 업무에는 불필요"
 
-# 반대쪽으로 분류하면 치명인 짝. None은 10종 밖 문서를 뜻한다.
+# 반대쪽으로 분류하면 치명인 짝. None은 10종 밖 문서
 NEGATIVE_PAIRS: tuple[tuple[str | None, str | None], ...] = (
     ("business_registration_certificate", "business_registration_verification"),
     ("shareholder_registry", "share_change_statement"),
@@ -53,12 +53,12 @@ COVERAGE_TABLES = ("documents", "requirement_documents", "policy_conditions")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 어댑터 — 파이프라인 호출 방식이 확정되면 이 구간만 고친다
+# 어댑터 — 파이프라인 호출 방식 확정 시 이 구간만 교체
 # ─────────────────────────────────────────────────────────────────────────────
 
 
 class ModuleAdapter:
-    """저장소의 파이썬 모듈을 직접 import한다. 가장 빠르고 오차가 적다."""
+    """저장소의 파이썬 모듈을 직접 import. 가장 빠르고 오차 적음."""
 
     name = "module"
 
@@ -75,13 +75,13 @@ class ModuleAdapter:
 
 
 class CliAdapter:
-    """`python -m modules.doc_classify.cli --report`를 호출해 JSON을 받는다."""
+    """`python -m modules.doc_classify.cli --report`를 호출해 JSON 수신."""
 
     name = "cli"
     MODULE = "modules.doc_classify.cli"
 
     def __init__(self) -> None:
-        # 있는지부터 본다. 이 확인이 없으면 auto가 cli를 고른 뒤 매 호출마다 터진다.
+        # 존재 확인. 없으면 auto가 cli 선택 후 매 호출마다 실패
         probe = subprocess.run(
             [sys.executable, "-m", self.MODULE, "--help"],
             cwd=REPO_ROOT,
@@ -112,7 +112,7 @@ class CliAdapter:
 
 
 class HttpAdapter:
-    """이미 떠 있는 주소를 호출한다. 여기서 서버를 띄우지는 않는다."""
+    """기동 중인 주소를 호출. 여기서 서버 기동은 안 함."""
 
     name = "http"
 
@@ -139,9 +139,9 @@ class HttpAdapter:
 class DemoAdapter:
     """정답표를 그대로 되돌려주는 가짜 파이프라인.
 
-    채점기가 제대로 세는지 확인하려고 둔 것이지 성능 측정이 아니다.
-    각 검사가 실제로 걸리는지 보려고 결함 두 개를 일부러 남겨 뒀다 —
-    저조도 이미지 오분류([혼동]), 그리고 중복 파일을 두 번 세는 것([실패] t5).
+    채점기 동작 확인용. 성능 측정이 아님.
+    각 검사의 발동 여부를 보려고 결함 2건을 의도적으로 포함 —
+    저조도 이미지 오분류(`[혼동]`), 중복 파일 2회 계수(`[실패]` t5).
     """
 
     name = "demo"
@@ -152,7 +152,7 @@ class DemoAdapter:
     def classify_one(self, path: Path) -> dict:
         row = self.truth.get(path.name, {})
         doc_type = row.get("expected_doc_type") or None
-        if path.name == "법인등기부_어두움.png":  # 저조도에서 놓친 셈 치는 케이스
+        if path.name == "법인등기부_어두움.png":  # 저조도에서 놓친 경우를 가정
             return {"doc_type": None, "confidence": 0.31, "relevance": UNKNOWN}
         return {
             "doc_type": doc_type,
@@ -181,7 +181,7 @@ class DemoAdapter:
 
 
 def resolve_adapter(choice: str, labels: list[dict]):
-    """import → CLI → HTTP 순으로 시도한다. 아무것도 없으면 None."""
+    """import → CLI → HTTP 순으로 시도. 전부 실패 시 None."""
     if choice == "demo":
         return DemoAdapter(labels)
 
@@ -217,7 +217,7 @@ def split(value: str) -> list[str]:
 
 
 def satisfies(expected: str, reported: set[str]) -> bool:
-    """선택 그룹은 그룹 id로 답해도, 구성원 중 하나로 답해도 맞다고 본다."""
+    """선택 그룹은 그룹 id로 답해도, 구성원 중 하나로 답해도 정답 처리."""
     if expected in reported:
         return True
     return any(member in reported for member in CHOICE_GROUPS.get(expected, ()))
@@ -247,16 +247,14 @@ def score_classification(adapter, labels: list[dict]) -> dict:
 
         if expects_unknown:
             if relevance == NOT_NEEDED:
-                fatal_not_needed.append(f"{row['file']} — 판단 불가를 '{NOT_NEEDED}'로 내보냄")
+                fatal_not_needed.append(f"{row['file']} — 판단 불가를 '{NOT_NEEDED}'로 출력")
             elif got is None:
                 unknown_correct += 1
         if got == expected:
             correct += 1
             continue
 
-        pair_hit = any(
-            {expected, got} == {a, b} for a, b in NEGATIVE_PAIRS
-        )
+        pair_hit = any({expected, got} == {a, b} for a, b in NEGATIVE_PAIRS)
         line = f"{row['file']} : {expected or UNKNOWN} → {got or UNKNOWN}"
         (fatal_pair if pair_hit else confused).append(line)
 
@@ -298,15 +296,15 @@ def score_judgement(adapter, scenarios: list[dict]) -> dict:
             if satisfies(expected, reported_missing):
                 caught += 1
             else:
-                fatal_missed.append(f"{row['id']} — {expected}를 부족으로 안 냄 ({row['note']})")
+                fatal_missed.append(f"{row['id']} — {expected} 부족 미출력 ({row['note']})")
 
-        # 기한 만료는 missing이든 expired든 어딘가에는 걸려야 한다. 아무데도 없으면 통과시킨 것이다.
+        # 기한 만료는 missing·expired 어느 쪽이든 검출 필요. 양쪽 다 없으면 통과시킨 것
         for expected in split(row["expect_expired"]):
             expected_total += 1
             if satisfies(expected, reported_missing | reported_expired):
                 caught += 1
             else:
-                fatal_missed.append(f"{row['id']} — {expected}의 기한 만료를 못 잡음")
+                fatal_missed.append(f"{row['id']} — {expected} 기한 만료 미검출")
 
         allowed = set(split(row["expect_missing"])) | set(split(row["expect_expired"]))
         for extra in sorted(reported_missing - allowed):
@@ -316,11 +314,11 @@ def score_judgement(adapter, scenarios: list[dict]) -> dict:
         if row["kind"] == "중복":
             accepted = result.get("accepted")
             if accepted is None:
-                unmeasured.append(f"{row['id']} — 어댑터가 accepted를 안 줘서 중복 계수를 못 봄")
+                unmeasured.append(f"{row['id']} — 어댑터에 accepted 없음, 중복 계수 확인 불가")
             else:
                 dup = [d for d, n in Counter(accepted).items() if n > 1]
                 if dup:
-                    failures.append(f"{row['id']} — 같은 파일을 {dup}로 두 번 셈")
+                    failures.append(f"{row['id']} — {dup} 2회 계수")
 
     return {
         "caught": caught,
@@ -334,7 +332,7 @@ def score_judgement(adapter, scenarios: list[dict]) -> dict:
 
 
 def score_coverage() -> dict:
-    """규칙에 공식 출처와 확인일이 붙어 있는 비율. DB가 없으면 100%라고 하지 않는다."""
+    """규칙에 공식 출처·확인일이 붙은 비율. DB 미연결 시 100%로 표기 금지."""
     db_url = os.environ.get("EVAL_DB_URL")
     if not db_url:
         return {"connected": False, "reason": "EVAL_DB_URL 없음"}
@@ -384,7 +382,8 @@ def render(cls: dict, judge: dict, coverage: dict, adapter_name: str) -> tuple[s
     lines.append("")
     lines.append("[판정]")
     total = judge["expected_total"]
-    lines.append(f"  누락 탐지 재현율   {judge['caught']}/{total}" + (f" ({judge['caught'] / total:.0%})" if total else ""))
+    rate = f" ({judge['caught'] / total:.0%})" if total else ""
+    lines.append(f"  누락 탐지 재현율   {judge['caught']}/{total}{rate}")
     for label, items in (
         ("부족 미탐지", judge["fatal_missed"]),
         ("실행 중 예외", judge["fatal_crash"]),
@@ -419,14 +418,14 @@ def main() -> int:
         "--adapter",
         default="auto",
         choices=["auto", "module", "cli", "http", "demo"],
-        help="파이프라인 호출 방식. demo는 정답표를 되돌려주는 가짜다",
+        help="파이프라인 호출 방식. demo는 정답표를 되돌려주는 가짜",
     )
-    parser.add_argument("--no-report", action="store_true", help="reports/에 저장하지 않는다")
+    parser.add_argument("--no-report", action="store_true", help="reports/ 저장 생략")
     args = parser.parse_args()
 
     for path in (LABELS_CSV, SCENARIOS_CSV):
         if not path.is_file():
-            print(f"{path.name}이 없다. generate.py와 make_scenarios.py를 먼저 돌린다.", file=sys.stderr)
+            print(f"{path.name} 없음 — generate.py, make_scenarios.py 먼저 실행", file=sys.stderr)
             return 1
 
     labels = read_csv(LABELS_CSV)
@@ -434,14 +433,14 @@ def main() -> int:
 
     adapter = resolve_adapter(args.adapter, labels)
     if adapter is None:
-        print("파이프라인을 못 찾았다. 아직 붙일 게 없으면 --adapter demo로 채점기만 확인한다.")
+        print("파이프라인 미탐지. 연결 대상이 없으면 --adapter demo로 채점기만 확인")
         print("  module : modules.doc_classify / modules.requirements 를 import")
         print("  cli    : python -m modules.doc_classify.cli")
         print("  http   : EVAL_API_BASE 환경변수")
         return 2
 
     if adapter.name == "demo":
-        print("※ demo 어댑터 — 정답표를 되돌려주는 가짜다. 파이프라인 성능이 아니다.\n")
+        print("※ demo 어댑터 — 정답표를 되돌려주는 가짜. 파이프라인 성능 아님\n")
 
     cls = score_classification(adapter, labels)
     judge = score_judgement(adapter, scenarios)
@@ -452,9 +451,10 @@ def main() -> int:
 
     if not args.no_report:
         REPORT_DIR.mkdir(exist_ok=True)
-        out = REPORT_DIR / f"{date.today().isoformat()}.md"
-        out.write_text(f"# 검증 결과 {date.today().isoformat()}\n\n```\n{report}\n```\n", encoding="utf-8")
-        print(f"\n{out.relative_to(BASE_DIR.parent)}")
+        today = date.today().isoformat()
+        out = REPORT_DIR / f"{today}.md"
+        out.write_text(f"# 검증 결과 {today}\n\n```\n{report}\n```\n", encoding="utf-8")
+        print(f"\n{out.relative_to(REPO_ROOT)}")
 
     return 1 if fatal else 0
 
