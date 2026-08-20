@@ -13,3 +13,10 @@ file,expected_doc_type,expected_relevance
 개인인감증명서.pdf,,판단 불가
 취업후기.pdf,,판단 불가
 빈페이지.pdf,,판단 불가
+사업자등록증_스캔.png,business_registration_certificate,관련
+사업자등록증_기울어짐.png,business_registration_certificate,관련
+법인등기부_스캔.png,corporate_registry_certificate,관련
+법인등기부_어두움.png,corporate_registry_certificate,관련
+주주명부_스캔.png,shareholder_registry,관련
+주주명부_흐림.png,shareholder_registry,관련
+정관_1쪽스캔.pdf,articles_of_incorporation,관련
