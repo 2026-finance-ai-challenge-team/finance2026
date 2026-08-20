@@ -1,0 +1,15 @@
+file,expected_doc_type,expected_relevance
+사업자등록증.pdf,business_registration_certificate,관련
+사업자등록증명.pdf,business_registration_verification,관련
+법인등기부.pdf,corporate_registry_certificate,관련
+법인등기부_기한만료.pdf,corporate_registry_certificate,관련
+법인인감증명서.pdf,corporate_seal_certificate,관련
+위임장.pdf,power_of_attorney,관련
+주주명부.pdf,shareholder_registry,관련
+주식등변동상황명세서.pdf,share_change_statement,관련
+정관.pdf,articles_of_incorporation,관련
+부가가치세과세표준증명.pdf,vat_tax_base_certificate,관련
+표준재무제표증명.pdf,standard_financial_statement_certificate,관련
+개인인감증명서.pdf,,판단 불가
+취업후기.pdf,,판단 불가
+빈페이지.pdf,,판단 불가

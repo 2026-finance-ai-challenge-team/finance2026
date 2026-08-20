@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="doc-title">인감증명서</div>
+<div class="doc-subtitle">( 개인 )</div>
+<div style="text-align:right; letter-spacing:.08em;">주민등록번호 : {{ ceo_rrn }}</div>
+
+<div style="width:46mm; height:46mm; border:1px solid #333; margin:6mm auto 8mm; text-align:center;">
+  <div style="margin-top:14mm; font-size:9pt; color:#555;">인감</div>
+  <div style="display:inline-block; margin-top:2mm; width:20mm; height:20mm; border:1.6pt solid #7f1d1d;
+              border-radius:50%; color:#7f1d1d; font-size:8pt; line-height:20mm;">개인인감</div>
+</div>
+
+<table class="plain" style="width:78%; margin:0 auto;">
+  <tr><th>성명</th><td>{{ ceo }}</td></tr>
+  <tr><th>주소</th><td>서울특별시 강서구 마곡중앙로 88, 101동 902호</td></tr>
+  <tr><th>용도</th><td>금융기관 제출용</td></tr>
+</table>
+
+<div class="statement" style="font-size:12.5pt;">위 인감은 신고되어 있는 인감과 틀림없음을 증명합니다.</div>
+<div class="signdate">발급일　{{ issued_ko }}</div>
+<div class="signer" style="font-size:13pt;">서울특별시 강서구청장<span class="seal">인</span></div>
+
+<div class="note">수수료 600원 영수함. 본 증명서는 발급일부터 3개월간 유효합니다.</div>
+<div style="text-align:right; font-size:9.5pt;">발급번호 {{ issue_no }}</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{
+  "as_of": "2026-08-20",
+  "company": {
+    "corp_name": "주식회사 한빛물류",
+    "ceo": "김민준",
+    "ceo_rrn": "900101-1******",
+    "biz_no": "123-45-67890",
+    "corp_no": "110111-1234567",
+    "hq_addr": "서울특별시 강서구 마곡중앙로 99, 3층 301호",
+    "biz_type": "운수업",
+    "biz_item": "화물운송 주선업",
+    "tax_office": "강서세무서장",
+    "registry_office": "서울중앙지방법원 등기국",
+    "registry_no": "018342",
+    "branch": "마곡나루",
+    "agent": "이서준",
+    "agent_birth": "1993. 4. 2."
+  },
+  "files": {
+    "사업자등록증.pdf": {
+      "doc_title": "사업자등록증",
+      "opened_ko": "2022년 3월 2일",
+      "issued_ko": "2025년 7월 6일"
+    },
+    "사업자등록증명.pdf": {
+      "doc_title": "사업자등록증명",
+      "opened_dot": "2022. 3. 2.",
+      "registered_dot": "2022. 3. 11.",
+      "issued_dot": "2026. 8. 11.",
+      "issue_no": "8336-536-3629-975",
+      "receipt_no": "503023892290"
+    },
+    "법인등기부.pdf": {
+      "doc_title": "등기사항전부증명서",
+      "issued_dot": "2026. 8. 2.",
+      "moved_dot": "2023. 5. 11.",
+      "moved_reg_dot": "2023. 5. 19.",
+      "capital_dot": "2024. 2. 6.",
+      "capital_reg_dot": "2024. 2. 14.",
+      "issue_no": "7200-AAPZ-BYSY"
+    },
+    "법인등기부_기한만료.pdf": {
+      "doc_title": "등기사항전부증명서",
+      "issued_dot": "2025. 8. 20.",
+      "moved_dot": "2023. 5. 11.",
+      "moved_reg_dot": "2023. 5. 19.",
+      "capital_dot": "2024. 2. 6.",
+      "capital_reg_dot": "2024. 2. 14.",
+      "issue_no": "5108-QWNR-KZTD"
+    },
+    "법인인감증명서.pdf": {
+      "doc_title": "인감증명서",
+      "issued_ko": "2026년 8월 6일",
+      "issue_no": "OAYK-WUKX-ICG5"
+    },
+    "위임장.pdf": {
+      "doc_title": "위임장",
+      "issued_ko": "2026년 8월 17일",
+      "confirmed_ko": "2026년 8월 18일"
+    },
+    "주주명부.pdf": {
+      "doc_title": "주주명부",
+      "issued_dash": "2026-07-25",
+      "basis_dash": "2026-07-20"
+    },
+    "주식등변동상황명세서.pdf": {
+      "doc_title": "주식등변동상황명세서",
+      "issued_dash": "2026-07-25",
+      "fy_start_dash": "2025-01-01",
+      "fy_end_dash": "2025-12-31"
+    },
+    "정관.pdf": {
+      "doc_title": "정관",
+      "founded_dash": "2022-02-25",
+      "issued_dash": "2024-03-29"
+    },
+    "부가가치세과세표준증명.pdf": {
+      "doc_title": "부가가치세과세표준증명",
+      "issued_ko": "2026년 8월 9일",
+      "issue_no": "7816-481-2204-118",
+      "receipt_no": "503504436440",
+      "vat1_from": "2025/01/01",
+      "vat1_to": "2025/12/31",
+      "vat2_from": "2026/01/01",
+      "vat2_to": "2026/06/30"
+    },
+    "표준재무제표증명.pdf": {
+      "doc_title": "표준재무제표증명",
+      "issued_dot": "2026. 8. 9.",
+      "filed_dot": "2026. 3. 28.",
+      "fy_start_dot": "2025. 1. 1.",
+      "fy_end_dot": "2025. 12. 31.",
+      "issue_no": "5121-092-8841-330"
+    },
+    "개인인감증명서.pdf": {
+      "doc_title": "인감증명서",
+      "issued_ko": "2026년 7월 31일",
+      "issue_no": "1180-3345-9021"
+    },
+    "취업후기.pdf": {
+      "doc_title": "이직 후기"
+    },
+    "빈페이지.pdf": {
+      "doc_title": "빈 문서"
+    }
+  }
+}

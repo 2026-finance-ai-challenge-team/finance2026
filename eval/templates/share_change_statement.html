@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="doc-title">주식등변동상황명세서</div>
+
+<table style="width:70%;">
+  <tr><th style="width:26%;">상호</th><td>{{ corp_name }}</td></tr>
+  <tr><th>사업자등록번호</th><td>{{ biz_no }}</td></tr>
+  <tr><th>사업연도</th><td>{{ fy_start_dash }} ~ {{ fy_end_dash }}</td></tr>
+</table>
+
+<table>
+  <tr>
+    <th class="c" style="width:16%;">주주 성명</th>
+    <th class="c" style="width:18%;">주민등록번호</th>
+    <th class="c" style="width:16%;">기초 주식수</th>
+    <th class="c" style="width:12%;">증가</th>
+    <th class="c" style="width:12%;">감소</th>
+    <th class="c" style="width:16%;">기말 주식수</th>
+    <th class="c">지분율</th>
+  </tr>
+  <tr><td class="c">{{ ceo }}</td><td class="c">{{ ceo_rrn }}</td><td class="r">28,000</td><td class="r">0</td><td class="r">0</td><td class="r">28,000</td><td class="c">70.0%</td></tr>
+  <tr><td class="c">박서윤</td><td class="c">880315-2******</td><td class="r">6,000</td><td class="r">2,000</td><td class="r">0</td><td class="r">8,000</td><td class="c">20.0%</td></tr>
+  <tr><td class="c">정하늘</td><td class="c">920722-1******</td><td class="r">6,000</td><td class="r">0</td><td class="r">2,000</td><td class="r">4,000</td><td class="c">10.0%</td></tr>
+  <tr><th class="c">합계</th><td></td><td class="r">40,000</td><td class="r">2,000</td><td class="r">2,000</td><td class="r">40,000</td><td class="c">100.0%</td></tr>
+</table>
+
+<div class="note">※ 법인세 과세표준 및 세액신고 시 첨부한 명세서와 같습니다.</div>
+<div class="signdate">작성일　{{ issued_dash }}</div>
+<div class="signer" style="font-size:13pt;">{{ corp_name }}　대표이사 {{ ceo }}<span class="seal">인</span></div>
+{% endblock %}

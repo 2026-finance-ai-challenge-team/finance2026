@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>{{ doc_title }}</title>
+<style>
+  @page { size: A4; margin: 15mm 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "NanumGothic", "AppleGothic", sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #111;
+  }
+
+  /* 제목은 본문의 1.5배 이상 + 상단 30% 안. generate.py가 렌더 후 실제 좌표로 검사한다. */
+  .doc-title { font-size: 26pt; font-weight: 700; letter-spacing: .16em; text-align: center; margin: 4mm 0 1mm; }
+  .doc-subtitle { font-size: 12pt; letter-spacing: .1em; text-align: center; margin: 0 0 5mm; }
+
+  /* 자간은 CSS로만 준다. 글자 사이에 공백을 직접 넣으면 추출 텍스트에서 앵커가 깨진다. */
+  .issuer { text-align: right; font-size: 9.5pt; color: #222; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 4mm; }
+  th, td { border: 1px solid #333; padding: 2mm 3mm; vertical-align: middle; }
+  th { width: 26%; background: #f3f3f3; font-weight: 600; letter-spacing: .14em; text-align: center; white-space: nowrap; }
+  td.c { text-align: center; }
+  td.r { text-align: right; }
+  .plain th, .plain td { border: none; padding: .8mm 0; }
+  .plain th { background: none; text-align: left; width: 30%; letter-spacing: .3em; }
+  .note { font-size: 9pt; line-height: 1.5; color: #222; margin-top: 4mm; }
+  .statement { text-align: center; margin: 6mm 0 2mm; }
+  .signdate { text-align: center; letter-spacing: .12em; margin-top: 5mm; }
+  .signer { text-align: center; font-size: 15pt; font-weight: 700; letter-spacing: .25em; margin-top: 2mm; position: relative; }
+  /* 직인 자리 — 실제 증명서에서 도장이 글자를 일부 덮는 상황을 흉내낸다. */
+  .seal {
+    display: inline-block; width: 17mm; height: 17mm; margin-left: 3mm;
+    border: 1.6pt solid #c0392b; border-radius: 2mm; color: #c0392b;
+    font-size: 8pt; font-weight: 400; letter-spacing: normal; line-height: 17mm;
+    text-align: center; vertical-align: middle;
+  }
+  .pageno { text-align: center; font-size: 9pt; margin-top: 4mm; }
+</style>
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

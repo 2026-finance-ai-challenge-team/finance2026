@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="issuer">국세청 NATIONAL TAX SERVICE</div>
+<div style="font-size:9pt; margin-bottom:1mm;">( 1 / 1 )</div>
+
+<table>
+  <tr>
+    <th>발급번호</th>
+    <td class="c" rowspan="2" style="width:48%;">
+      <div class="doc-title" style="margin:1mm 0 0;">사업자등록증명</div>
+      <div class="doc-subtitle" style="margin:0;">( 법인사업자 )</div>
+    </td>
+    <th style="width:13%;">처리기간</th>
+  </tr>
+  <tr><td class="c">{{ issue_no }}</td><td class="c">즉시</td></tr>
+</table>
+
+<table>
+  <tr><th>상호(법인명)</th><td colspan="3">{{ corp_name }}</td></tr>
+  <tr><th>사업자등록번호</th><td colspan="3">{{ biz_no }}</td></tr>
+  <tr><th>성명(대표자)</th><td colspan="3">{{ ceo }}</td></tr>
+  <tr><th>주민(법인)등록번호</th><td colspan="3">{{ corp_no }}</td></tr>
+  <tr><th>사업장 소재지</th><td colspan="3">{{ hq_addr }}</td></tr>
+  <tr><th>개업일</th><td>{{ opened_dot }}</td><th style="width:20%;">사업자등록일</th><td>{{ registered_dot }}</td></tr>
+  <tr><th>업태</th><td colspan="3">{{ biz_type }}</td></tr>
+  <tr><th>종목</th><td colspan="3">{{ biz_item }}</td></tr>
+  <tr><th>공동사업자</th><td colspan="3" class="c">해당사항이 없습니다.</td></tr>
+</table>
+
+<div class="statement">위와 같이 증명합니다.</div>
+<div class="note">※ 위 내용은 발급일 현재 상황으로서 추후 변경될 수 있습니다.</div>
+<div class="signdate">발급일자　{{ issued_dot }}</div>
+<div class="signer">{{ tax_office }}<span class="seal">인</span></div>
+
+<table style="margin-top:8mm; width:56%;">
+  <tr><th>접수번호</th><td>{{ receipt_no }}</td></tr>
+  <tr><th>담당부서</th><td>민원봉사실</td></tr>
+  <tr><th>연락처</th><td>02-2600-0000</td></tr>
+</table>
+{% endblock %}
