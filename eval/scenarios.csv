@@ -1,0 +1,16 @@
+id,kind,files,expect_missing,expect_expired,note
+sc0,auto,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf",,,기준 묶음 — 부족 없음
+sc_business_registration_certificate,auto,"법인등기부.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf",business_registration_certificate,,business_registration_certificate 하나만 빠진 상태
+sc_corporate_registry_certificate,auto,"사업자등록증.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf",corporate_registry_certificate,,corporate_registry_certificate 하나만 빠진 상태
+sc_corporate_seal_certificate,auto,"사업자등록증.pdf,법인등기부.pdf,정관.pdf,주주명부.pdf",corporate_seal_certificate,,corporate_seal_certificate 하나만 빠진 상태
+sc_articles_of_incorporation,auto,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,주주명부.pdf",articles_of_incorporation,,articles_of_incorporation 하나만 빠진 상태
+t1,대체,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf",,,대체서류 중 하나만 내도 충족
+t2,대체,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,정관.pdf,주식등변동상황명세서.pdf",,,다른 하나만 내도 충족
+t3,대체,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,정관.pdf",beneficial_owner_evidence,,대체서류 둘 다 없음 — 부족으로 나와야 한다
+t4,대체,"사업자등록증.pdf,법인등기부.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf,주식등변동상황명세서.pdf",,,둘 다 냈다고 둘 다 요구하면 과잉
+t6,기한,"사업자등록증.pdf,법인등기부_기한만료.pdf,법인인감증명서.pdf,정관.pdf,주주명부.pdf",,corporate_registry_certificate,1년 지난 등기부 — 기한 만료
+t7,엣지,취업후기.pdf,business_registration_certificate|corporate_registry_certificate|corporate_seal_certificate|articles_of_incorporation|beneficial_owner_evidence,,"증명서가 아닌 파일 하나 — 전부 부족, 안 죽음"
+t8,엣지,,business_registration_certificate|corporate_registry_certificate|corporate_seal_certificate|articles_of_incorporation|beneficial_owner_evidence,,"파일 0개 — 전부 부족, 안 죽음"
+t9,유사쌍,사업자등록증명.pdf,business_registration_certificate|corporate_registry_certificate|corporate_seal_certificate|articles_of_incorporation|beneficial_owner_evidence,,사업자등록증명을 사업자등록증으로 오인하면 안 된다
+t10,유사쌍,개인인감증명서.pdf,business_registration_certificate|corporate_registry_certificate|corporate_seal_certificate|articles_of_incorporation|beneficial_owner_evidence,,개인인감증명서를 법인인감증명서로 오인하면 안 된다
+t5,중복,"사업자등록증.pdf,사업자등록증.pdf",corporate_registry_certificate|corporate_seal_certificate|articles_of_incorporation|beneficial_owner_evidence,,같은 파일 2번 — 2개로 세면 안 된다
