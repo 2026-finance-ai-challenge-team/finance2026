@@ -1,0 +1,71 @@
+{
+  "application_context": {
+    "corporation_name": "주식회사 하나테크",
+    "business_registration_number": "1234567890",
+    "representative_name": "김하나",
+    "application_date": "2026-08-01"
+  },
+  "files": [
+    {
+      "file_id": "file_business_registration",
+      "pages": [
+        {
+          "page": 1,
+          "blocks": [
+            {"block_id": "br_1", "text": "사업자등록증명", "bbox": [], "confidence": 0.99},
+            {"block_id": "br_2", "text": "법인명: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+            {"block_id": "br_3", "text": "사업자등록번호: 123-45-67890", "bbox": [], "confidence": 0.99},
+            {"block_id": "br_4", "text": "대표자: 김하나", "bbox": [], "confidence": 0.99},
+            {"block_id": "br_5", "text": "발급일자: 2026-07-20", "bbox": [], "confidence": 0.99}
+          ]
+        }
+      ]
+    },
+    {
+      "file_id": "file_registry",
+      "pages": [
+        {
+          "page": 1,
+          "blocks": [
+            {"block_id": "reg_1", "text": "등기사항전부증명서", "bbox": [], "confidence": 0.99},
+            {"block_id": "reg_2", "text": "상호: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+            {"block_id": "reg_3", "text": "법인등록번호: 110111-1234567", "bbox": [], "confidence": 0.99},
+            {"block_id": "reg_4", "text": "대표이사: 김하나", "bbox": [], "confidence": 0.99},
+            {"block_id": "reg_5", "text": "본점: 서울특별시 중구 가상로 100", "bbox": [], "confidence": 0.99},
+            {"block_id": "reg_6", "text": "발급일자: 2026-07-20", "bbox": [], "confidence": 0.99}
+          ]
+        }
+      ]
+    },
+    {
+      "file_id": "file_shareholder",
+      "pages": [
+        {
+          "page": 1,
+          "blocks": [
+            {"block_id": "sh_1", "text": "주주명부", "bbox": [], "confidence": 0.99},
+            {"block_id": "sh_2", "text": "법인명: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+            {"block_id": "sh_3", "text": "주주: 이가상 / 지분율: 60%", "bbox": [], "confidence": 0.98},
+            {"block_id": "sh_4", "text": "주주: 박가상 / 지분율: 40%", "bbox": [], "confidence": 0.98},
+            {"block_id": "sh_5", "text": "작성일자: 2026-07-20", "bbox": [], "confidence": 0.99}
+          ]
+        }
+      ]
+    },
+    {
+      "file_id": "file_sales",
+      "pages": [
+        {
+          "page": 1,
+          "blocks": [
+            {"block_id": "sales_1", "text": "부가가치세과세표준증명", "bbox": [], "confidence": 0.99},
+            {"block_id": "sales_2", "text": "상호: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+            {"block_id": "sales_3", "text": "사업자등록번호: 123-45-67890", "bbox": [], "confidence": 0.99},
+            {"block_id": "sales_4", "text": "과세표준액: 500000000원", "bbox": [], "confidence": 0.98},
+            {"block_id": "sales_5", "text": "발급일자: 2026-07-20", "bbox": [], "confidence": 0.99}
+          ]
+        }
+      ]
+    }
+  ]
+}

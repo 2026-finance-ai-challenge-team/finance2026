@@ -1,0 +1,11 @@
+{
+  "expected": {
+    "requirements": {
+      "SALES_EVIDENCE_REQUIRED": {
+        "status": "UNSATISFIED",
+        "reason_code": "REQUIRED_DOCUMENT_MISSING"
+      }
+    },
+    "overall_status": "ACTION_REQUIRED"
+  }
+}

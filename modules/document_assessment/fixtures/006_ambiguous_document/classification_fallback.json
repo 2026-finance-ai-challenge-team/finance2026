@@ -1,0 +1,13 @@
+{
+  "responses": [
+    {
+      "source_file_id": "file_ambiguous",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "UNKNOWN",
+      "candidate_document_types": [
+        "CORPORATE_REGISTRY"
+      ]
+    }
+  ]
+}

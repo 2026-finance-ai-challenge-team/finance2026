@@ -1,0 +1,35 @@
+{
+  "expected": {
+    "classification": {
+      "documents": [
+        {
+          "document_type": "BUSINESS_REGISTRATION_CERTIFICATE",
+          "page_start": 1,
+          "page_end": 2
+        },
+        {
+          "document_type": "CORPORATE_REGISTRY",
+          "page_start": 3,
+          "page_end": 5
+        },
+        {
+          "document_type": "SHAREHOLDER_REGISTER",
+          "page_start": 6,
+          "page_end": 6
+        },
+        {
+          "document_type": "VAT_TAX_BASE_CERTIFICATE",
+          "page_start": 7,
+          "page_end": 8
+        }
+      ]
+    },
+    "requirements": {
+      "BUSINESS_REGISTRATION_REQUIRED": {"status": "SATISFIED"},
+      "CORPORATE_REGISTRY_REQUIRED": {"status": "SATISFIED"},
+      "SHAREHOLDER_INFORMATION_REQUIRED": {"status": "SATISFIED"},
+      "SALES_EVIDENCE_REQUIRED": {"status": "SATISFIED"}
+    },
+    "overall_status": "READY"
+  }
+}
