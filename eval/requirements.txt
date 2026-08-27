@@ -1,0 +1,5 @@
+# 검증 하네스 전용. 본 파이프라인 의존성과 섞지 않는다.
+jinja2>=3.1,<4
+playwright>=1.44        # HTML -> PDF 렌더. 최초 1회 `python -m playwright install chromium`
+pymupdf>=1.24,<2        # PDF 텍스트/좌표 검사, 페이지 조작, 이미지 변환
+pillow>=10.0            # 스캔 품질 열화

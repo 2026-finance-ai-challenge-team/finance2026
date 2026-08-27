@@ -1,0 +1,51 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="issuer">국세청 NATIONAL TAX SERVICE</div>
+<div style="font-size:9pt; margin-bottom:1mm;">( 1 / 1 )</div>
+
+<table>
+  <tr>
+    <th style="width:17%;">발급번호</th>
+    <td class="c" rowspan="2" style="width:56%;">
+      <div class="doc-title" style="margin:1mm 0 0;">부가가치세과세표준증명</div>
+      <div class="doc-subtitle" style="margin:0;">( 과·면세겸영사업자 포함 )</div>
+    </td>
+    <th style="width:13%;">처리기간</th>
+  </tr>
+  <tr><td class="c">{{ issue_no }}</td><td class="c">즉시</td></tr>
+</table>
+
+<table>
+  <tr><th>성명(대표자)</th><td>{{ ceo }}</td><th style="width:20%;">주민(법인)등록번호</th><td>{{ corp_no }}</td></tr>
+  <tr><th>상호(법인명)</th><td>{{ corp_name }}</td><th>사업자등록번호</th><td>{{ biz_no }}</td></tr>
+  <tr><th>업태</th><td>{{ biz_type }}</td><th>종목</th><td>{{ biz_item }}</td></tr>
+  <tr><th>사업장</th><td colspan="3">{{ hq_addr }}</td></tr>
+</table>
+
+<div style="text-align:right; font-size:9pt;">(단위:원)</div>
+<table>
+  <tr>
+    <th class="c" colspan="2">과세기간</th>
+    <th class="c" colspan="3">매출과세표준</th>
+    <th class="c" style="width:18%;">납부할 세액<br>(환급받을 세액)</th>
+  </tr>
+  <tr>
+    <th class="c" style="width:14%;">부터</th><th class="c" style="width:14%;">까지</th>
+    <th class="c" style="width:18%;">계</th><th class="c" style="width:18%;">과세분</th><th class="c" style="width:12%;">면세분</th>
+    <th></th>
+  </tr>
+  <tr><td class="c">{{ vat1_from }}</td><td class="c">{{ vat1_to }}</td><td class="r">412,850,000</td><td class="r">412,850,000</td><td class="c">0</td><td class="r">18,430,000</td></tr>
+  <tr><td class="c">{{ vat2_from }}</td><td class="c">{{ vat2_to }}</td><td class="r">236,110,000</td><td class="r">236,110,000</td><td class="c">0</td><td class="r">10,240,000</td></tr>
+  <tr><td colspan="6" class="c">이　하　여　백</td></tr>
+</table>
+
+<div class="statement">위와 같이 증명합니다.</div>
+<div class="note">※ 위 내용은 발급일 현재 상황으로서 추후 변경될 수 있습니다.</div>
+<div class="signdate">발급일자　{{ issued_ko }}</div>
+<div class="signer">{{ tax_office }}<span class="seal">인</span></div>
+
+<table style="margin-top:6mm; width:56%;">
+  <tr><th>접수번호</th><td>{{ receipt_no }}</td></tr>
+  <tr><th>담당부서</th><td>민원봉사실</td></tr>
+</table>
+{% endblock %}

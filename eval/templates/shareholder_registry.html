@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="doc-title">주주명부</div>
+
+<table style="width:70%;">
+  <tr><th style="width:26%;">상호</th><td>{{ corp_name }}</td></tr>
+  <tr><th>법인등록번호</th><td>{{ corp_no }}</td></tr>
+  <tr><th>기준일</th><td>{{ basis_dash }}</td></tr>
+</table>
+
+<table>
+  <tr>
+    <th class="c" style="width:16%;">주주 성명</th>
+    <th class="c" style="width:20%;">주민등록번호</th>
+    <th class="c" style="width:30%;">주소</th>
+    <th class="c" style="width:17%;">소유 주식수</th>
+    <th class="c" style="width:17%;">지분율</th>
+  </tr>
+  <tr><td class="c">{{ ceo }}</td><td class="c">{{ ceo_rrn }}</td><td>{{ hq_addr }}</td><td class="r">28,000 주</td><td class="c">70.0%</td></tr>
+  <tr><td class="c">박서윤</td><td class="c">880315-2******</td><td>서울특별시 마포구 양화로 45</td><td class="r">8,000 주</td><td class="c">20.0%</td></tr>
+  <tr><td class="c">정하늘</td><td class="c">920722-1******</td><td>경기도 고양시 일산동구 정발산로 12</td><td class="r">4,000 주</td><td class="c">10.0%</td></tr>
+  <tr><th class="c">합계</th><td colspan="2"></td><td class="r">40,000 주</td><td class="c">100.0%</td></tr>
+</table>
+
+<div class="statement">위 주주명부는 {{ basis_dash }} 현재 당사의 주주 및 주식수와 상위 없음을 확인합니다.</div>
+<div class="signdate">작성일　{{ issued_dash }}</div>
+<div class="signer" style="font-size:13pt;">{{ corp_name }}　대표이사 {{ ceo }}<span class="seal">인</span></div>
+{% endblock %}

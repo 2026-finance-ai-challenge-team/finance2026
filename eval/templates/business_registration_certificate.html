@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="issuer">국세청 NATIONAL TAX SERVICE</div>
+<div class="doc-title">사업자등록증</div>
+<div class="doc-subtitle">( 법인사업자 )</div>
+<div style="text-align:center; letter-spacing:.1em; margin-bottom:6mm;">사업자등록번호 : {{ biz_no }}</div>
+
+<table class="plain">
+  <tr><th>상호(법인명)</th><td>{{ corp_name }}</td></tr>
+  <tr><th>대표자</th><td>{{ ceo }}</td></tr>
+  <tr><th>개업연월일</th><td>{{ opened_ko }}　　　법인등록번호 : {{ corp_no }}</td></tr>
+  <tr><th>사업장 소재지</th><td>{{ hq_addr }}</td></tr>
+  <tr><th>본점 소재지</th><td>{{ hq_addr }}</td></tr>
+  <tr><th>사업의 종류</th><td>업태 {{ biz_type }}　　종목 {{ biz_item }}</td></tr>
+  <tr><th>발급 사유</th><td>정정 재발급</td></tr>
+</table>
+
+<div style="margin-top:6mm;">사업자 단위 과세 적용사업자 여부 : 여( ) 부(√)</div>
+<div>전자세금계산서 전용 전자우편주소 :</div>
+
+<div class="signdate" style="margin-top:12mm;">{{ issued_ko }}</div>
+<div class="signer">{{ tax_office }}<span class="seal">인</span></div>
+{% endblock %}
