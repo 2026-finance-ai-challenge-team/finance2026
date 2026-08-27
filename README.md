@@ -48,7 +48,11 @@ ProofBridge는 먼저 **공공 마이데이터로 제출할 수 있는 증빙은
 - `준비 완료`·`추가 필요`·`정보 불일치`·`이번 업무에는 불필요` 예시와 공식 근거 표시
 - 공공·디지털·인쇄·방문 키트 미리보기, 큰 글자 전환, 제안서 PDF 열기
 
-현재 버전은 **합성 데이터 기반 프론트엔드 청사진**입니다. 실제 파일 업로드, OCR·LLM, 규칙 엔진, ZIP, 즉시 삭제, 지도 API는 아직 연결하지 않았으며 화면에서도 구현 예정으로 구분합니다.
+웹 데모 화면은 **분류 모듈의 출력 계약(v1.0)을 읽어 그립니다**. 하드코딩한 결과가 아니라 실제 스키마에서 계산된 값입니다. 다만 화면에서의 파일 업로드는 아직 연결하지 않았고, 지금은 합성 샘플 JSON을 읽습니다.
+
+문서 분류는 별도 파이썬 모듈(`modules/doc_classify/`)에서 **실제로 동작합니다.** CLOVA OCR이 연결돼 있고, 정부24 발급 문서로 검증했습니다. 규칙 엔진, 지도 API, 즉시 삭제는 아직 없으며 화면에서도 구현 예정으로 구분합니다.
+
+> `준비 완료`와 `정보 불일치`는 규칙 엔진이 판정하는 상태입니다. 규칙 엔진이 없는 현재 화면은 이 둘을 만들어내지 않습니다.
 
 <br>
 
@@ -155,12 +159,20 @@ graph LR
 
 <br>
 
+**웹**
+
 - React 19 + TypeScript
 - vinext + Vite
 - CSS 기반 반응형·접근성 UI
 - Cloudflare Workers 호환 Sites 배포 구조
 
-백엔드·OCR·LLM은 아직 도입하지 않았습니다. 합성 정답표와 공식 규칙 구조가 준비된 뒤 필요한 공급자 하나씩만 연결합니다.
+**문서 분류 모듈**
+
+- Python 3.14 · `pypdf`(내장 텍스트) · 네이버 CLOVA OCR General API
+- 시그니처 대조 기반 분류. 최종 판정은 하지 않습니다
+- 출력 계약 v1.0을 웹과 공유합니다
+
+LLM과 규칙 엔진은 아직 도입하지 않았습니다. 합성 정답표와 공식 규칙 구조가 준비된 뒤 필요한 공급자 하나씩만 연결합니다.
 
 </details>
 
@@ -175,7 +187,62 @@ npm install
 npm run dev
 ```
 
-Node.js `>=22.13.0`이 필요합니다. `http://localhost:3000`에서 확인하고, 전체 빌드·렌더 검증은 `npm test`로 실행합니다. 현재 합성 데모에는 환경변수가 필요하지 않습니다.
+Node.js `>=22.13.0`이 필요합니다. `http://localhost:3000`에서 확인하고, 전체 빌드·렌더 검증은 `npm test`로 실행합니다. 웹 데모에는 환경변수가 필요하지 않습니다.
+
+**문서 분류 모듈 (Python)**
+
+```bash
+python -m venv finance
+finance\Scripts\activate          # macOS/Linux: source finance/bin/activate
+pip install -r requirements.txt
+copy .env.example .env            # macOS/Linux: cp .env.example .env
+```
+
+`.env`에 CLOVA OCR 값을 채웁니다(발급 방법은 아래 토글 참고). 그다음:
+
+```bash
+python modules/doc_classify/test_doc_classify.py               # 합성 데이터 자체 검증
+python -m modules.doc_classify.cli demo_docs --no-ocr --report # 합성 문서로 전체 흐름 보기
+python -m modules.doc_classify.cli <경로> --report --pack out  # 요약 + 제출 묶음 생성
+```
+
+`demo_docs/`의 합성 문서는 텍스트 PDF라 **OCR을 호출하지 않습니다**(API 사용량 0).
+실제 문서로 시험할 때는 `.gitignore` 대상인 로컬 폴더를 쓰고 저장소에 넣지 않습니다.
+
+</details>
+
+<details>
+<summary><b>🔑 API 키 발급 방법</b></summary>
+
+키는 `.env`에만 둡니다. 이 파일은 `.gitignore` 대상이라 커밋되지 않습니다. **코드·문서·커밋 메시지에 키를 적지 않습니다.** 노출됐다면 콘솔에서 즉시 재발급합니다.
+
+### 네이버 클라우드 CLOVA OCR (현재 유일한 필수 키)
+
+스캔본·사진 문서에서 텍스트를 뽑을 때 씁니다. 텍스트 레이어가 있는 PDF는 OCR을 호출하지 않으므로, 키 없이도 `--no-ocr`로 상당 부분 테스트할 수 있습니다.
+
+1. [네이버 클라우드 플랫폼](https://www.ncloud.com/)에 가입하고 결제수단을 등록합니다. CLOVA OCR은 무료 티어가 없어 등록이 필요합니다.
+2. 콘솔에서 **Services → AI Services → CLOVA OCR**로 이동합니다.
+3. **도메인 생성**을 누르고 아래를 고릅니다.
+   - 서비스 타입 `General` — 정해진 서식이 없는 일반 문서용입니다. `Document`(템플릿) 타입과 응답 형식이 다르므로 반드시 General로 만듭니다.
+   - 인식 언어 `Korean`
+4. 생성된 도메인의 목록에서 두 값을 복사합니다.
+   - **APIGW Invoke URL** → `NCP_OCR_INVOKE_URL` (`.../general`로 끝납니다)
+   - **Secret Key** → `NCP_OCR_SECRET_KEY` (요청 헤더 `X-OCR-SECRET`에 그대로 들어갑니다)
+5. `.env`에 붙여넣습니다.
+
+> **두 값은 반드시 같은 도메인의 것이어야 합니다.** 섞으면 `401`/`403`이 납니다. 다른 도메인의 URL과 Key를 조합하는 것이 이 API에서 가장 흔한 실수입니다.
+
+연결 확인:
+
+```bash
+python -m modules.doc_classify.cli <스캔본_PDF_경로>
+```
+
+`텍스트 N자 (ocr)`이 찍히면 정상입니다. `OCR 실패`가 보이면 위 4번의 도메인 짝을 다시 확인합니다.
+
+### 아직 필요 없는 키
+
+지도·지점 안내(금융결제원 FIN MAP, Kakao Local)와 설명 생성용 LLM 키는 해당 기능을 구현할 때 추가합니다. 지금 발급받을 필요는 없습니다.
 
 </details>
 
@@ -189,12 +256,19 @@ finance2026/
 │  ├─ public/                # 제안서 PDF·소셜 이미지
 │  ├─ tests/                 # 서버 렌더 안전 경계 검사
 │  └─ worker/                # Sites/Cloudflare 진입점
-├─ docs/                     # 차별화 조사·API 가입 가이드
+├─ modules/                  # 담당별로 분리한 처리 모듈
+│  └─ doc_classify/          # 문서 분류 — 형식 판별·텍스트 확보·유형 결정
+│     ├─ signatures/         # 문서 서식 시그니처 (찬형 DB 연동 전 임시값)
+│     ├─ tasks/              # 업무별 필요 서류 정의
+│     └─ examples/           # 출력 계약 샘플 JSON
+├─ demo_docs/                # 데모·테스트용 합성 문서 (실제 개인정보 금지)
+├─ ocr_test/                 # CLOVA OCR 클라이언트와 응답 파싱
+├─ docs/                     # 설계 문서·차별화 조사·API 가입 가이드
 ├─ output/pdf/               # 검수 완료 제안서
 └─ scripts/                  # 제안서 재생성 스크립트
 ```
 
-실제 API·규칙·합성 샘플 코드는 구현 시점에 필요한 디렉터리만 추가합니다.
+담당이 나뉜 작업은 `modules/<이름>/` 아래에서 각자 진행하고, 모듈 사이의 입출력 계약은 `docs/DOC_CLASSIFY.md`에 적습니다. 실제 개인정보가 든 파일은 저장소에 넣지 않습니다.
 
 </details>
 

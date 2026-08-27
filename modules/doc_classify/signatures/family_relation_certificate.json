@@ -1,0 +1,32 @@
+{
+  "doc_type": "family_relation_certificate",
+  "label_ko": "가족관계증명서",
+  "issuer": "대법원",
+  "issuer_aliases": [
+    "전자가족관계등록시스템",
+    "법원행정처"
+  ],
+  "title_patterns": [
+    "가족관계증명서"
+  ],
+  "required_anchors": [
+    "본인",
+    "가족사항|구분\\s*성명"
+  ],
+  "negative_anchors": [
+    "혼인관계증명서",
+    "기본증명서",
+    "입양관계증명서"
+  ],
+  "doc_number_label": "문서확인번호",
+  "issued_at_labels": [
+    "발급일",
+    "신청일"
+  ],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "2026-08-31 이후 스크래핑 차단 대상. 사용자 직접 제출 비중이 커질 서류."
+}

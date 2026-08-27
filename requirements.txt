@@ -1,0 +1,5 @@
+# ProofBridge 개발 환경 (venv: finance)
+# 설치: python -m venv finance && finance/Scripts/activate && pip install -r requirements.txt
+
+-r ocr_test/requirements.txt   # requests — CLOVA OCR 호출
+reportlab>=4,<5                # scripts/build_proposal_pdf.py 제안서 PDF 생성

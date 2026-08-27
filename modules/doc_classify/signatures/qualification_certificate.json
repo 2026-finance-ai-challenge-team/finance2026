@@ -1,0 +1,22 @@
+{
+  "doc_type": "qualification_certificate",
+  "label_ko": "자격증·자격취득 확인서",
+  "issuer": "",
+  "issuer_aliases": [
+    "대한상공회의소",
+    "한국산업인력공단",
+    "한국생산성본부",
+    "정보통신기술자격검정"
+  ],
+  "title_patterns": ["자격번호", "국가기술자격", "자격증", "합격증", "자격취득"],
+  "required_anchors": ["종\\s*목|자격종목|검정종목", "성\\s*명|성명"],
+  "negative_anchors": ["재직증명서", "경력증명서"],
+  "doc_number_label": "자격번호",
+  "issued_at_labels": ["발급일", "발행일", "취득일", "합격일"],
+  "validity_days": null,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "실제 컴퓨터활용능력 1급 확인서 1건으로 앵커 확인. 발행처마다 서식이 달라 커버리지가 좁다. 생년월일이 함께 인쇄되므로 발급일 추정 시 주의."
+}

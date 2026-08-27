@@ -245,3 +245,12 @@ ocr_test/*.tiff
 # eval — 서식 참고용 실물 문서. 실제 법인 정보가 들어 있어 커밋하지 않는다.
 # 합성 결과(eval/samples/)는 가짜 데이터라 커밋한다.
 eval/example_file/
+
+# 로컬 파이썬 가상환경 (이름: finance)
+/finance/
+
+# 실제 개인문서 테스트 폴더 — 절대 커밋하지 않는다 (AGENTS.md 개인정보 원칙)
+/ryu_docs/
+
+# OCR 응답 캐시 — 문서 원문이 들어간다
+/.ocr_cache/

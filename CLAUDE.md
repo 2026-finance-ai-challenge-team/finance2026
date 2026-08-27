@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 저장소 상태
 
-현재 `apps/web`에 React 19 + TypeScript + vinext/Vite 기반 합성 클릭 데모가 있다. 실제 OCR·LLM·규칙 엔진·외부 API는 아직 연결하지 않았다.
+현재 두 갈래가 있다. `apps/web`은 React 19 + TypeScript + vinext/Vite 기반 합성 클릭 데모이고, `ocr_test/`는 CLOVA OCR General API에 실제로 연결된 문서 인식 하네스다. 규칙 엔진과 LLM은 아직 없다.
+
+파이썬 작업은 저장소 루트의 `finance` 가상환경을 쓴다. 의존성은 루트 `requirements.txt`.
+
+- 파이썬 환경: `finance/Scripts/python.exe` (설치: `pip install -r requirements.txt`)
+- OCR 테스트: `finance/Scripts/python.exe ocr_test/test_parse.py`
+- OCR 실행: `finance/Scripts/python.exe ocr_test/run_ocr.py <경로> --mask`
+
+`ocr_test/.env`에 NCP 자격증명이 있다. `.gitignore` 대상이며 값을 코드·문서·커밋에 옮기지 않는다.
 
 - 개발: `cd apps/web && npm run dev`
 - 빌드: `cd apps/web && npm run build`
@@ -46,6 +54,8 @@ LLM 추론만으로 `준비 완료`를 내면 안 된다. 공식 근거가 없�
 - 로그에 원문·주민번호·계좌번호·인증정보를 남기지 않는다
 - 제3자 AI에는 필요한 최소 필드만 전달하고, 사용자 문서를 학습에 쓰지 않는다
 - 테스트·샘플은 **합성 데이터만**. 실제 개인정보가 든 파일을 저장소에 넣지 않는다
+- 커밋해도 되는 샘플은 `demo_docs/`에만 둔다(`demo_docs/make_samples.py`로 생성). 실제 문서로 시험할 때는 `.gitignore` 대상 로컬 폴더를 쓴다
+- OCR 응답 캐시(`.ocr_cache/`)에는 문서 원문이 들어간다. 커밋하지 않는다
 
 ## 기술 선택
 

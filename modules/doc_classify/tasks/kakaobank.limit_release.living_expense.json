@@ -1,0 +1,20 @@
+{
+  "task_id": "kakaobank.limit_release.living_expense",
+  "label_ko": "카카오뱅크 한도제한계좌 해제 · 생활비/공과금",
+  "required": [
+    "utility_bill"
+  ],
+  "conditional": [
+    "resident_registration_copy",
+    "health_insurance_certificate"
+  ],
+  "alternatives": [
+    "family_relation_certificate",
+    "income_certificate"
+  ],
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "임시 배치다. 2차 출처(기사·블로그)에 카카오뱅크 증빙으로 반복 언급되는 '건강보험 자격득실 확인서'를 조건부에 넣었다. 공식 공지 페이지는 JS 렌더라 미확인 상태이며 찬형이 확인해야 한다. 이 값으로 사용자에게 준비 완료를 말하면 안 된다."
+}

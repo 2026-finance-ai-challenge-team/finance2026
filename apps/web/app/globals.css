@@ -453,9 +453,11 @@ em { color: var(--red); font-style: normal; }
 .doc-title { display: flex; align-items: flex-start; gap: 10px; }
 .status-dot { width: 9px; height: 9px; flex: none; margin-top: 8px; border-radius: 50%; background: var(--muted); }
 .status-dot.ready { background: var(--ready); } .status-dot.mismatch { background: var(--error); } .status-dot.needed { background: var(--warning); }
+.status-dot.expired { background: #c2570d; }
 .doc-title b, .doc-title small { display: block; overflow-wrap: anywhere; } .doc-title b { font-size: 13px; } .doc-title small { color: var(--ink-soft); font-size: 10px; }
 .doc-result strong { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 10px; }
 .doc-result strong.ready { background: #e1f4ee; color: #075b44; } .doc-result strong.mismatch { background: #fbe7e5; color: #92201e; } .doc-result strong.needed { background: #fff0d8; color: #795000; } .doc-result strong.unused { background: #e9edf0; color: #48515b; }
+.doc-result strong.expired { background: #ffe6d2; color: #8a3c05; }
 .doc-result p { margin: 7px 0 0; color: var(--ink-soft); font-size: 11px; }
 .documents-card details { padding: 17px 25px 20px; background: #f7f8fa; font-size: 11px; }
 .documents-card summary { font-weight: 750; cursor: pointer; } .documents-card details p { margin: 8px 0 0; }
