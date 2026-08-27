@@ -1,0 +1,15 @@
+{
+  "expected": {
+    "consistency_checks": {
+      "REPRESENTATIVE_NAME_MATCH": {
+        "status": "UNKNOWN"
+      }
+    },
+    "requirements": {
+      "REPRESENTATIVE_CONSISTENT": {
+        "status": "UNKNOWN"
+      }
+    },
+    "overall_status": "REVIEW_REQUIRED"
+  }
+}

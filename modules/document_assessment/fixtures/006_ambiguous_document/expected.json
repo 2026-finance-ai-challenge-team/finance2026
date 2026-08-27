@@ -1,0 +1,14 @@
+{
+  "expected": {
+    "classification": {
+      "has_unresolved_document": true
+    },
+    "requirements": {
+      "CORPORATE_REGISTRY_REQUIRED": {
+        "status": "UNKNOWN",
+        "reason_code": "DOCUMENT_TYPE_UNRESOLVED"
+      }
+    },
+    "overall_status": "REVIEW_REQUIRED"
+  }
+}

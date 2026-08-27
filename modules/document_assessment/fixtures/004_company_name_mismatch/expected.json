@@ -1,0 +1,17 @@
+{
+  "expected": {
+    "consistency_checks": {
+      "COMPANY_NAME_MATCH": {
+        "status": "UNSATISFIED",
+        "reason_code": "KNOWN_VALUES_CONFLICT"
+      }
+    },
+    "requirements": {
+      "CORPORATION_NAME_CONSISTENT": {
+        "status": "UNSATISFIED",
+        "reason_code": "KNOWN_VALUES_CONFLICT"
+      }
+    },
+    "overall_status": "ACTION_REQUIRED"
+  }
+}
