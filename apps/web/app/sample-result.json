@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "task_id": "kakaobank.limit_account_release",
+  "task_label": "카카오뱅크 한도계좌 해제",
+  "task_verified": true,
+  "checked_at": "2026-08-28",
+  "ocr_calls_total": 2,
+  "missing": {
+    "required": [
+      "management_fee_notice"
+    ],
+    "conditional": [],
+    "alternatives": []
+  },
+  "documents": [
+    {
+      "file_id": "f01",
+      "source_name": "정부24 - 문서출력.pdf",
+      "media": {
+        "kind": "pdf",
+        "pages": 1,
+        "detected_by": "magic"
+      },
+      "text_source": [
+        {
+          "page": 1,
+          "method": "ocr",
+          "chars": 1118
+        }
+      ],
+      "visual_title": "주 민 등 록 표 ( 등 본 )",
+      "classification": {
+        "doc_type": "resident_registration_copy",
+        "label_ko": "주민등록표 등본",
+        "confidence": 0.99,
+        "decided_by": "anchor",
+        "evidence": [
+          {
+            "kind": "title_match",
+            "pattern": "주민등록표\\s*\\(?\\s*등본"
+          },
+          {
+            "kind": "issuer_match",
+            "pattern": "정부24"
+          },
+          {
+            "kind": "anchors",
+            "matched": 2,
+            "total": 2
+          },
+          {
+            "kind": "doc_number_label",
+            "pattern": "문서확인번호"
+          }
+        ],
+        "alternatives": [
+          {
+            "doc_type": "resident_registration_abstract",
+            "confidence": 0.0
+          }
+        ],
+        "unverified_signature": true
+      },
+      "fields": {
+        "issuer": "정부24",
+        "issued_at": "2026-08-19",
+        "issued_at_confident": false,
+        "doc_number_present": true
+      },
+      "validity": {
+        "expires_at": "2026-11-17",
+        "days_left": 90,
+        "estimated": true,
+        "note": "90일 남음(추정) — 발급일 확인 필요"
+      },
+      "relevance": {
+        "status": "관련",
+        "matched_rule": "conditional"
+      },
+      "needs_user_confirm": false,
+      "confirm_reason": null,
+      "ocr_calls": 1,
+      "notes": []
+    },
+    {
+      "file_id": "f02",
+      "source_name": "자격증사본.pdf",
+      "media": {
+        "kind": "pdf",
+        "pages": 1,
+        "detected_by": "magic"
+      },
+      "text_source": [
+        {
+          "page": 1,
+          "method": "embedded",
+          "chars": 320
+        }
+      ],
+      "visual_title": "",
+      "classification": {
+        "doc_type": "qualification_certificate",
+        "label_ko": "자격증·자격취득 확인서",
+        "confidence": 0.99,
+        "decided_by": "anchor",
+        "evidence": [
+          {
+            "kind": "title_match",
+            "pattern": "자격번호"
+          },
+          {
+            "kind": "anchors",
+            "matched": 2,
+            "total": 2
+          }
+        ],
+        "alternatives": [],
+        "unverified_signature": true
+      },
+      "fields": {
+        "issued_at": "2025-04-29",
+        "issued_at_confident": false,
+        "doc_number_present": true
+      },
+      "validity": {
+        "expires_at": null,
+        "days_left": null,
+        "note": "유효기간 규정 없음"
+      },
+      "relevance": {
+        "status": "이번 업무에는 불필요",
+        "matched_rule": null
+      },
+      "needs_user_confirm": false,
+      "confirm_reason": null,
+      "ocr_calls": 0,
+      "notes": []
+    },
+    {
+      "file_id": "f03",
+      "source_name": "IMG_2931.jpg",
+      "media": {
+        "kind": "jpg",
+        "pages": 1,
+        "detected_by": "magic"
+      },
+      "text_source": [
+        {
+          "page": 1,
+          "method": "ocr",
+          "chars": 84
+        }
+      ],
+      "visual_title": "",
+      "classification": {
+        "doc_type": null,
+        "label_ko": null,
+        "confidence": 0.12,
+        "decided_by": null,
+        "evidence": [
+          {
+            "kind": "anchors",
+            "matched": 1,
+            "total": 2
+          }
+        ],
+        "alternatives": []
+      },
+      "fields": {},
+      "validity": {
+        "expires_at": null,
+        "days_left": null,
+        "note": "유효기간 규정 없음"
+      },
+      "relevance": {
+        "status": "판단 불가",
+        "matched_rule": null
+      },
+      "needs_user_confirm": true,
+      "confirm_reason": "일치하는 문서 서식을 찾지 못했습니다.",
+      "ocr_calls": 1,
+      "notes": []
+    }
+  ]
+}

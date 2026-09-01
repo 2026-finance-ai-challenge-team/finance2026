@@ -1,30 +1,24 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request("https://proofbridge.example/", {
-      headers: { accept: "text/html", "x-forwarded-host": "proofbridge.example", "x-forwarded-proto": "https" },
-    }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  return readFile(new URL("../.next/server/app/index.html", import.meta.url), "utf8");
 }
 
-test("renders the ProofBridge demo and its safety boundary", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
-  assert.match(html, /<title>ProofBridge \| 금융업무 준비 데모<\/title>/);
-  assert.match(html, /공공 마이데이터 위의 금융업무 완성 계층/);
-  assert.match(html, /합성 샘플/);
-  assert.match(html, /AI 분석과 실제 전송은 연결하지 않았습니다/);
-  assert.match(html, /property="og:image" content="https:\/\/proofbridge\.example\/og\.png"/);
+test("renders the ProofBridge RAG task finder and its safety boundary", async () => {
+  const html = await render();
+  assert.match(html, /<title>ProofBridge \| 금융업무 증빙 사전점검<\/title>/);
+  assert.match(html, /하려는 금융업무를/);
+  assert.match(html, /모르면 그냥 다 넣으세요/);
+  assert.match(html, /합성 샘플로 바로 체험/);
+  assert.match(html, /현재 MVP 지원 범위/);
+  assert.match(html, /지원하지 않는 업무를 가능한 것처럼 안내하지 않습니다/);
+  assert.match(html, /카카오뱅크 한도계좌 해제/);
+  assert.match(html, /카뱅 한도계좌/);
+  assert.match(html, /별칭·벡터로 업무 검색/);
+  assert.match(html, /RAG는 업무를 연결합니다/);
+  assert.match(html, /기존 공식 규칙 엔진이 판정합니다/);
+  assert.match(html, /property="og:image" content="[^"]+\/og\.png"/);
   assert.doesNotMatch(html, /Starter Project|react-loading-skeleton|세계 최초/);
 });
