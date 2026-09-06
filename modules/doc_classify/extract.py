@@ -139,13 +139,17 @@ def _embedded_pages(path: Path) -> list[Page]:
     return pages
 
 
-def _cache_path(path: Path) -> Path:
+def _cache_path(path: Path, cache_dir: Path | None = None) -> Path:
     """파일 내용 해시로 캐시 위치를 정한다. 이름이 달라도 같은 파일이면 같은 캐시다."""
     digest = hashlib.sha256(path.read_bytes()).hexdigest()[:32]
-    return CACHE_DIR / f"{digest}.json"
+    return (cache_dir or CACHE_DIR) / f"{digest}.json"
 
 
-def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
+def _ocr_whole_file(
+    path: Path,
+    timeout: float,
+    cache_dir: Path | None = None,
+) -> dict[int, tuple[str, str]]:
     """파일 하나를 OCR에 한 번만 보내고 페이지별 (전체 텍스트, 시각적 제목)을 돌려준다.
 
     CLOVA General은 PDF를 통째로 받아 images[]에 페이지별 결과를 준다.
@@ -156,7 +160,8 @@ def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
     """
     from ocr_test import clova_ocr
 
-    cached = _cache_path(path)
+    resolved_cache_dir = cache_dir or CACHE_DIR
+    cached = _cache_path(path, resolved_cache_dir)
     if cached.is_file():
         response = json.loads(cached.read_text(encoding="utf-8"))
     else:
@@ -164,7 +169,7 @@ def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
             clova_ocr.load_dotenv(candidate)
         config = clova_ocr.OcrConfig.from_env(timeout=timeout)
         response, _elapsed = clova_ocr.call_general_ocr(path, config)
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        resolved_cache_dir.mkdir(parents=True, exist_ok=True)
         cached.write_text(json.dumps(response, ensure_ascii=False), encoding="utf-8")
 
     out: dict[int, tuple[str, str]] = {}
@@ -174,13 +179,19 @@ def _ocr_whole_file(path: Path, timeout: float) -> dict[int, tuple[str, str]]:
     return out
 
 
-def is_cached(path: str | Path) -> bool:
+def is_cached(path: str | Path, *, cache_dir: Path | None = None) -> bool:
     """이 파일의 OCR 응답이 이미 캐시에 있나(= 호출이 필요 없나)."""
     path = Path(path).expanduser()
-    return path.is_file() and _cache_path(path).is_file()
+    return path.is_file() and _cache_path(path, cache_dir).is_file()
 
 
-def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) -> Extracted:
+def extract(
+    path: str | Path,
+    *,
+    use_ocr: bool = True,
+    timeout: float = 30.0,
+    cache_dir: Path | None = None,
+) -> Extracted:
     """1차 추출. 내장 텍스트만 읽는다. `use_ocr=True`면 부족한 페이지를 OCR로 채운다.
 
     OCR 호출을 아끼려면 `use_ocr=False`로 먼저 부르고, 분류가 확정되지 않을 때만
@@ -204,7 +215,7 @@ def extract(path: str | Path, *, use_ocr: bool = True, timeout: float = 30.0) ->
         result.pages = [Page(index=1, text="", method="none")]
 
     if use_ocr and needs_ocr(result):
-        apply_ocr(result, timeout=timeout)
+        apply_ocr(result, timeout=timeout, cache_dir=cache_dir)
     return result
 
 
@@ -215,16 +226,21 @@ def needs_ocr(extracted: Extracted) -> bool:
     return any(p.chars < MIN_CHARS_PER_PAGE for p in extracted.pages)
 
 
-def apply_ocr(extracted: Extracted, *, timeout: float = 30.0) -> Extracted:
+def apply_ocr(
+    extracted: Extracted,
+    *,
+    timeout: float = 30.0,
+    cache_dir: Path | None = None,
+) -> Extracted:
     """텍스트가 없는 페이지만 OCR로 채운다. **여기서만 API를 호출한다** (파일당 1회)."""
     targets = [p for p in extracted.pages if p.chars < MIN_CHARS_PER_PAGE]
     if not targets:
         return extracted
 
     # 캐시에 있으면 API를 안 쓴다. 호출 수 집계에도 넣지 않는다.
-    from_cache = is_cached(extracted.path)
+    from_cache = is_cached(extracted.path, cache_dir=cache_dir)
     try:
-        ocr_pages = _ocr_whole_file(extracted.path, timeout)
+        ocr_pages = _ocr_whole_file(extracted.path, timeout, cache_dir=cache_dir)
     except Exception as exc:
         extracted.notes.append(f"OCR 실패: {exc}")
         return extracted

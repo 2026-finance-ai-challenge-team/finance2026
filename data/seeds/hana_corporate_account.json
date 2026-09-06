@@ -1,6 +1,7 @@
 {
   "bank": {
     "code": "KEB_HANA",
+    "slug": "hana",
     "name_ko": "하나은행"
   },
   "policy": {
@@ -66,7 +67,7 @@
       "label_ko": "사업자등록증",
       "issuer": "국세청",
       "issuer_aliases": ["국세청", "홈택스"],
-      "title_patterns": ["사업자\\s*등록증"],
+      "title_patterns": ["사\\s*업\\s*자\\s*등\\s*록\\s*증"],
       "required_anchors": ["사업자등록번호", "상호", "대표자"],
       "negative_anchors": ["사업자\\s*등록증명"],
       "doc_number_label": "사업자등록번호",

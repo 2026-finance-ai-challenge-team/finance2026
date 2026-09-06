@@ -8,12 +8,16 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import hmac
+import os
 import re
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 from .extract import Extracted, apply_ocr, extract, needs_ocr
+from .openai_classifier import UNRELATED_DOC_TYPE
 from .schema import SCHEMA_VERSION, validate
 
 HERE = Path(__file__).resolve().parent
@@ -30,6 +34,49 @@ AMBIGUOUS_GAP = 0.15
 TITLE_HEAD_CHARS = 500
 
 _DATE = re.compile(r"(20\d{2})\s*[.\-년/]\s*(\d{1,2})\s*[.\-월/]\s*(\d{1,2})")
+_MATCH_KEY = os.urandom(32)
+
+_COMPARISON_LABELS: dict[str, dict[str, tuple[str, ...]]] = {
+    "utility_bill": {
+        "subject_name": ("고객명",),
+        "address": ("사용장소",),
+    },
+    "management_fee_notice": {
+        "subject_name": ("입주자명",),
+        "address": ("주소",),
+    },
+    "resident_registration_copy": {
+        "subject_name": ("세대주 성명",),
+        "address": ("주소",),
+    },
+    "tax_bill": {
+        "subject_name": ("납세자",),
+        "address": ("주소",),
+    },
+    "health_insurance_certificate": {
+        "subject_name": ("가입자 성명",),
+    },
+    "employment_contract": {
+        "subject_name": ("근로자",),
+        "organization_name": ("사용자",),
+    },
+    "business_registration_certificate": {
+        "organization_name": ("법인명", "법인명(단체명)"),
+    },
+    "mobile_phone_payment_certificate": {
+        "subject_name": ("가입자명",),
+    },
+}
+
+
+class LlmDocumentClassifier(Protocol):
+    def classify(
+        self,
+        *,
+        text: str,
+        title_text: str,
+        signatures: list[dict[str, Any]],
+    ) -> Any: ...
 
 
 def load_signatures(directory: Path | None = None) -> list[dict[str, Any]]:
@@ -119,6 +166,50 @@ def _iso(match: re.Match[str]) -> str:
     return f"{y}-{int(m):02d}-{int(d):02d}"
 
 
+def _labeled_value(text: str, labels: tuple[str, ...]) -> str | None:
+    """표/OCR 텍스트에서 라벨 바로 뒤의 한 값을 찾는다."""
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    for index, line in enumerate(lines):
+        squeezed = re.sub(r"\s+", "", line)
+        for label in labels:
+            label_squeezed = re.sub(r"\s+", "", label)
+            if squeezed == label_squeezed:
+                return lines[index + 1] if index + 1 < len(lines) else None
+            if squeezed.startswith(label_squeezed):
+                remainder = line[len(label) :].strip(" :·")
+                if remainder:
+                    return remainder
+    return None
+
+
+def _normalize_comparison_value(field: str, value: str) -> str:
+    value = value.strip()
+    if field == "organization_name":
+        value = re.split(r"\s+대표자\s*", value, maxsplit=1)[0]
+    return re.sub(r"[^0-9A-Za-z가-힣]", "", value).casefold()
+
+
+def _match_token(field: str, value: str) -> str | None:
+    normalized = _normalize_comparison_value(field, value)
+    if not normalized:
+        return None
+    return hmac.new(
+        _MATCH_KEY,
+        f"{field}\0{normalized}".encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def _comparison_tokens(doc_type: str, text: str) -> dict[str, str]:
+    tokens: dict[str, str] = {}
+    for field, labels in _COMPARISON_LABELS.get(doc_type, {}).items():
+        value = _labeled_value(text, labels)
+        token = _match_token(field, value) if value else None
+        if token:
+            tokens[field] = token
+    return tokens
+
+
 def _fields(signature: dict[str, Any], text: str) -> dict[str, Any]:
     """분류에 필요한 최소 필드만 뽑는다. 명의·주소·소득은 뽑지 않는다."""
     fields: dict[str, Any] = {}
@@ -152,6 +243,8 @@ def _fields(signature: dict[str, Any], text: str) -> dict[str, Any]:
 
     label = signature.get("doc_number_label")
     fields["doc_number_present"] = bool(label and label in text)
+    fields["comparison_tokens"] = _comparison_tokens(signature["doc_type"], text)
+    fields["comparison_fields_present"] = sorted(fields["comparison_tokens"])
     return fields
 
 
@@ -263,6 +356,10 @@ def classify_files(
     *,
     use_ocr: bool = True,
     signatures: list[dict[str, Any]] | None = None,
+    cache_dir: Path | None = None,
+    ocr_timeout: float = 30.0,
+    llm_classifier: LlmDocumentClassifier | None = None,
+    expected_owner_name: str | None = None,
 ) -> dict[str, Any]:
     """모듈의 공개 API. 파일 목록과 업무 ID를 받아 분류 결과 JSON을 만든다.
 
@@ -279,10 +376,90 @@ def classify_files(
 
         # 2차: 1차에서 확정 못 했고 아직 읽을 페이지가 남았을 때만 OCR.
         if use_ocr and not is_settled(classification) and needs_ocr(extracted):
-            apply_ocr(extracted)
+            apply_ocr(extracted, timeout=ocr_timeout, cache_dir=cache_dir)
             classification = classify_one(extracted, signatures)
         elif not use_ocr and needs_ocr(extracted):
             extracted.notes.append("텍스트 없는 페이지가 남았지만 OCR이 꺼져 있습니다(--no-ocr).")
+
+        llm_calls = 0
+        if (
+            llm_classifier is not None
+            and not is_settled(classification)
+            and extracted.full_text.strip()
+        ):
+            llm_calls = 1
+            try:
+                decision = llm_classifier.classify(
+                    text=extracted.full_text,
+                    title_text=extracted.title_text,
+                    signatures=signatures,
+                )
+            except Exception:
+                decision = None
+                extracted.notes.append(
+                    "LLM 보조 분류를 완료하지 못해 규칙 기반 결과를 유지했습니다."
+                )
+            if decision is not None:
+                if decision.doc_type == UNRELATED_DOC_TYPE:
+                    classification = {
+                        "doc_type": UNRELATED_DOC_TYPE,
+                        "label_ko": "업무와 관련 없는 문서",
+                        "confidence": round(float(decision.confidence), 2),
+                        "decided_by": "openai",
+                        "evidence": [
+                            {"kind": "llm_signal", "signal_id": signal_id}
+                            for signal_id in decision.evidence_signal_ids
+                        ],
+                        "alternatives": [
+                            {"doc_type": item}
+                            for item in decision.candidate_doc_types
+                        ],
+                        "fields": {},
+                        "needs_user_confirm": False,
+                        "confirm_reason": None,
+                        "unverified_signature": False,
+                    }
+                    signature = None
+                else:
+                    signature = next(
+                        (
+                            item
+                            for item in signatures
+                            if item["doc_type"] == decision.doc_type
+                        ),
+                        None,
+                    )
+                if signature is not None:
+                    classification = {
+                        "doc_type": decision.doc_type,
+                        "label_ko": signature.get("label_ko"),
+                        "confidence": round(float(decision.confidence), 2),
+                        "decided_by": "openai",
+                        "evidence": [
+                            {"kind": "llm_signal", "signal_id": signal_id}
+                            for signal_id in decision.evidence_signal_ids
+                        ],
+                        "alternatives": [
+                            {"doc_type": item}
+                            for item in decision.candidate_doc_types
+                            if item != decision.doc_type
+                        ],
+                        "fields": _fields(signature, extracted.full_text),
+                        "needs_user_confirm": True,
+                        "confirm_reason": "AI 보조 분류 결과를 사용자가 확인해야 합니다.",
+                        "unverified_signature": not signature.get("verified", False),
+                    }
+
+        # Reuse the extraction and request-scoped OCR cache. Metadata extraction
+        # must never trigger a second external OCR call for the same upload.
+        from .metadata import extract_extracted_metadata
+
+        metadata = extract_extracted_metadata(
+            extracted,
+            signatures=signatures,
+            expected_owner_name=expected_owner_name,
+            cache_dir=cache_dir,
+        )
 
         documents.append(
             {
@@ -303,11 +480,13 @@ def classify_files(
                     k: v for k, v in classification.items() if k not in {"fields", "needs_user_confirm", "confirm_reason"}
                 },
                 "fields": classification["fields"],
+                "metadata": metadata,
                 "validity": expiry_of(classification, signatures),
                 "relevance": judge_relevance(classification["doc_type"], task),
                 "needs_user_confirm": classification["needs_user_confirm"],
                 "confirm_reason": classification["confirm_reason"],
                 "ocr_calls": extracted.ocr_calls,
+                "llm_calls": llm_calls,
                 "notes": extracted.notes,
             }
         )
@@ -326,6 +505,7 @@ def classify_files(
             "task_verified": task.get("verified", False),
             "checked_at": date.today().isoformat(),
             "ocr_calls_total": sum(d["ocr_calls"] for d in documents),
+            "llm_calls_total": sum(d["llm_calls"] for d in documents),
             "missing": missing,
             "documents": documents,
         }

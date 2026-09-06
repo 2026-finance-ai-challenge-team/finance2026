@@ -1,42 +1,175 @@
-"""Build and seed the ProofBridge SQLite policy database."""
+"""Create and seed the ProofBridge PostgreSQL policy database."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import sqlite3
 from pathlib import Path
 from typing import Any
 
+from modules.policy_db.runtime import connect_database
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "proofbridge.db"
-DEFAULT_SEED_PATH = PROJECT_ROOT / "data" / "seeds" / "hana_corporate_account.json"
-SCHEMA_PATH = Path(__file__).with_name("schema.sql")
+DEFAULT_SEED_PATHS = (
+    PROJECT_ROOT / "data" / "seeds" / "hana_corporate_account.json",
+    PROJECT_ROOT / "data" / "seeds" / "kakaobank_limit_release.json",
+    PROJECT_ROOT / "data" / "seeds" / "kb_financial_purpose.json",
+    PROJECT_ROOT / "data" / "seeds" / "bank_operations_catalog.json",
+)
+SCHEMA_PATH = Path(__file__).with_name("schema.postgresql.sql")
 
 
-def connect_database(database_path: Path | str = DEFAULT_DB_PATH) -> sqlite3.Connection:
-    """Open SQLite with foreign-key enforcement and row objects enabled."""
-    path = Path(database_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
+def _expand_seed_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Expand the compact multi-bank operation catalog into normal seed cases."""
+    if "banks" not in payload:
+        return [payload]
 
-    connection = sqlite3.connect(path)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    connection.execute("PRAGMA busy_timeout = 5000")
-    return connection
+    checked_at = payload["checked_at"]
+    shared_documents = payload.get("documents", [])
+    expanded: list[dict[str, Any]] = []
+    for bank_entry in payload["banks"]:
+        bank = bank_entry["bank"]
+        sources = {
+            source["source_key"]: source for source in bank_entry["sources"]
+        }
+        for operation in bank_entry["operations"]:
+            source_key = operation["source_key"]
+            source = sources.get(source_key)
+            if source is None:
+                raise ValueError(
+                    f"{bank['code']} 업무의 출처가 없습니다: {source_key}"
+                )
+            policy_key = operation["policy_key"]
+            expanded.append(
+                {
+                    "bank": bank,
+                    "policy": {
+                        "policy_key": policy_key,
+                        "label_ko": operation["label_ko"],
+                        "customer_type": operation.get("customer_type", "individual"),
+                        "account_type": operation.get("account_type", "banking_service"),
+                        "version": int(operation.get("version", 1)),
+                        "status": operation.get("status", "draft"),
+                        "verified_at": operation.get("verified_at", checked_at),
+                        "notes": operation.get("notes"),
+                    },
+                    "operations": [
+                        {
+                            "operation_code": policy_key,
+                            "label_ko": operation["label_ko"],
+                            "notes": operation.get("notes"),
+                        }
+                    ],
+                    "sources": [source],
+                    "documents": shared_documents,
+                    "requirement_sets": [
+                        {
+                            "requirement_code": f"{bank['slug']}.{policy_key}.official_guide",
+                            "purpose_code": None,
+                            "channel": operation["channel"],
+                            "visitor_type": operation.get(
+                                "visitor_type", "account_holder"
+                            ),
+                            "requirement_level": operation.get(
+                                "requirement_level", "official_required"
+                            ),
+                            "eligibility_notes": operation.get("eligibility_notes"),
+                            "notes": operation.get("requirement_notes"),
+                            "source_key": source_key,
+                            "documents": operation.get("documents", []),
+                            "preparations": operation.get("preparations", []),
+                        }
+                    ],
+                    "policy_conditions": operation.get("policy_conditions", []),
+                }
+            )
+    return expanded
 
 
-def initialize_schema(connection: sqlite3.Connection) -> None:
-    """Create the eight policy tables and their indexes."""
-    connection.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+def _load_seed_payloads(seed_paths: tuple[Path, ...]) -> list[dict[str, Any]]:
+    payloads: list[dict[str, Any]] = []
+    for path in seed_paths:
+        raw_payload = json.loads(path.read_text(encoding="utf-8"))
+        payloads.extend(_expand_seed_payload(raw_payload))
+    return payloads
 
 
-def _json_text(value: Any) -> str:
-    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+def validate_seed_catalog(
+    seed_paths: tuple[Path, ...] = DEFAULT_SEED_PATHS,
+) -> dict[str, int]:
+    """Validate cross-seed references without contacting PostgreSQL."""
+    payloads = _load_seed_payloads(seed_paths)
+    document_types = {
+        document["doc_type"]
+        for payload in payloads
+        for document in payload["documents"]
+    }
+    seen_policies: set[tuple[str, str, int]] = set()
+    for payload in payloads:
+        bank = payload["bank"]
+        policy = payload["policy"]
+        policy_identity = (
+            bank["code"],
+            policy["policy_key"],
+            int(policy["version"]),
+        )
+        if policy_identity in seen_policies:
+            raise ValueError(f"중복 정책 버전입니다: {policy_identity}")
+        seen_policies.add(policy_identity)
+        source_keys = {source["source_key"] for source in payload["sources"]}
+        requirement_codes: set[str] = set()
+        for requirement in payload["requirement_sets"]:
+            code = requirement["requirement_code"]
+            if code in requirement_codes:
+                raise ValueError(f"중복 requirement_code입니다: {code}")
+            requirement_codes.add(code)
+            if requirement["source_key"] not in source_keys:
+                raise ValueError(f"요건의 출처가 없습니다: {code}")
+            for document in requirement["documents"]:
+                if document["doc_type"] not in document_types:
+                    raise ValueError(
+                        f"문서 사전에 없는 doc_type입니다: {document['doc_type']}"
+                    )
+        for condition in payload["policy_conditions"]:
+            if condition["source_key"] not in source_keys:
+                raise ValueError(
+                    f"조건의 출처가 없습니다: {condition['condition_code']}"
+                )
+    return {
+        "seed_files": len(seed_paths),
+        "seed_cases": len(payloads),
+        "banks": len({payload["bank"]["code"] for payload in payloads}),
+        "policies": len(seen_policies),
+        "operations": sum(
+            len(payload.get("operations", [payload["policy"]]))
+            for payload in payloads
+        ),
+        "documents": len(document_types),
+        "requirement_sets": sum(
+            len(payload["requirement_sets"]) for payload in payloads
+        ),
+        "document_rules": sum(
+            len(requirement["documents"])
+            for payload in payloads
+            for requirement in payload["requirement_sets"]
+        ),
+    }
+
+
+def initialize_schema(connection: Any) -> None:
+    """Create the PostgreSQL policy tables and indexes."""
+    connection.execute(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _json_text(value: Any) -> Any:
+    """Adapt Python structures explicitly for PostgreSQL JSONB columns."""
+    from psycopg.types.json import Jsonb
+
+    return Jsonb(value)
 
 
 def _required_id(
-    connection: sqlite3.Connection,
+    connection: Any,
     query: str,
     parameters: tuple[Any, ...],
     label: str,
@@ -48,22 +181,35 @@ def _required_id(
 
 
 def seed_database(
-    connection: sqlite3.Connection,
-    seed_path: Path | str = DEFAULT_SEED_PATH,
+    connection: Any,
+    seed_path: Path | str | None = None,
 ) -> None:
-    """Load the curated Hana Bank case in one idempotent transaction."""
-    payload = json.loads(Path(seed_path).read_text(encoding="utf-8"))
+    """Load all curated cases, or one explicitly selected case, idempotently."""
+    if seed_path is None:
+        for default_seed_path in DEFAULT_SEED_PATHS:
+            seed_database(connection, default_seed_path)
+        return
+
+    raw_payload = json.loads(Path(seed_path).read_text(encoding="utf-8"))
+    for payload in _expand_seed_payload(raw_payload):
+        _seed_payload(connection, payload)
+
+
+def _seed_payload(connection: Any, payload: dict[str, Any]) -> None:
+    """Insert one normalized bank-operation policy payload."""
     bank = payload["bank"]
     policy = payload["policy"]
 
     with connection:
         connection.execute(
             """
-            INSERT INTO banks (code, name_ko)
-            VALUES (?, ?)
-            ON CONFLICT(code) DO UPDATE SET name_ko = excluded.name_ko
+            INSERT INTO banks (code, slug, name_ko)
+            VALUES (?, ?, ?)
+            ON CONFLICT(code) DO UPDATE SET
+                slug = excluded.slug,
+                name_ko = excluded.name_ko
             """,
-            (bank["code"], bank["name_ko"]),
+            (bank["code"], bank["slug"], bank["name_ko"]),
         )
         bank_id = _required_id(
             connection,
@@ -110,6 +256,35 @@ def seed_database(
             policy["policy_key"],
         )
 
+        operations = payload.get("operations") or [
+            {
+                "operation_code": policy["policy_key"],
+                "label_ko": policy["label_ko"],
+                "notes": policy.get("notes"),
+            }
+        ]
+        connection.execute(
+            "DELETE FROM policy_operations WHERE policy_version_id = ?",
+            (policy_version_id,),
+        )
+        connection.executemany(
+            """
+            INSERT INTO policy_operations (
+                policy_version_id, operation_code, label_ko, notes
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            [
+                (
+                    policy_version_id,
+                    operation["operation_code"],
+                    operation["label_ko"],
+                    operation.get("notes"),
+                )
+                for operation in operations
+            ],
+        )
+
         for source in payload["sources"]:
             connection.execute(
                 """
@@ -134,7 +309,7 @@ def seed_database(
                     source["title"],
                     source["url"],
                     source["checked_at"],
-                    int(source["is_primary"]),
+                    bool(source["is_primary"]),
                 ),
             )
 
@@ -145,10 +320,10 @@ def seed_database(
                     doc_type, label_ko, issuer, issuer_aliases,
                     title_patterns, required_anchors,
                     negative_anchors, doc_number_label,
-                    issued_at_labels, validity_days, source_url,
-                    as_of, last_checked, verified, notes
+                    issued_at_labels, validity_days, acquisition_json,
+                    source_url, as_of, last_checked, verified, notes
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(doc_type) DO UPDATE SET
                     label_ko = excluded.label_ko,
                     issuer = excluded.issuer,
@@ -159,6 +334,7 @@ def seed_database(
                     doc_number_label = excluded.doc_number_label,
                     issued_at_labels = excluded.issued_at_labels,
                     validity_days = excluded.validity_days,
+                    acquisition_json = excluded.acquisition_json,
                     source_url = excluded.source_url,
                     as_of = excluded.as_of,
                     last_checked = excluded.last_checked,
@@ -176,10 +352,11 @@ def seed_database(
                     document.get("doc_number_label"),
                     _json_text(document.get("issued_at_labels", [])),
                     document.get("validity_days"),
+                    _json_text(document.get("acquisition", {})),
                     document.get("source_url"),
                     document["as_of"],
                     document["last_checked"],
-                    int(document.get("verified", False)),
+                    bool(document.get("verified", False)),
                     document.get("notes"),
                 ),
             )
@@ -203,15 +380,17 @@ def seed_database(
             cursor = connection.execute(
                 """
                 INSERT INTO requirement_sets (
-                    policy_version_id, source_id, requirement_code, channel,
+                    policy_version_id, source_id, requirement_code, purpose_code, channel,
                     visitor_type, requirement_level, eligibility_notes, notes
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING id
                 """,
                 (
                     policy_version_id,
                     source_id,
                     requirement["requirement_code"],
+                    requirement.get("purpose_code"),
                     requirement["channel"],
                     requirement["visitor_type"],
                     requirement["requirement_level"],
@@ -219,7 +398,10 @@ def seed_database(
                     requirement.get("notes"),
                 ),
             )
-            requirement_set_id = int(cursor.lastrowid)
+            inserted = cursor.fetchone()
+            if inserted is None:
+                raise RuntimeError("요건 묶음 ID를 생성하지 못했습니다")
+            requirement_set_id = int(inserted["id"])
 
             for sort_order, document_rule in enumerate(requirement["documents"], start=1):
                 document_id = _required_id(
@@ -234,17 +416,19 @@ def seed_database(
                     INSERT INTO requirement_documents (
                         requirement_set_id, document_id, original_required,
                         issued_within_days, submission_method, choice_group,
-                        notes, sort_order
+                        bundle_code, acquisition_json, notes, sort_order
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         requirement_set_id,
                         document_id,
-                        None if original_required is None else int(original_required),
+                        None if original_required is None else bool(original_required),
                         document_rule.get("issued_within_days"),
                         document_rule["submission_method"],
                         document_rule.get("choice_group"),
+                        document_rule.get("bundle_code"),
+                        _json_text(document_rule.get("acquisition", {})),
                         document_rule.get("notes"),
                         sort_order,
                     ),
@@ -304,40 +488,50 @@ def seed_database(
             )
 
 
-def database_summary(connection: sqlite3.Connection) -> dict[str, int]:
+def database_summary(connection: Any) -> dict[str, int]:
     """Return row counts used by CLI output and verification."""
     table_names = (
         "banks",
         "policy_versions",
+        "policy_operations",
         "requirement_sets",
         "documents",
         "requirement_documents",
         "preparations",
         "policy_conditions",
         "sources",
+        "document_field_schema_versions",
     )
     return {
         table_name: int(
-            connection.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+            connection.execute(
+                f"SELECT COUNT(*) AS row_count FROM {table_name}"
+            ).fetchone()["row_count"]
         )
         for table_name in table_names
     }
 
 
 def build_database(
-    database_path: Path | str = DEFAULT_DB_PATH,
-    seed_path: Path | str = DEFAULT_SEED_PATH,
+    database_url: str | None = None,
+    seed_path: Path | str | None = None,
     *,
     replace: bool = False,
 ) -> dict[str, int]:
-    """Create, seed, and close a complete SQLite database."""
-    path = Path(database_path)
-    if replace and path.exists():
-        path.unlink()
-
-    connection = connect_database(path)
+    """Create, seed, and close the PostgreSQL policy database."""
+    connection = connect_database(database_url)
     try:
         initialize_schema(connection)
+        if replace:
+            connection.execute(
+                """
+                TRUNCATE TABLE
+                    policy_conditions, preparations, requirement_documents,
+                    requirement_sets, sources, policy_versions, documents, banks
+                RESTART IDENTITY CASCADE
+                """
+            )
+            connection.commit()
         seed_database(connection, seed_path)
         return database_summary(connection)
     finally:
@@ -345,20 +539,30 @@ def build_database(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="하나은행 법인계좌 개설 정책 SQLite DB를 생성합니다."
+    parser = argparse.ArgumentParser(description="ProofBridge PostgreSQL 정책 DB를 생성합니다.")
+    parser.add_argument(
+        "--seed",
+        type=Path,
+        default=None,
+        help="특정 시드만 넣을 때 지정합니다. 생략하면 모든 기본 시드를 넣습니다.",
     )
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
-    parser.add_argument("--seed", type=Path, default=DEFAULT_SEED_PATH)
     parser.add_argument(
         "--replace",
         action="store_true",
-        help="기존 대상 DB 파일을 지운 뒤 다시 생성합니다.",
+        help="ProofBridge 정책 테이블의 기존 행을 비운 뒤 다시 적재합니다.",
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="PostgreSQL에 연결하지 않고 모든 시드 참조만 검증합니다.",
     )
     args = parser.parse_args()
 
-    summary = build_database(args.db, args.seed, replace=args.replace)
-    print(json.dumps({"database": str(args.db), "rows": summary}, ensure_ascii=False, indent=2))
+    if args.check:
+        print(json.dumps(validate_seed_catalog(), ensure_ascii=False, indent=2))
+        return
+    summary = build_database(seed_path=args.seed, replace=args.replace)
+    print(json.dumps({"database": "postgresql", "rows": summary}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

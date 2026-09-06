@@ -1,0 +1,115 @@
+{
+  "bank": {
+    "code": "KB_KOOKMIN",
+    "slug": "kb",
+    "name_ko": "KB국민은행"
+  },
+  "policy": {
+    "policy_key": "financial_transaction_purpose_verification",
+    "label_ko": "KB국민은행 금융거래 목적 확인",
+    "customer_type": "individual_or_business",
+    "account_type": "demand_deposit",
+    "version": 1,
+    "status": "published",
+    "verified_at": "2026-09-02",
+    "notes": "입출금통장 개설, 금융거래한도계좌 한도해제, 거래중지계좌 환원, 장기무거래계좌 통장재발급에 적용되는 목적별 증빙 예시다. 은행이 추가자료를 요청할 수 있다."
+  },
+  "operations": [
+    {"operation_code":"demand_deposit_opening","label_ko":"입출금이 자유로운 예금통장 개설","notes":"목적 확인이 되지 않으면 금융거래 한도계좌로 개설될 수 있다."},
+    {"operation_code":"limited_account_release","label_ko":"금융거래한도계좌 한도해제","notes":"목적별 증빙 예시를 기준으로 은행이 심사한다."},
+    {"operation_code":"dormant_transaction_account_restore","label_ko":"거래중지계좌 환원","notes":"금융거래 목적 확인 대상 업무다."},
+    {"operation_code":"long_inactive_passbook_reissue","label_ko":"장기무거래(6개월)계좌 통장재발급","notes":"금융거래 목적 확인 대상 업무다."}
+  ],
+  "sources": [
+    {
+      "source_key": "kb_official_purpose_notice",
+      "scope": "financial_transaction_purpose_verification",
+      "publisher": "KB국민은행",
+      "title": "금융거래목적확인 의무 시행 안내",
+      "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+      "checked_at": "2026-09-02",
+      "is_primary": true
+    }
+  ],
+  "documents": [
+    {"doc_type":"employment_certificate","label_ko":"재직증명서","issuer":"재직기관","issuer_aliases":[],"title_patterns":["재직\\s*증명서"],"required_anchors":["성명","재직"],"negative_anchors":[],"issued_at_labels":["발급일","발급일자"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"earned_income_withholding_receipt","label_ko":"근로소득원천징수영수증","issuer":"원천징수의무자","issuer_aliases":["국세청","홈택스"],"title_patterns":["근로소득\\s*원천징수영수증"],"required_anchors":["근무처","소득자"],"negative_anchors":[],"issued_at_labels":["귀속연도"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"pension_certificate","label_ko":"연금증서","issuer":"연금 지급기관","issuer_aliases":[],"title_patterns":["연금\\s*증서"],"required_anchors":["연금","수급"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"beneficiary_confirmation","label_ko":"수급권자 확인서","issuer":"연금 지급기관","issuer_aliases":[],"title_patterns":["수급권자\\s*확인서"],"required_anchors":["수급권자"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"salary_statement","label_ko":"급여명세표","issuer":"고용주","issuer_aliases":[],"title_patterns":["급여\\s*명세"],"required_anchors":["지급액","근로자"],"negative_anchors":[],"issued_at_labels":["지급일","귀속월"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"business_transaction_contract","label_ko":"사업관련 거래계약서","issuer":"계약 당사자","issuer_aliases":[],"title_patterns":["거래\\s*계약서"],"required_anchors":["계약","당사자"],"negative_anchors":[],"issued_at_labels":["계약일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"member_roster","label_ko":"구성원 명부","issuer":"해당 모임·단체","issuer_aliases":[],"title_patterns":["구성원\\s*명부","회원\\s*명부"],"required_anchors":["구성원"],"negative_anchors":[],"issued_at_labels":["작성일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"organization_rules","label_ko":"회칙·정관","issuer":"해당 모임·단체","issuer_aliases":[],"title_patterns":["회칙","정관"],"required_anchors":["목적","회원"],"negative_anchors":[],"issued_at_labels":["제정일","개정일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"organization_proof","label_ko":"단체 입증서류","issuer":"해당 단체·관할기관","issuer_aliases":[],"title_patterns":["단체"],"required_anchors":["단체명"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"representative_proof","label_ko":"대표자 입증서류","issuer":"해당 모임·단체","issuer_aliases":[],"title_patterns":["회의록","대표자.*등록"],"required_anchors":["대표자"],"negative_anchors":["사\\s*업\\s*자\\s*등\\s*록\\s*증"],"issued_at_labels":["작성일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"research_fund_contract","label_ko":"연구비 계약서","issuer":"연구비 지급기관","issuer_aliases":[],"title_patterns":["연구비\\s*계약서"],"required_anchors":["연구비","계약"],"negative_anchors":[],"issued_at_labels":["계약일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"admission_letter","label_ko":"입학허가서","issuer":"교육기관","issuer_aliases":[],"title_patterns":["입학\\s*허가서","admission"],"required_anchors":["학교","입학"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"visa","label_ko":"비자","issuer":"정부·영사기관","issuer_aliases":[],"title_patterns":["VISA","비자"],"required_anchors":["passport","valid"],"negative_anchors":[],"issued_at_labels":["issue date","발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"supply_contract","label_ko":"물품공급계약서","issuer":"계약 당사자","issuer_aliases":[],"title_patterns":["물품\\s*공급\\s*계약서"],"required_anchors":["공급자","공급받는자"],"negative_anchors":[],"issued_at_labels":["계약일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"tax_invoice","label_ko":"(전자)세금계산서","issuer":"국세청·공급자","issuer_aliases":["홈택스"],"title_patterns":["세금\\s*계산서"],"required_anchors":["공급자","공급받는자","공급가액"],"negative_anchors":[],"issued_at_labels":["작성일자"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"withholding_tax_return","label_ko":"원천징수이행상황신고서","issuer":"국세청","issuer_aliases":["홈택스"],"title_patterns":["원천징수이행상황신고서"],"required_anchors":["원천징수","귀속"],"negative_anchors":[],"issued_at_labels":["귀속연월","신고일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"tax_payment_certificate","label_ko":"납세증명서","issuer":"국세청·지방자치단체","issuer_aliases":["정부24","홈택스"],"title_patterns":["납세\\s*증명서"],"required_anchors":["납세자","체납"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"franchise_agreement","label_ko":"프랜차이즈가맹점 계약서","issuer":"가맹본부·가맹점주","issuer_aliases":[],"title_patterns":["가맹점\\s*계약서"],"required_anchors":["가맹본부","가맹점"],"negative_anchors":[],"issued_at_labels":["계약일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"workplace_lease","label_ko":"사업장임대차계약서","issuer":"임대인·임차인","issuer_aliases":[],"title_patterns":["임대차\\s*계약서"],"required_anchors":["임대인","임차인","소재지"],"negative_anchors":[],"issued_at_labels":["계약일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"business_website_evidence","label_ko":"사업자 홈페이지 자료","issuer":"해당 사업자","issuer_aliases":[],"title_patterns":[],"required_anchors":["상호","사업"],"negative_anchors":[],"issued_at_labels":[],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"office_purchase_receipt","label_ko":"사무실 인테리어 등 구입 영수증","issuer":"판매자","issuer_aliases":[],"title_patterns":["영수증"],"required_anchors":["금액","사업장"],"negative_anchors":[],"issued_at_labels":["거래일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"startup_agency_material","label_ko":"창업관련기관 발급 자료","issuer":"창업 관련 기관","issuer_aliases":[],"title_patterns":[],"required_anchors":["창업","사업자"],"negative_anchors":[],"issued_at_labels":["발급일"],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"storefront_photo","label_ko":"간판사진","issuer":"사용자 촬영","issuer_aliases":[],"title_patterns":[],"required_anchors":[],"negative_anchors":[],"issued_at_labels":[],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"portal_roadview_evidence","label_ko":"포털 사이트 로드뷰 자료","issuer":"포털 지도 서비스","issuer_aliases":[],"title_patterns":[],"required_anchors":["주소"],"negative_anchors":[],"issued_at_labels":[],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false},
+    {"doc_type":"objective_transaction_evidence","label_ko":"거래목적을 확인할 수 있는 객관적 증빙자료","issuer":null,"issuer_aliases":[],"title_patterns":[],"required_anchors":[],"negative_anchors":[],"issued_at_labels":[],"validity_days":null,"source_url":"https://obank.kbstar.com/quics?articleId=134693","as_of":"2026-09-02","last_checked":"2026-09-02","verified":false}
+  ],
+  "requirement_sets": [
+    {"requirement_code":"kb.purpose.salary","purpose_code":"salary","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"급여 수령 목적","notes":"나열된 자료는 예시이며 추가자료가 요청될 수 있다.","documents":[
+      {"doc_type":"employment_certificate","submission_method":"original_or_copy","choice_group":"salary_evidence","bundle_code":"employment_certificate"},
+      {"doc_type":"earned_income_withholding_receipt","submission_method":"original_or_copy","choice_group":"salary_evidence","bundle_code":"earned_income_withholding_receipt"},
+      {"doc_type":"health_insurance_certificate","submission_method":"original_or_copy","choice_group":"salary_evidence","bundle_code":"health_insurance_certificate"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.pension","purpose_code":"pension","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"연금 수령 목적","documents":[
+      {"doc_type":"pension_certificate","submission_method":"original_or_copy","choice_group":"pension_evidence","bundle_code":"pension_certificate"},
+      {"doc_type":"beneficiary_confirmation","submission_method":"original_or_copy","choice_group":"pension_evidence","bundle_code":"beneficiary_confirmation"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.part_time_wage","purpose_code":"part_time_wage","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"아르바이트비 수령 목적","documents":[
+      {"doc_type":"business_registration_certificate","submission_method":"original_or_copy","choice_group":"part_time_evidence","bundle_code":"employer_business_registration"},
+      {"doc_type":"employment_contract","submission_method":"original_or_copy","choice_group":"part_time_evidence","bundle_code":"employment_contract"},
+      {"doc_type":"salary_statement","submission_method":"original_or_copy","choice_group":"part_time_evidence","bundle_code":"salary_statement"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.business_funds","purpose_code":"business_funds","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"사업자금 목적","documents":[
+      {"doc_type":"business_transaction_contract","submission_method":"original_or_copy","choice_group":"business_funds_evidence","bundle_code":"business_transaction_contract"},
+      {"doc_type":"salary_statement","submission_method":"original_or_copy","choice_group":"business_funds_evidence","bundle_code":"counterparty_salary_statement"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.group_account","purpose_code":"group_account","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"모임통장 목적","documents":[
+      {"doc_type":"member_roster","submission_method":"original_or_copy","choice_group":"group_evidence","bundle_code":"member_roster"},
+      {"doc_type":"organization_rules","submission_method":"original_or_copy","choice_group":"group_evidence","bundle_code":"organization_rules"},
+      {"doc_type":"organization_proof","submission_method":"original_or_copy","choice_group":"group_evidence","bundle_code":"organization_proof"},
+      {"doc_type":"representative_proof","submission_method":"original_or_copy","choice_group":"group_evidence","bundle_code":"representative_proof"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.living_expense","purpose_code":"living_expense","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"공과금·관리비 등 이체 목적","documents":[
+      {"doc_type":"utility_bill","submission_method":"original_or_copy","choice_group":"living_expense_evidence","bundle_code":"utility_bill"},
+      {"doc_type":"management_fee_notice","submission_method":"original_or_copy","choice_group":"living_expense_evidence","bundle_code":"management_fee_notice"},
+      {"doc_type":"tax_bill","submission_method":"original_or_copy","choice_group":"living_expense_evidence","bundle_code":"tax_or_insurance_notice"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.research_funds","purpose_code":"research_funds","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"연구비 목적","documents":[
+      {"doc_type":"research_fund_contract","submission_method":"original_or_copy","choice_group":"research_evidence","bundle_code":"research_fund_contract"},
+      {"doc_type":"business_registration_certificate","submission_method":"original_or_copy","choice_group":"research_evidence","bundle_code":"payer_business_registration"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.overseas_use","purpose_code":"overseas_use","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"해외사용 목적","documents":[
+      {"doc_type":"admission_letter","submission_method":"original_or_copy","choice_group":"overseas_evidence","bundle_code":"admission_letter"},
+      {"doc_type":"visa","submission_method":"original_or_copy","choice_group":"overseas_evidence","bundle_code":"visa"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.existing_business","purpose_code":"existing_business","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"기존 법인·개인사업자","documents":[
+      {"doc_type":"supply_contract","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"supply_contract"},
+      {"doc_type":"tax_invoice","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"tax_invoice"},
+      {"doc_type":"business_registration_certificate","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"business_registration_certificate"},
+      {"doc_type":"withholding_tax_return","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"withholding_tax_return"},
+      {"doc_type":"tax_payment_certificate","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"tax_payment_certificate"},
+      {"doc_type":"vat_tax_base_certificate","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"vat_tax_base_certificate"},
+      {"doc_type":"standard_financial_statement_certificate","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"financial_statement"},
+      {"doc_type":"franchise_agreement","submission_method":"original_or_copy","choice_group":"existing_business_evidence","bundle_code":"franchise_agreement"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.new_business","purpose_code":"new_business","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"신설 법인·개인사업자","documents":[
+      {"doc_type":"workplace_lease","submission_method":"original_or_copy","choice_group":"new_business_evidence","bundle_code":"workplace_lease"},
+      {"doc_type":"franchise_agreement","submission_method":"original_or_copy","choice_group":"new_business_evidence","bundle_code":"franchise_agreement"},
+      {"doc_type":"business_website_evidence","submission_method":"photo_or_pdf","choice_group":"new_business_evidence","bundle_code":"business_website"},
+      {"doc_type":"office_purchase_receipt","submission_method":"original_or_copy","choice_group":"new_business_evidence","bundle_code":"office_purchase_receipt"},
+      {"doc_type":"startup_agency_material","submission_method":"original_or_copy","choice_group":"new_business_evidence","bundle_code":"startup_agency_material"},
+      {"doc_type":"storefront_photo","submission_method":"photo_or_pdf","choice_group":"new_business_evidence","bundle_code":"storefront_photo"},
+      {"doc_type":"portal_roadview_evidence","submission_method":"photo_or_pdf","choice_group":"new_business_evidence","bundle_code":"portal_roadview"}],"preparations":[]},
+    {"requirement_code":"kb.purpose.other","purpose_code":"other","channel":"branch","visitor_type":"account_holder","requirement_level":"official_minimum","source_key":"kb_official_purpose_notice","eligibility_notes":"기타 거래 목적","documents":[
+      {"doc_type":"objective_transaction_evidence","submission_method":"original_or_copy","choice_group":"other_evidence","bundle_code":"objective_transaction_evidence"}],"preparations":[]}
+  ],
+  "policy_conditions": [
+    {"condition_code":"kb.additional_documents_may_be_requested","channel":"all","source_key":"kb_official_purpose_notice","expression":{"official_list_is_example":true},"result_code":"ADDITIONAL_REVIEW_POSSIBLE","description":"공식 안내의 서류는 예시이며 필요 시 은행이 다른 추가자료를 요청할 수 있다."},
+    {"condition_code":"kb.unverified_purpose_may_be_limited_or_rejected","channel":"all","source_key":"kb_official_purpose_notice","expression":{"purpose_verified":false},"result_code":"LIMITED_ACCOUNT_OR_REJECTION_POSSIBLE","description":"목적이 확인되지 않으면 한도계좌로 개설되거나 업무 처리가 거절될 수 있다."}
+  ]
+}

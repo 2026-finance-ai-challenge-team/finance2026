@@ -1,1 +1,1 @@
-"""SQLite-backed policy data for ProofBridge."""
+"""PostgreSQL-backed policy data for ProofBridge."""

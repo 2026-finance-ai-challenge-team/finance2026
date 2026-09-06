@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from modules.doc_classify.classify import (  # noqa: E402
+    _comparison_tokens,
     CONFIRM_THRESHOLD,
     classify_one,
     judge_relevance,
@@ -21,7 +22,7 @@ from modules.doc_classify.classify import (  # noqa: E402
 from modules.doc_classify.extract import Extracted, Page, visual_title  # noqa: E402
 
 SIGNATURES = load_signatures()
-TASK = load_task("kakaobank.limit_release.living_expense")
+TASK = load_task("kakaobank.limit_account_release")
 
 # --- 합성 문서 (실제 개인정보 없음) ---------------------------------------
 
@@ -142,6 +143,47 @@ def test_출력에_원문_텍스트가_없다():
     blob = repr(classify_one(build(DEUNGBON), SIGNATURES))
     assert "홍길동" not in blob, "출력에 원문이 새고 있다"
     assert "김영희" not in blob, "출력에 원문이 새고 있다"
+
+
+def test_이름과_주소는_원문대신_비교토큰으로_추출한다():
+    management = """공동주택 관리비 고지서
+입주자명
+홍길동
+주소
+서울특별시 예시구 예시로 000, 000동 000호"""
+    resident = """주민등록표 (등본)
+세대주 성명
+홍길동
+주소
+서울특별시 예시구 예시로 000, 000동 000호"""
+
+    management_tokens = _comparison_tokens("management_fee_notice", management)
+    resident_tokens = _comparison_tokens("resident_registration_copy", resident)
+
+    assert management_tokens["subject_name"] == resident_tokens["subject_name"]
+    assert management_tokens["address"] == resident_tokens["address"]
+    assert "홍길동" not in repr(management_tokens)
+    assert "예시로" not in repr(management_tokens)
+
+
+def test_법인명은_대표자_문구를_제외하고_비교한다():
+    contract = """근로계약서
+사용자
+주식회사 예시  대표자 김예시
+근로자
+홍길동"""
+    registration = """사업자등록증
+법인명
+주식회사 예시
+대표자
+김예시"""
+
+    contract_tokens = _comparison_tokens("employment_contract", contract)
+    registration_tokens = _comparison_tokens(
+        "business_registration_certificate", registration
+    )
+
+    assert contract_tokens["organization_name"] == registration_tokens["organization_name"]
 
 
 def ocr_field(text: str, *, top: float, height: float, left: float = 0.0) -> dict:
