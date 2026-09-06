@@ -143,15 +143,17 @@ function metadataStatusLabel(status: ApiMetadataValue<unknown>["status"]) {
 }
 
 function requirementLevelLabel(level: string) {
+  const normalized = level.trim().toLowerCase();
   return {
-    REQUIRED: "필수",
-    CONDITIONAL: "조건부",
-    ALTERNATIVE: "대체 가능",
-    RECOMMENDED: "권장",
+    required: "필수",
+    conditional: "조건부",
+    alternative: "대체 가능",
+    recommended: "권장",
     official_required: "필수 서류",
+    official_require: "필수 서류",
     official_minimum: "기본 서류",
     recommended_additional: "추가 권장",
-  }[level] ?? level;
+  }[normalized] ?? "확인 필요";
 }
 
 function DocumentMetadataDetails({ metadata }: { metadata: ApiDocumentMetadata }) {

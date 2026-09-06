@@ -176,7 +176,7 @@ class PostgreSQLPolicyService:
                             "original": "원본 지참",
                             "original_or_copy": "원본 또는 사본",
                             "photo_or_pdf": "사진 또는 PDF 제출",
-                            "printed_original_photo": "원본 출력 후 사진 촬영",
+                            "printed_original_photo": "원본 문서 사진 제출",
                             "auto_submit": "공식 제출 경로",
                         }.get(rule["submission_method"], rule["submission_method"]),
                         notes=rule.get("notes"),

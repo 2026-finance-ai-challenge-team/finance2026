@@ -39,7 +39,7 @@ _SUBMISSION_LABELS = {
     "original": "원본 지참",
     "original_or_copy": "원본 또는 사본",
     "photo_or_pdf": "사진 또는 PDF 제출",
-    "printed_original_photo": "원본 출력 후 사진 촬영",
+    "printed_original_photo": "원본 문서 사진 제출",
     "auto_submit": "공식 자동 제출 경로",
 }
 _SYNTHETIC_DEMO_TYPES = {
@@ -580,7 +580,7 @@ def _build_completion_plan(
         if rule["submission_method"] == "original":
             checklist.append("발급된 원본을 훼손하지 않고 지참")
         elif rule["submission_method"] == "printed_original_photo":
-            checklist.append("원본을 출력하고 문서 전체가 보이도록 촬영")
+            checklist.append("원본 문서 전체가 보이도록 촬영해 제출")
         elif rule["submission_method"] == "auto_submit":
             checklist.append("공식 전자 제출 경로에서 직접 전송")
         else:
