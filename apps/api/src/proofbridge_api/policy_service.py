@@ -27,6 +27,41 @@ _BUNDLE_COMPARISON_FIELDS: dict[str, tuple[str, ...]] = {
     "employment_contract_and_employer_registration": ("organization_name",),
 }
 
+# A document signature's source URL explains where a bank requires a document;
+# it is not necessarily where a customer can obtain it.  Keep shared issuer
+# routes separate so a policy from one bank is never presented as another
+# bank's issuance route.
+_ISSUER_ACQUISITION_FALLBACKS: dict[str, dict[str, object]] = {
+    "business_registration_certificate": {
+        "title": "국세청 홈택스에서 사업자등록 관련 증명 확인",
+        "channel": "tax_online_or_offline",
+        "description": "국세청 홈택스 또는 관할 세무서에서 사업자등록 관련 증명과 재발급 방법을 확인하세요.",
+        "steps": [
+            "국세청 홈택스에서 사업자등록 관련 민원을 찾습니다.",
+            "사업자 정보와 제출처가 요구한 증명 형태를 확인합니다.",
+            "은행 안내에 맞는 원본 또는 사본을 준비합니다.",
+        ],
+        "url": "https://www.hometax.go.kr/",
+        "action_label": "국세청 홈택스 열기",
+        "source_title": "국세청 홈택스",
+        "source_url": "https://www.hometax.go.kr/",
+        "verified": True,
+    },
+}
+
+
+def _acquisition_for(rule: dict, signature: dict) -> dict:
+    """Use a task/issuer route, never a shared document policy source as a route."""
+    payload = rule.get("acquisition") or signature.get("acquisition")
+    if not payload:
+        payload = _ISSUER_ACQUISITION_FALLBACKS.get(rule["doc_type"], {})
+    payload = dict(payload)
+    # Catalog seeds historically used source_url for issuer routes.  It is safe
+    # to make that link actionable only when it came from an acquisition block.
+    if not payload.get("url") and payload.get("source_url"):
+        payload["url"] = payload["source_url"]
+    return payload
+
 
 class PolicyDataError(RuntimeError):
     """Raised when a task cannot be backed by usable versioned policy data."""
@@ -115,11 +150,7 @@ class PostgreSQLPolicyService:
             )
             for rule in requirement_set["documents"]:
                 signature = signatures.get(rule["doc_type"], {})
-                acquisition_payload = (
-                    rule.get("acquisition")
-                    or signature.get("acquisition")
-                    or {}
-                )
+                acquisition_payload = _acquisition_for(rule, signature)
                 issuer = signature.get("issuer") or "발급·제공 기관"
                 acquisition_source = SourceReference(
                     title=acquisition_payload.get("source_title") or source.title,
@@ -157,8 +188,7 @@ class PostgreSQLPolicyService:
                             description=acquisition_payload.get("description")
                             or "발급·제공 기관에서 최신 서류의 발급 방법을 확인하세요.",
                             steps=acquisition_payload.get("steps") or [],
-                            url=acquisition_payload.get("url")
-                            or signature.get("source_url"),
+                            url=acquisition_payload.get("url"),
                             action_label=acquisition_payload.get("action_label"),
                             source=acquisition_source,
                         ),

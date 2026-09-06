@@ -204,6 +204,49 @@ def test_no_upload_description_contains_all_document_paths_and_links() -> None:
     assert any(item.acquisition.url for item in result.documents)
 
 
+def test_shared_document_policy_source_is_not_used_as_an_issuance_link() -> None:
+    service, task, _ = _service_and_task()
+    context = PolicyContext(
+        policy={
+            "task_id": TASK_ID,
+            "policy_status": "published",
+            "requirement_sets": [
+                {
+                    "requirement_code": "ibk.corporate.required",
+                    "requirement_level": "official_required",
+                    "source": {
+                        "title": "IBK기업은행 기업인터넷뱅킹 안내",
+                        "url": "https://mybank.ibk.co.kr/",
+                        "checked_at": "2026-09-07",
+                    },
+                    "documents": [
+                        {
+                            "doc_type": "business_registration_certificate",
+                            "submission_method": "original_or_copy",
+                        }
+                    ],
+                    "preparations": [],
+                }
+            ],
+        },
+        signatures=[
+            {
+                "doc_type": "business_registration_certificate",
+                "label_ko": "사업자등록증",
+                "issuer": "국세청",
+                # This mirrors the legacy shared signature that originated
+                # from a Hana policy rather than an issuer acquisition route.
+                "source_url": "https://www.hanabank.com/legacy-policy",
+            }
+        ],
+    )
+
+    result = service.describe(context=context, task=task)
+
+    assert result.documents[0].acquisition.url == "https://www.hometax.go.kr/"
+    assert "hanabank" not in result.documents[0].acquisition.url
+
+
 def test_database_connection_failure_is_exposed_as_policy_data_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

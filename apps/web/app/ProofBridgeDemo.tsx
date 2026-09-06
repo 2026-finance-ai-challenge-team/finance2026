@@ -148,6 +148,9 @@ function requirementLevelLabel(level: string) {
     CONDITIONAL: "조건부",
     ALTERNATIVE: "대체 가능",
     RECOMMENDED: "권장",
+    official_required: "필수 서류",
+    official_minimum: "기본 서류",
+    recommended_additional: "추가 권장",
   }[level] ?? level;
 }
 
