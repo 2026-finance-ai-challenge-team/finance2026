@@ -133,7 +133,7 @@ function apiDocumentRow(doc: ApiDocumentResult): DisplayRow {
         status: "이번 업무에는 불필요",
         tone: "unused",
         note: doc.reason_code === "CLEARLY_UNRELATED_DOCUMENT"
-          ? "내용을 확인했지만 카카오뱅크 한도계좌 해제의 인정 서류가 아니어서 제출 묶음에서 제외해요."
+          ? "내용을 확인했지만 선택한 업무의 인정 서류가 아니어서 제출 묶음에서 제외해요."
           : "문서 종류는 확인했지만 이번 업무의 인정 서류가 아니어서 제출 묶음에서 제외해요.",
       };
     case "MISSING":
@@ -251,7 +251,7 @@ function metaOf(doc: ClassifiedDocument): string {
  * 분류 결과 한 건을 화면 표시로 바꾼다.
  *
  * **`준비 완료`는 만들지 않는다.** 이 변환기는 문서 분류 결과만 취급하며,
- * 최종 판정은 FastAPI에 연결된 SQLite 규칙 엔진의 결과를 사용해야 한다.
+ * 최종 판정은 FastAPI에 연결된 PostgreSQL 정책 규칙의 결과를 사용해야 한다.
  * 여기서 낼 수 있는 건 분류·유효기간·업무 관련성에서 직접 유도되는 것뿐이다.
  */
 export function toDisplayRow(doc: ClassifiedDocument): DisplayRow {

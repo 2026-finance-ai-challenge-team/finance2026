@@ -8,9 +8,13 @@ import {
   deleteAnalysisSession,
   downloadPreparationKit,
   loadDemoAnalysis,
+  loadTaskRequirements,
   resolveTask,
   type AnalysisResponse,
+  type ApiDocumentMetadata,
   type ApiDocumentStatus,
+  type ApiMetadataValue,
+  type TaskRequirementsResponse,
   type TaskResolutionCandidate,
   type TaskResolutionResponse,
 } from "./analysisApi";
@@ -49,15 +53,18 @@ const MAX_FILES = 10;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 const STATIC_SAMPLE_ROWS = toRows(loadResult());
+const BANK_NAMES: Record<string, string> = {
+  KEB_HANA: "하나은행",
+  KB_KOOKMIN: "KB국민은행",
+  KAKAO_BANK: "카카오뱅크",
+  WOORI: "우리은행",
+  IBK: "IBK기업은행",
+  SHINHAN: "신한은행",
+};
 
-const evidenceBundles = [
-  "공과금 고지서",
-  "관리비 고지서 + 등본",
-  "세금 고지서",
-  "건강보험 자격득실 확인서",
-  "근로계약서 + 사업자등록증",
-  "휴대폰 요금 납부확인서",
-];
+function bankName(task: TaskResolutionCandidate) {
+  return task.bank_name_ko ?? BANK_NAMES[task.bank_code] ?? task.bank_code;
+}
 
 const bundleDescriptions: Record<string, string> = {
   utility_bill: "본인 명의 전기·가스·수도 고지서나 납부확인서가 있을 때",
@@ -138,9 +145,46 @@ function uploadedRelevanceLabel(document: AnalysisResponse["documents"][number])
   return "이번 업무에 필요한 서류";
 }
 
+function metadataStatusLabel(status: ApiMetadataValue<unknown>["status"]) {
+  return {
+    CONFIRMED: "확인됨",
+    INFERRED: "추정",
+    AMBIGUOUS: "후보 여러 개",
+    NOT_FOUND: "찾지 못함",
+  }[status];
+}
+
+function requirementLevelLabel(level: string) {
+  return {
+    REQUIRED: "필수",
+    CONDITIONAL: "조건부",
+    ALTERNATIVE: "대체 가능",
+    RECOMMENDED: "권장",
+  }[level] ?? level;
+}
+
+function DocumentMetadataDetails({ metadata }: { metadata: ApiDocumentMetadata }) {
+  const fields = [
+    { label: "문서명", value: metadata.document_name.value, status: metadata.document_name.status },
+    { label: "명의자", value: metadata.owner_name.value, status: metadata.owner_name.status },
+    { label: "발급일", value: metadata.issued_at.value, status: metadata.issued_at.status },
+    { label: "명시 유효일", value: metadata.expires_at.value, status: metadata.expires_at.status },
+  ];
+  return (
+    <dl className="metadata-grid" aria-label="문서에서 확인한 항목">
+      {fields.map((field) => (
+        <div key={field.label}>
+          <dt>{field.label}<span className={`metadata-state ${field.status.toLowerCase()}`}>{metadataStatusLabel(field.status)}</span></dt>
+          <dd>{field.value ?? "확인되지 않음"}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 function FlowNav({ view }: { view: View }) {
   const current = view === "task" ? 1 : view === "prepare" ? 2 : view === "analyzing" ? 3 : 4;
-  const steps = ["업무 확인", "서류 모으기", "AI 분석", "준비 키트"];
+  const steps = ["업무 확인", "서류 모으기", "서류 확인", "준비 키트"];
   return (
     <nav className="flow-nav" aria-label="업무 준비 단계">
       {steps.map((step, index) => {
@@ -163,14 +207,14 @@ function FlowNav({ view }: { view: View }) {
 function TaskDiscoveryAside() {
   return (
     <aside className="task-discovery-aside">
-      <div className="aside-head"><span>AI 업무 찾기</span><b>근거 있는 연결</b></div>
+      <div className="aside-head"><span>준비 방법</span><b>편한 말로 시작하세요</b></div>
       <ol className="discovery-steps">
         <li><span>01</span><div><b>편한 표현 그대로 입력</b><p>은행명이나 정확한 업무명을 몰라도 괜찮아요.</p></div></li>
-        <li><span>02</span><div><b>별칭·벡터로 업무 검색</b><p>확인된 업무 카탈로그 안에서만 가장 가까운 후보를 찾습니다.</p></div></li>
-        <li><span>03</span><div><b>한 번 확인하고 시작</b><p>짧거나 모호한 표현은 자동 확정하지 않고 질문합니다.</p></div></li>
+        <li><span>02</span><div><b>은행과 업무를 함께 확인</b><p>AI가 등록된 은행 업무 안에서 가장 가까운 후보를 찾아드려요.</p></div></li>
+        <li><span>03</span><div><b>한 번 확인하고 시작</b><p>입력이 모호하면 먼저 확인한 뒤 서류 준비를 시작해요.</p></div></li>
       </ol>
-      <div className="official-note"><Icon name="check"/><div><b>현재 자동 점검 가능</b><p>카카오뱅크 한도계좌 해제 · 공식 출처 확인</p></div></div>
-      <div className="ai-boundary-card"><Icon name="spark"/><div><b>RAG는 업무를 연결합니다</b><p>필요 서류와 준비 상태는 연결 후 기존 공식 규칙 엔진이 판정합니다.</p></div></div>
+      <div className="official-note"><Icon name="check"/><div><b>현재 지원 업무</b><p>카카오뱅크 한도계좌 해제 · 공식 출처 확인</p></div></div>
+      <div className="ai-boundary-card"><Icon name="spark"/><div><b>AI는 등록된 업무 안에서만 찾아요</b><p>은행이나 업무가 모호하면 임의로 확정하지 않고 후보를 먼저 보여드립니다.</p></div></div>
     </aside>
   );
 }
@@ -184,6 +228,29 @@ function TaskMatchCard({
   onConfirm: (task: TaskResolutionCandidate) => void;
   onReset: () => void;
 }) {
+  if (!resolution.selected_task && resolution.candidates.length > 0) {
+    return (
+      <div className="task-match-card" role="status">
+        <div className="match-heading">
+          <span className="match-icon"><Icon name="search"/></span>
+          <div><span>한 번만 더 확인해주세요</span><h2>가까운 업무가 여러 개예요</h2><p>{resolution.clarification_question ?? resolution.reason}</p></div>
+        </div>
+        <div className="task-candidate-list">
+          {resolution.candidates.map((candidate) => {
+            const supported = candidate.support_status === "SUPPORTED";
+            return (
+              <button type="button" key={candidate.task_id} disabled={!supported} onClick={() => onConfirm(candidate)}>
+                <b>{bankName(candidate)}</b>
+                <span>{candidate.label_ko}</span>
+                <small>{supported ? "서류 점검 가능" : "자동 점검 준비 중"}</small>
+              </button>
+            );
+          })}
+        </div>
+        <button className="secondary-action" type="button" onClick={onReset}>다시 입력</button>
+      </div>
+    );
+  }
   if (resolution.resolution === "UNSUPPORTED" || !resolution.selected_task) {
     return (
       <div className="task-match-card unsupported" role="status">
@@ -194,37 +261,67 @@ function TaskMatchCard({
     );
   }
   const task = resolution.selected_task;
+  const supported = task.support_status === "SUPPORTED";
   return (
     <div className="task-match-card" role="status">
       <div className="match-heading">
-        <div className="bank-badge" aria-hidden="true">K</div>
+        <div className="bank-badge" aria-hidden="true">{bankName(task).slice(0, 1)}</div>
         <div>
           <span>{resolution.resolution === "RESOLVED" ? "이 업무로 이해했어요" : "한 번만 확인해주세요"}</span>
-          <h2>{task.label_ko}</h2>
+          <h2>{bankName(task)} · {task.label_ko}</h2>
           <p>{resolution.clarification_question ?? resolution.reason}</p>
         </div>
       </div>
       <div className="retrieval-proof">
-        <span><Icon name="search"/> 별칭 + 벡터 검색</span>
-        <span><Icon name="check"/> 공식 출처 근거</span>
-        <span>일치도 {Math.round(task.confidence * 100)}%</span>
+        <span><Icon name="search"/> {resolution.retrieval_methods.includes("llm") ? "AI 자연어 해석" : "입력 내용 확인"}</span>
+        <span><Icon name="check"/> 등록된 업무만 선택</span>
+        <span>업무 일치도 {Math.round(task.confidence * 100)}%</span>
       </div>
       {resolution.evidence[0] && <a className="match-source" href={resolution.evidence[0].source_url} target="_blank" rel="noreferrer">{resolution.evidence[0].title} · {resolution.evidence[0].last_checked} 확인 <Icon name="external"/></a>}
-      <div className="match-actions"><button className="secondary-action" type="button" onClick={onReset}>다른 업무 입력</button><button className="primary-action" type="button" onClick={() => onConfirm(task)}>맞아요, 서류 준비하기 <Icon name="arrow"/></button></div>
+      <div className="match-actions">
+        <button className="secondary-action" type="button" onClick={onReset}>다른 업무 입력</button>
+        {supported ? <button className="primary-action" type="button" onClick={() => onConfirm(task)}>맞아요, 서류 준비하기 <Icon name="arrow"/></button> : <p className="support-pending">업무는 찾았지만 이 업무의 자동 서류 점검은 아직 준비 중이에요.</p>}
+      </div>
     </div>
   );
 }
 
-function EvidenceAside() {
+function RequirementsAside({
+  requirements,
+  loading,
+}: {
+  requirements: TaskRequirementsResponse | null;
+  loading: boolean;
+}) {
+  const bank = requirements
+    ? requirements.task.bank_name_ko ?? BANK_NAMES[requirements.task.bank_code] ?? requirements.task.bank_code
+    : "공식 기준 확인";
   return (
-    <aside className="workspace-aside">
-      <div className="aside-head"><span>이번 업무의 인정 증빙</span><b>6가지 방법 중 하나</b></div>
-      <ol className="bundle-list">
-        {evidenceBundles.map((bundle, index) => <li key={bundle}><span>{String(index + 1).padStart(2, "0")}</span><p>{bundle}</p></li>)}
-      </ol>
-      <div className="official-note"><Icon name="check"/><div><b>공식 출처 확인</b><p>카카오뱅크 공개 안내 · 2026.08.28 최종 확인</p></div></div>
-      <div className="ai-boundary-card"><Icon name="spark"/><div><b>AI는 문서를 읽고 분류를 돕습니다</b><p>최종 상태는 AI의 자유 추론이 아니라 공식 출처를 옮긴 규칙으로 계산합니다.</p></div></div>
-      <div className="privacy-card"><Icon name="lock"/><div><b>원본은 분석 응답 전에 삭제합니다</b><p>원본과 OCR 캐시는 응답 전에 지우고 결과에는 원문을 저장하지 않습니다.</p></div></div>
+    <aside className="workspace-aside" id="requirements-guide" aria-busy={loading}>
+      <div className="aside-head"><span>필요한 서류와 발급 경로</span><b>{bank}</b></div>
+      {loading && <div className="requirements-loading" role="status"><span className="pulse-dot"/><p>공식 정책에서 필요한 서류를 불러오고 있어요.</p></div>}
+      {!loading && requirements && (
+        <div className="requirement-guide-list">
+          {requirements.documents.map((document, index) => (
+            <details className="requirement-guide-item" key={`${document.requirement_code}-${document.doc_type}-${index}`} open={index < 2}>
+              <summary>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div><b>{document.label_ko}</b><small>{requirementLevelLabel(document.requirement_level)}{document.issued_within_days !== null ? ` · ${document.issued_within_days}일 이내 발급` : ""}</small></div>
+                <Icon name="chevron"/>
+              </summary>
+              <div className="requirement-guide-body">
+                <p>{document.acquisition.description}</p>
+                <p className="requirement-format"><b>제출 형태</b> {document.submission_label}</p>
+                {document.acquisition.url && <a href={document.acquisition.url} target="_blank" rel="noreferrer">{document.acquisition.action_label ?? "공식 발급 경로"} <Icon name="external"/></a>}
+              </div>
+            </details>
+          ))}
+          {requirements.preparations.length > 0 && <div className="requirement-preparations"><b>서류와 함께 준비할 것</b><ul>{requirements.preparations.map((item) => <li key={item.code}>{item.label_ko}{item.notes ? ` · ${item.notes}` : ""}</li>)}</ul></div>}
+          {requirements.warnings.length > 0 && <p className="requirement-warning"><Icon name="info"/>{requirements.warnings[0]}</p>}
+        </div>
+      )}
+      {!loading && !requirements && <div className="requirements-empty"><Icon name="info"/><p>업무를 다시 선택하면 필요한 서류를 확인할 수 있어요.</p></div>}
+      <div className="privacy-card"><Icon name="lock"/><div><b>파일 없이도 먼저 확인할 수 있어요</b><p>서류를 올리지 않아도 필요한 항목과 공식 발급 경로를 볼 수 있습니다.</p></div></div>
     </aside>
   );
 }
@@ -242,13 +339,12 @@ function ServiceIntro({ onDemo }: { onDemo: () => void }) {
     <section className="service-intro" aria-labelledby="service-title">
       <div className="service-hero">
         <div className="service-hero-copy">
-          <div className="service-status"><span/> 금융업무 준비 사전점검 · 합성 샘플 제공</div>
-          <p className="service-kicker">BANKING TASK COMPLETION LAYER</p>
+          <div className="service-status"><span/> 공식 기준으로 확인하는 금융업무 준비</div>
           <h1 id="service-title">모르면 그냥 다 넣으세요.<br/><em>필요한 것만 챙겨드릴게요.</em></h1>
           <p className="service-lead">공공 경로로 처리할 증빙은 공식 제출 방법으로 연결하고, 가지고 있는 PDF와 사진은 은행의 공개 기준과 대조해 부족한 서류와 다음 행동을 정리합니다.</p>
           <div className="service-actions">
             <a className="primary-action" href="#task-finder">내 금융업무 준비하기 <Icon name="arrow"/></a>
-            <button className="secondary-action" type="button" onClick={onDemo}><Icon name="spark"/> 합성 샘플로 바로 체험</button>
+            <button className="secondary-action" type="button" onClick={onDemo}><Icon name="spark"/> 예시로 먼저 체험하기</button>
           </div>
           <ul className="service-trust" aria-label="서비스 원칙">
             <li><Icon name="check"/> 공식 출처 기반 규칙 판정</li>
@@ -270,7 +366,7 @@ function ServiceIntro({ onDemo }: { onDemo: () => void }) {
         <article><span>02</span><div><b>문서는 한꺼번에</b><p>PDF와 사진을 분류하고 필요한 핵심 항목만 확인합니다.</p></div></article>
         <article><span>03</span><div><b>부족한 것까지 해결</b><p>빠진 서류의 공식 발급 경로와 실제 제출 순서를 안내합니다.</p></div></article>
       </div>
-      <div className="support-scope"><span>현재 MVP 지원 범위</span><b>카카오뱅크 한도계좌 해제 준비</b><p>지원하지 않는 업무를 가능한 것처럼 안내하지 않습니다.</p></div>
+      <div className="support-scope"><span>현재 지원 업무</span><b>카카오뱅크 한도계좌 해제 준비</b></div>
     </section>
   );
 }
@@ -281,6 +377,8 @@ export function ProofBridgeDemo() {
   const [taskResolution, setTaskResolution] = useState<TaskResolutionResponse | null>(null);
   const [selectedTask, setSelectedTask] = useState<TaskResolutionCandidate | null>(null);
   const [resolvingTask, setResolvingTask] = useState(false);
+  const [taskRequirements, setTaskRequirements] = useState<TaskRequirementsResponse | null>(null);
+  const [loadingRequirements, setLoadingRequirements] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [staticDemo, setStaticDemo] = useState(false);
@@ -332,17 +430,28 @@ export function ProofBridgeDemo() {
     }
   };
 
-  const confirmTask = (task: TaskResolutionCandidate) => {
+  const confirmTask = async (task: TaskResolutionCandidate) => {
     setSelectedTask(task);
     setView("prepare");
     setError(null);
-    setNotice(`${task.label_ko} 업무로 연결했어요.`);
+    setTaskRequirements(null);
+    setLoadingRequirements(true);
+    setNotice(`${bankName(task)} ${task.label_ko} 업무로 연결했어요.`);
+    try {
+      setTaskRequirements(await loadTaskRequirements(task.task_id));
+    } catch (caught) {
+      const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("필요한 서류를 불러오지 못했어요.");
+      setError({ message: apiError.message, recovery: apiError.recovery });
+    } finally {
+      setLoadingRequirements(false);
+    }
   };
 
   const changeTask = () => {
     setView("task");
     setTaskResolution(null);
     setSelectedTask(null);
+    setTaskRequirements(null);
     setFiles([]);
     setError(null);
     setNotice(null);
@@ -466,7 +575,7 @@ export function ProofBridgeDemo() {
     }
   };
 
-  const headline = analysis ? analysisHeadline(analysis, rows) : "합성 문서의 분류 결과를 확인해보세요.";
+  const headline = analysis ? analysisHeadline(analysis, rows) : "예시 문서의 확인 결과를 살펴보세요.";
   const overall = analysis?.overall_status ?? "REVIEW_REQUIRED";
   const overallLabel = overall === "READY" ? "공개 기준 사전 점검 완료" : overall === "ACTION_REQUIRED" ? "보완할 서류가 있어요" : "확인이 필요한 항목이 있어요";
   const hasResidentCopy = analysis ? analysis.documents.some((document) => document.doc_type === "resident_registration_copy") : staticDemo;
@@ -477,8 +586,8 @@ export function ProofBridgeDemo() {
       <a className="skip-link" href="#workspace">본문으로 바로가기</a>
       <header className="product-header">
         <a className="product-brand" href="#workspace" aria-label="ProofBridge 처음으로"><span className="brand-symbol" aria-hidden="true"><i/><i/></span><span>ProofBridge</span></a>
-        <div className="header-context"><span className="context-dot"/>{selectedTask?.label_ko ?? "AI로 금융업무 찾기"}</div>
-        <div className="header-actions"><a className="header-demo-link" href="#task-finder">서비스 체험</a><button className="text-size-button" type="button" aria-pressed={largeText} onClick={() => setLargeText((value) => !value)}>가<span aria-hidden="true">+</span> 글자 크게</button><div className="privacy-pill"><Icon name="lock"/> 비회원 · 즉시 삭제</div></div>
+        <div className="header-context"><span className="context-dot"/>{selectedTask?.label_ko ?? "금융업무 준비"}</div>
+        <div className="header-actions"><a className="header-demo-link" href="#task-finder">준비 시작</a><button className="text-size-button" type="button" aria-pressed={largeText} onClick={() => setLargeText((value) => !value)}>가<span aria-hidden="true">+</span> 글자 크게</button><div className="privacy-pill"><Icon name="lock"/> 비회원 · 즉시 삭제</div></div>
       </header>
 
       <main id="workspace" className="product-main">
@@ -494,9 +603,9 @@ export function ProofBridgeDemo() {
         {view === "task" && (
           <section id="task-finder" className="task-discovery-grid">
             <div className="task-query-card">
-              <div className="section-kicker"><Icon name="spark"/> AI 업무 찾기</div>
+              <div className="section-kicker"><Icon name="spark"/> 업무 선택</div>
               <h1>하려는 금융업무를<br/><em>편하게 말해주세요.</em></h1>
-              <p className="workspace-lead">정확한 메뉴명이나 서류 이름을 몰라도 괜찮아요. 공식 출처가 연결된 업무 카탈로그에서 가장 가까운 준비 절차를 찾습니다.</p>
+              <p className="workspace-lead">정확한 메뉴명이나 서류 이름을 몰라도 괜찮아요. 편한 말로 입력하면 현재 지원하는 준비 절차를 찾아드려요.</p>
               <form className="task-search-form" onSubmit={(event) => findTask(event)}>
                 <label htmlFor="task-query">어떤 업무를 준비하고 있나요?</label>
                 <div>
@@ -507,9 +616,9 @@ export function ProofBridgeDemo() {
               </form>
               <div className="query-examples" aria-label="입력 예시">
                 <span>이렇게 적어보세요</span>
-                {["카뱅 한도계좌", "카카오 한도 풀기", "송금 한도가 너무 적어요"].map((query) => <button type="button" key={query} onClick={() => findTask(undefined, query)}>{query}</button>)}
+                {["카뱅 한도계좌", "신한 한도계좌 풀기", "국민은행 잔액증명서 발급"].map((query) => <button type="button" key={query} onClick={() => findTask(undefined, query)}>{query}</button>)}
               </div>
-              {resolvingTask && <div className="task-searching" role="status"><span className="pulse-dot"/><div><b>지원 업무와 공식 근거를 찾고 있어요</b><p>별칭 검색과 소형 벡터 인덱스를 함께 확인합니다.</p></div></div>}
+              {resolvingTask && <div className="task-searching" role="status"><span className="pulse-dot"/><div><b>준비할 업무를 찾고 있어요</b><p>입력한 내용과 공식 안내를 확인하고 있습니다.</p></div></div>}
               {taskResolution && (
                 <TaskMatchCard
                   resolution={taskResolution}
@@ -526,12 +635,12 @@ export function ProofBridgeDemo() {
           <section className="workspace-grid">
             <div className="workspace-primary">
               <div className="section-kicker"><Icon name="spark"/> 지금 준비할 업무</div>
-              <h1>서류 이름은 몰라도 괜찮아요.<br/><em>가지고 있는 것부터</em> 확인할게요.</h1>
-              <p className="workspace-lead">카카오뱅크 한도계좌 해제에 인정되는 증빙 묶음과 업로드한 문서를 대조해, 빠진 서류와 다음 행동을 정리합니다.</p>
+              <h1>필요한 서류부터 확인하고,<br/><em>가지고 있는 파일은</em> 바로 점검하세요.</h1>
+              <p className="workspace-lead">오른쪽 준비 목록에서 필요한 서류·발급 기한·공식 경로를 먼저 볼 수 있어요. 파일이 있다면 올려서 필요한지, 빠진 것은 무엇인지 함께 확인합니다.</p>
 
               <article className="selected-task-card">
-                <div className="bank-badge" aria-hidden="true">K</div>
-                <div><span>AI가 연결한 지원 업무</span><h2>{selectedTask?.label_ko ?? "카카오뱅크 한도계좌 해제"}</h2><p>본인 · 비대면 · 공개 기준 사전 점검</p></div>
+                <div className="bank-badge" aria-hidden="true">{selectedTask ? bankName(selectedTask).slice(0, 1) : "금"}</div>
+                <div><span>선택한 업무</span><h2>{selectedTask ? `${bankName(selectedTask)} · ${selectedTask.label_ko}` : "금융업무 준비"}</h2><p>공식 정책에서 필요한 서류와 제출 방법을 확인합니다.</p></div>
                 <button type="button" onClick={changeTask}>업무 변경 <Icon name="chevron"/></button>
               </article>
 
@@ -549,10 +658,10 @@ export function ProofBridgeDemo() {
                 </div>
               )}
 
-              <div className="prepare-actions"><button className="secondary-action" type="button" onClick={runDemo}><Icon name="spark"/> 합성 샘플로 체험하기</button><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>문서 분석 시작 <Icon name="arrow"/></button></div>
-              <p className="sample-caution"><Icon name="info"/> 공개 심사용 환경에서는 실제 개인정보가 아닌 합성 샘플만 사용해주세요.</p>
+              <div className="prepare-actions"><a className="secondary-action" href="#requirements-guide"><Icon name="document"/> 파일 없이 준비 목록 보기</a><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>{files.length ? `${files.length}개 파일 확인하기` : "파일을 선택해주세요"} <Icon name="arrow"/></button></div>
+              <p className="sample-caution"><Icon name="info"/> 업로드한 원본은 분석 후 삭제되며 결과에는 필요한 항목만 남습니다.</p>
             </div>
-            <EvidenceAside/>
+            <RequirementsAside requirements={taskRequirements} loading={loadingRequirements}/>
           </section>
         )}
 
@@ -561,11 +670,11 @@ export function ProofBridgeDemo() {
             <div className="analysis-orbit"><span/><Icon name="document"/></div>
             <div className="section-kicker"><Icon name="spark"/> 안전한 문서 분석</div>
             <h1>서류를 읽고 공식 요건과 대조하고 있어요</h1>
-            <p>문서 수와 페이지에 따라 잠시 걸릴 수 있습니다. 실제 진행률을 확인할 수 없어 임의의 백분율은 표시하지 않습니다.</p>
+            <p>파일 수와 페이지에 따라 잠시 걸릴 수 있어요. 화면을 닫지 말고 기다려주세요.</p>
             <ol className="analysis-steps">
-              <li className="done"><Icon name="check"/><span><b>파일 안전 확인</b><small>형식과 크기를 검사합니다</small></span></li>
-              <li className="current"><span className="pulse-dot"/><span><b>텍스트·문서 종류 인식</b><small>PDF 텍스트를 먼저 읽고 필요한 페이지만 OCR합니다</small></span></li>
-              <li><span className="step-dot"/><span><b>공식 규칙 대조</b><small>AI가 아닌 버전형 규칙이 최종 상태를 계산합니다</small></span></li>
+              <li className="done"><Icon name="check"/><span><b>파일 확인</b><small>파일 형식과 크기를 확인해요</small></span></li>
+              <li className="current"><span className="pulse-dot"/><span><b>문서 내용 확인</b><small>문서의 내용과 종류를 확인해요</small></span></li>
+              <li><span className="step-dot"/><span><b>공식 기준 확인</b><small>선택한 업무의 공식 기준과 비교해요</small></span></li>
             </ol>
           </section>
         )}
@@ -590,6 +699,7 @@ export function ProofBridgeDemo() {
                           <div><h3>{row.name}</h3><span className={`status-badge ${row.tone}`}>{row.status}</span></div>
                           {apiDocument && <p className={`document-relevance ${apiDocument.status === "UNNECESSARY" ? "unused" : apiDocument.doc_type === null ? "unknown" : "required"}`}>{uploadedRelevanceLabel(apiDocument)}</p>}
                           <p className="document-meta">{row.meta}</p><p>{row.note}</p>
+                          {apiDocument?.metadata && <DocumentMetadataDetails metadata={apiDocument.metadata}/>}
                           {apiDocument?.needs_user_confirm && (
                             <div className="classification-confirm">
                               <label htmlFor={`doc-type-${apiDocument.document_id}`}>이 문서가 무엇인지 확인해주세요</label>
@@ -632,7 +742,7 @@ export function ProofBridgeDemo() {
                         <div className="alternative-bundles-head">
                           <span>다른 인정 방법</span>
                           <h3 id="alternative-bundles-title">아래 조합을 전부 준비할 필요는 없어요</h3>
-                          <p>카카오뱅크가 안내한 증빙 중 본인에게 가능한 <b>한 가지 조합</b>만 선택하면 됩니다. 현재 업로드한 파일과 가장 가까운 조합을 먼저 추천했어요.</p>
+                          <p>{analysis.task.bank_name_ko ?? BANK_NAMES[analysis.task.bank_code] ?? "은행"}이 안내한 증빙 중 본인에게 가능한 <b>한 가지 조합</b>만 선택하면 됩니다. 현재 업로드한 파일과 가장 가까운 조합을 먼저 보여드려요.</p>
                         </div>
                         <div className="bundle-option-list">
                           {officialBundles.map((bundle) => {
@@ -657,7 +767,7 @@ export function ProofBridgeDemo() {
                             );
                           })}
                         </div>
-                        <a className="bundle-source-link" href={analysis.completion_plan.submission.url ?? "https://blog.kakaobank.com/posts/service-limit-account"} target="_blank" rel="noreferrer">카카오뱅크 공식 인정 서류 전체 보기 <Icon name="external"/></a>
+                        {analysis.completion_plan.submission.url && <a className="bundle-source-link" href={analysis.completion_plan.submission.url} target="_blank" rel="noreferrer">공식 인정 서류 전체 보기 <Icon name="external"/></a>}
                       </section>
                     )}
                     {analysis.completion_plan.preparations.length > 0 && <div className="preparation-list"><h3>함께 챙길 것</h3><ul>{analysis.completion_plan.preparations.map((item) => <li key={item.code}><Icon name="check"/><span><b>{item.label_ko}</b>{item.notes && <small>{item.notes}</small>}</span></li>)}</ul></div>}

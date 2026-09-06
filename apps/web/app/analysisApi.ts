@@ -6,6 +6,35 @@ export type ApiDocumentStatus =
   | "UNNECESSARY"
   | "REVIEW_REQUIRED";
 
+export type MetadataStatus = "CONFIRMED" | "INFERRED" | "AMBIGUOUS" | "NOT_FOUND";
+
+export interface ApiMetadataValue<T> {
+  value: T | null;
+  status: MetadataStatus;
+  confidence: number | null;
+  source_label?: string | null;
+  evidence_block_ids: string[];
+}
+
+export interface ApiDocumentMetadata {
+  schema_version: "1.0";
+  document_type: ApiMetadataValue<string> & {
+    candidates: { value: string; name: string | null; confidence: number | null }[];
+  };
+  document_name: ApiMetadataValue<string>;
+  owner_name: ApiMetadataValue<string> & {
+    role: "PERSON" | "CORPORATION" | "REPRESENTATIVE" | null;
+    candidates: { value: string; role: string; source_label: string | null }[];
+  };
+  owner_match: {
+    status: "MATCH" | "MISMATCH" | "POSSIBLE_MATCH" | "UNKNOWN" | "NOT_CHECKED";
+  };
+  issued_at: ApiMetadataValue<string> & { candidates: string[] };
+  expires_at: ApiMetadataValue<string> & { candidates: string[] };
+  needs_review: boolean;
+  warnings: string[];
+}
+
 export interface ApiDocumentResult {
   document_id: string;
   source_name: string;
@@ -16,15 +45,19 @@ export interface ApiDocumentResult {
   reason_code: string;
   needs_user_confirm: boolean;
   classification_method: string;
+  metadata: ApiDocumentMetadata | null;
 }
 
 export interface ApiTaskSummary {
   task_id: string;
   label_ko: string;
   bank_code: string;
+  bank_name_ko: string | null;
   policy_key: string;
+  operation_code?: string | null;
   channel: string;
   visitor_type: string;
+  purpose_code?: string | null;
   verified: boolean;
   source_url: string | null;
   as_of: string | null;
@@ -38,6 +71,9 @@ export interface TaskResolutionCandidate {
   task_id: string;
   label_ko: string;
   bank_code: string;
+  bank_name_ko?: string;
+  policy_key?: string;
+  operation_code?: string | null;
   support_status: "SUPPORTED" | "GUIDE_ONLY" | "PLANNED";
   confidence: number;
   lexical_score: number;
@@ -65,7 +101,7 @@ export interface TaskResolutionResponse {
   clarification_question: string | null;
   reason: string;
   evidence: TaskKnowledgeEvidence[];
-  retrieval_methods: ("alias" | "vector")[];
+  retrieval_methods: ("alias" | "vector" | "llm" | "deterministic")[];
   embedding_model: string;
 }
 
@@ -142,6 +178,30 @@ export interface ApiCompletionPlan {
   };
 }
 
+export interface ApiTaskRequirementDocument {
+  requirement_code: string;
+  requirement_level: string;
+  choice_group: string | null;
+  bundle_code: string | null;
+  doc_type: string;
+  label_ko: string;
+  original_required: boolean | null;
+  issued_within_days: number | null;
+  submission_method: string;
+  submission_label: string;
+  notes: string | null;
+  acquisition: ApiAcquisitionGuide;
+  source: ApiSourceReference;
+}
+
+export interface TaskRequirementsResponse {
+  schema_version: "1.0";
+  task: ApiTaskSummary;
+  documents: ApiTaskRequirementDocument[];
+  preparations: { code: string; label_ko: string; notes: string | null }[];
+  warnings: string[];
+}
+
 export interface AnalysisResponse {
   schema_version: "1.0";
   session_id: string;
@@ -149,9 +209,12 @@ export interface AnalysisResponse {
     task_id: string;
     label_ko: string;
     bank_code: string;
+    bank_name_ko: string | null;
     policy_key: string;
+    operation_code: string | null;
     channel: string;
     visitor_type: string;
+    purpose_code: string | null;
     verified: boolean;
     source_url: string | null;
     as_of: string | null;
@@ -192,9 +255,12 @@ async function apiError(response: Response, fallback: string): Promise<AnalysisA
 export async function analyzeDocuments(
   files: File[],
   taskId = "kakaobank.limit_account_release",
+  options: { ownerName?: string; purposeCode?: string } = {},
 ): Promise<AnalysisResponse> {
   const form = new FormData();
   form.set("task_id", taskId);
+  if (options.ownerName) form.set("owner_name", options.ownerName);
+  if (options.purposeCode) form.set("purpose_code", options.purposeCode);
   files.forEach((file) => form.append("files", file, file.name));
 
   let response: Response;
@@ -205,8 +271,8 @@ export async function analyzeDocuments(
     });
   } catch {
     throw new AnalysisApiError(
-      "분석 서버에 연결하지 못했어요.",
-      "FastAPI가 실행 중인지와 웹의 API 주소 설정을 확인해주세요.",
+      "문서 확인 서비스에 잠시 연결할 수 없어요.",
+      "잠시 후 다시 시도해주세요. 계속 문제가 생기면 페이지를 새로고침해주세요.",
     );
   }
 
@@ -220,14 +286,34 @@ export async function analyzeDocuments(
   return (await response.json()) as AnalysisResponse;
 }
 
+export async function loadTaskRequirements(
+  taskId: string,
+  purposeCode?: string,
+): Promise<TaskRequirementsResponse> {
+  const query = purposeCode ? `?purpose_code=${encodeURIComponent(purposeCode)}` : "";
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/api/v1/tasks/${encodeURIComponent(taskId)}/requirements${query}`, {
+      cache: "no-store",
+    });
+  } catch {
+    throw new AnalysisApiError(
+      "필요한 서류를 불러오지 못했어요.",
+      "잠시 후 다시 시도해주세요.",
+    );
+  }
+  if (!response.ok) throw await apiError(response, "필요한 서류를 불러오지 못했어요.");
+  return (await response.json()) as TaskRequirementsResponse;
+}
+
 export async function loadDemoAnalysis(): Promise<AnalysisResponse> {
   let response: Response;
   try {
     response = await fetch(`${API_BASE}/api/v1/demo`, { method: "POST" });
   } catch {
-    throw new AnalysisApiError("합성 데모 서버에 연결하지 못했어요.");
+    throw new AnalysisApiError("예시 결과를 잠시 불러올 수 없어요.", "잠시 후 다시 시도해주세요.");
   }
-  if (!response.ok) throw await apiError(response, "합성 데모를 불러오지 못했어요.");
+  if (!response.ok) throw await apiError(response, "예시 결과를 불러오지 못했어요.");
   return (await response.json()) as AnalysisResponse;
 }
 
@@ -252,8 +338,8 @@ export async function resolveTask(query: string): Promise<TaskResolutionResponse
     });
   } catch {
     throw new AnalysisApiError(
-      "업무를 찾는 서버에 연결하지 못했어요.",
-      "FastAPI가 실행 중인지 확인한 뒤 다시 시도해주세요.",
+      "업무 찾기 서비스 연결이 잠시 지연되고 있어요.",
+      "잠시 후 다시 시도해주세요. 계속 문제가 생기면 페이지를 새로고침해주세요.",
     );
   }
   if (!response.ok) throw await apiError(response, "입력한 업무를 해석하지 못했어요.");
