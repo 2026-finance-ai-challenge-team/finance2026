@@ -1,0 +1,4321 @@
+{
+  "schema_version": "1.0",
+  "source_file": "proofbridge_20260906_162307.sql",
+  "generated_on": "2026-09-06",
+  "banks": [
+    {
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "label_ko": "하나은행"
+    },
+    {
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "label_ko": "IBK기업은행"
+    },
+    {
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "label_ko": "카카오뱅크"
+    },
+    {
+      "bank_code": "KB_KOOKMIN",
+      "bank_slug": "kb",
+      "label_ko": "KB국민은행"
+    },
+    {
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "label_ko": "신한은행"
+    },
+    {
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "label_ko": "우리은행"
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "hana.balance_certificate_issuance",
+      "operation_code": "balance_certificate_issuance",
+      "label_ko": "예금잔액증명서 본인 발급",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 20,
+      "policy_key": "balance_certificate_issuance",
+      "policy_label_ko": "예금잔액증명서 본인 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.balance_certificate_proxy_issuance",
+      "operation_code": "balance_certificate_proxy_issuance",
+      "label_ko": "예금잔액증명서 대리 발급",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 21,
+      "policy_key": "balance_certificate_proxy_issuance",
+      "policy_label_ko": "예금잔액증명서 대리 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.corporate_account_opening",
+      "operation_code": "corporate_account_opening",
+      "label_ko": "하나은행 법인계좌 개설",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 1,
+      "policy_key": "corporate_account_opening",
+      "policy_label_ko": "하나은행 법인계좌 개설",
+      "customer_type": "corporation",
+      "account_type": "demand_deposit",
+      "status": "published",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "operation_id": "hana.demand_deposit_opening",
+      "operation_code": "demand_deposit_opening",
+      "label_ko": "개인 입출금계좌 개설",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 17,
+      "policy_key": "demand_deposit_opening",
+      "policy_label_ko": "개인 입출금계좌 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.dormant_account_revival",
+      "operation_code": "dormant_account_revival",
+      "label_ko": "거래중지계좌 부활",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 19,
+      "policy_key": "dormant_account_revival",
+      "policy_label_ko": "거래중지계좌 부활",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.individual_irp_opening",
+      "operation_code": "individual_irp_opening",
+      "label_ko": "개인형 IRP 계좌 신규",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 26,
+      "policy_key": "individual_irp_opening",
+      "policy_label_ko": "개인형 IRP 계좌 신규",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.joint_certificate_issuance",
+      "operation_code": "joint_certificate_issuance",
+      "label_ko": "공동인증서 발급·재발급",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 24,
+      "policy_key": "joint_certificate_issuance",
+      "policy_label_ko": "공동인증서 발급·재발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.limit_account_release",
+      "operation_code": "limit_account_release",
+      "label_ko": "금융거래 한도계좌 한도 해제",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 18,
+      "policy_key": "limit_account_release",
+      "policy_label_ko": "금융거래 한도계좌 한도 해제",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.other_financial_account_registration",
+      "operation_code": "other_financial_account_registration",
+      "label_ko": "오픈뱅킹 다른금융계좌 등록",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 25,
+      "policy_key": "other_financial_account_registration",
+      "policy_label_ko": "오픈뱅킹 다른금융계좌 등록",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.personal_internet_banking_registration",
+      "operation_code": "personal_internet_banking_registration",
+      "label_ko": "개인 인터넷뱅킹 신청",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 22,
+      "policy_key": "personal_internet_banking_registration",
+      "policy_label_ko": "개인 인터넷뱅킹 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "hana.phone_banking_registration",
+      "operation_code": "phone_banking_registration",
+      "label_ko": "폰뱅킹 신청",
+      "bank_code": "KEB_HANA",
+      "bank_slug": "hana",
+      "bank_label_ko": "하나은행",
+      "policy_version_id": 23,
+      "policy_key": "phone_banking_registration",
+      "policy_label_ko": "폰뱅킹 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.balance_certificate_issuance",
+      "operation_code": "balance_certificate_issuance",
+      "label_ko": "잔액증명서 발급",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 32,
+      "policy_key": "balance_certificate_issuance",
+      "policy_label_ko": "잔액증명서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.corporate_internet_banking_registration",
+      "operation_code": "corporate_internet_banking_registration",
+      "label_ko": "법인 기업인터넷뱅킹 신청",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 31,
+      "policy_key": "corporate_internet_banking_registration",
+      "policy_label_ko": "법인 기업인터넷뱅킹 신청",
+      "customer_type": "corporation",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.debt_certificate_issuance",
+      "operation_code": "debt_certificate_issuance",
+      "label_ko": "부채증명서 발급",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 34,
+      "policy_key": "debt_certificate_issuance",
+      "policy_label_ko": "부채증명서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.demand_deposit_opening",
+      "operation_code": "demand_deposit_opening",
+      "label_ko": "입출금계좌 개설",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 27,
+      "policy_key": "demand_deposit_opening",
+      "policy_label_ko": "입출금계좌 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.dormant_account_revival",
+      "operation_code": "dormant_account_revival",
+      "label_ko": "거래중지계좌 재개",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 29,
+      "policy_key": "dormant_account_revival",
+      "policy_label_ko": "거래중지계좌 재개",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.financial_transaction_confirmation_issuance",
+      "operation_code": "financial_transaction_confirmation_issuance",
+      "label_ko": "금융거래확인서 발급",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 33,
+      "policy_key": "financial_transaction_confirmation_issuance",
+      "policy_label_ko": "금융거래확인서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.limit_account_release",
+      "operation_code": "limit_account_release",
+      "label_ko": "금융거래 한도계좌 일반계좌 전환",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 28,
+      "policy_key": "limit_account_release",
+      "policy_label_ko": "금융거래 한도계좌 일반계좌 전환",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.loan_payoff_certificate_issuance",
+      "operation_code": "loan_payoff_certificate_issuance",
+      "label_ko": "대출금완제증명서 발급",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 35,
+      "policy_key": "loan_payoff_certificate_issuance",
+      "policy_label_ko": "대출금완제증명서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.quick_account_inquiry_registration",
+      "operation_code": "quick_account_inquiry_registration",
+      "label_ko": "빠른계좌조회 서비스 신청",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 30,
+      "policy_key": "quick_account_inquiry_registration",
+      "policy_label_ko": "빠른계좌조회 서비스 신청",
+      "customer_type": "business",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "ibk.withholding_receipt_issuance",
+      "operation_code": "withholding_receipt_issuance",
+      "label_ko": "원천징수영수증 발급",
+      "bank_code": "IBK",
+      "bank_slug": "ibk",
+      "bank_label_ko": "IBK기업은행",
+      "policy_version_id": 36,
+      "policy_key": "withholding_receipt_issuance",
+      "policy_label_ko": "원천징수영수증 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.certificate_issuance",
+      "operation_code": "certificate_issuance",
+      "label_ko": "각종 증명서 검색·발급",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 46,
+      "policy_key": "certificate_issuance",
+      "policy_label_ko": "각종 증명서 검색·발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.child_account_opening",
+      "operation_code": "child_account_opening",
+      "label_ko": "자녀 명의 계좌 개설",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 41,
+      "policy_key": "child_account_opening",
+      "policy_label_ko": "자녀 명의 계좌 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.demand_deposit_opening",
+      "operation_code": "demand_deposit_opening",
+      "label_ko": "입출금통장 개설",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 37,
+      "policy_key": "demand_deposit_opening",
+      "policy_label_ko": "입출금통장 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.limit_account_release",
+      "operation_code": "limit_account_release",
+      "label_ko": "카카오뱅크 한도계좌 해제",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 2,
+      "policy_key": "limit_account_release",
+      "policy_label_ko": "카카오뱅크 한도계좌 해제",
+      "customer_type": "individual",
+      "account_type": "limited_demand_deposit",
+      "status": "published",
+      "verified_at": "2026-08-28"
+    },
+    {
+      "operation_id": "kakaobank.living_expense_account_opening",
+      "operation_code": "living_expense_account_opening",
+      "label_ko": "생활비통장 개설",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 42,
+      "policy_key": "living_expense_account_opening",
+      "policy_label_ko": "생활비통장 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.mortgage_loan_application",
+      "operation_code": "mortgage_loan_application",
+      "label_ko": "주택담보대출 신청",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 43,
+      "policy_key": "mortgage_loan_application",
+      "policy_label_ko": "주택담보대출 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.other_financial_account_registration",
+      "operation_code": "other_financial_account_registration",
+      "label_ko": "오픈뱅킹 다른금융계좌 등록",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 45,
+      "policy_key": "other_financial_account_registration",
+      "policy_label_ko": "오픈뱅킹 다른금융계좌 등록",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.personal_business_account_opening",
+      "operation_code": "personal_business_account_opening",
+      "label_ko": "개인사업자통장 신규 개설",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 38,
+      "policy_key": "personal_business_account_opening",
+      "policy_label_ko": "개인사업자통장 신규 개설",
+      "customer_type": "sole_proprietor",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.personal_business_real_estate_mortgage_application",
+      "operation_code": "personal_business_real_estate_mortgage_application",
+      "label_ko": "개인사업자 부동산담보대출 신청",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 44,
+      "policy_key": "personal_business_real_estate_mortgage_application",
+      "policy_label_ko": "개인사업자 부동산담보대출 신청",
+      "customer_type": "sole_proprietor",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.personal_to_business_account_conversion",
+      "operation_code": "personal_to_business_account_conversion",
+      "label_ko": "개인통장 개인사업자통장 전환",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 39,
+      "policy_key": "personal_to_business_account_conversion",
+      "policy_label_ko": "개인통장 개인사업자통장 전환",
+      "customer_type": "sole_proprietor",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kakaobank.transaction_statement_issuance",
+      "operation_code": "transaction_statement_issuance",
+      "label_ko": "거래내역서 발급",
+      "bank_code": "KAKAO_BANK",
+      "bank_slug": "kakaobank",
+      "bank_label_ko": "카카오뱅크",
+      "policy_version_id": 40,
+      "policy_key": "transaction_statement_issuance",
+      "policy_label_ko": "거래내역서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "kb.demand_deposit_opening",
+      "operation_code": "demand_deposit_opening",
+      "label_ko": "입출금이 자유로운 예금통장 개설",
+      "bank_code": "KB_KOOKMIN",
+      "bank_slug": "kb",
+      "bank_label_ko": "KB국민은행",
+      "policy_version_id": 3,
+      "policy_key": "financial_transaction_purpose_verification",
+      "policy_label_ko": "KB국민은행 금융거래 목적 확인",
+      "customer_type": "individual_or_business",
+      "account_type": "demand_deposit",
+      "status": "published",
+      "verified_at": "2026-09-02"
+    },
+    {
+      "operation_id": "kb.dormant_transaction_account_restore",
+      "operation_code": "dormant_transaction_account_restore",
+      "label_ko": "거래중지계좌 환원",
+      "bank_code": "KB_KOOKMIN",
+      "bank_slug": "kb",
+      "bank_label_ko": "KB국민은행",
+      "policy_version_id": 3,
+      "policy_key": "financial_transaction_purpose_verification",
+      "policy_label_ko": "KB국민은행 금융거래 목적 확인",
+      "customer_type": "individual_or_business",
+      "account_type": "demand_deposit",
+      "status": "published",
+      "verified_at": "2026-09-02"
+    },
+    {
+      "operation_id": "kb.limited_account_release",
+      "operation_code": "limited_account_release",
+      "label_ko": "금융거래한도계좌 한도해제",
+      "bank_code": "KB_KOOKMIN",
+      "bank_slug": "kb",
+      "bank_label_ko": "KB국민은행",
+      "policy_version_id": 3,
+      "policy_key": "financial_transaction_purpose_verification",
+      "policy_label_ko": "KB국민은행 금융거래 목적 확인",
+      "customer_type": "individual_or_business",
+      "account_type": "demand_deposit",
+      "status": "published",
+      "verified_at": "2026-09-02"
+    },
+    {
+      "operation_id": "kb.long_inactive_passbook_reissue",
+      "operation_code": "long_inactive_passbook_reissue",
+      "label_ko": "장기무거래(6개월)계좌 통장재발급",
+      "bank_code": "KB_KOOKMIN",
+      "bank_slug": "kb",
+      "bank_label_ko": "KB국민은행",
+      "policy_version_id": 3,
+      "policy_key": "financial_transaction_purpose_verification",
+      "policy_label_ko": "KB국민은행 금융거래 목적 확인",
+      "customer_type": "individual_or_business",
+      "account_type": "demand_deposit",
+      "status": "published",
+      "verified_at": "2026-09-02"
+    },
+    {
+      "operation_id": "shinhan.balance_certificate_issuance",
+      "operation_code": "balance_certificate_issuance",
+      "label_ko": "예금잔액증명서 발급",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 50,
+      "policy_key": "balance_certificate_issuance",
+      "policy_label_ko": "예금잔액증명서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.demand_deposit_opening",
+      "operation_code": "demand_deposit_opening",
+      "label_ko": "입출금계좌 개설",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 47,
+      "policy_key": "demand_deposit_opening",
+      "policy_label_ko": "입출금계좌 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.individual_irp_opening",
+      "operation_code": "individual_irp_opening",
+      "label_ko": "개인형 IRP 계좌 신규",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 54,
+      "policy_key": "individual_irp_opening",
+      "policy_label_ko": "개인형 IRP 계좌 신규",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.inheritance_deposit_claim",
+      "operation_code": "inheritance_deposit_claim",
+      "label_ko": "상속예금 지급 신청",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 52,
+      "policy_key": "inheritance_deposit_claim",
+      "policy_label_ko": "상속예금 지급 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.limit_account_release",
+      "operation_code": "limit_account_release",
+      "label_ko": "금융거래 한도계좌 일반계좌 전환",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 48,
+      "policy_key": "limit_account_release",
+      "policy_label_ko": "금융거래 한도계좌 일반계좌 전환",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.minor_account_opening",
+      "operation_code": "minor_account_opening",
+      "label_ko": "미성년자 계좌 개설",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 49,
+      "policy_key": "minor_account_opening",
+      "policy_label_ko": "미성년자 계좌 개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.personal_internet_banking_registration",
+      "operation_code": "personal_internet_banking_registration",
+      "label_ko": "개인 인터넷뱅킹·SOL 가입",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 55,
+      "policy_key": "personal_internet_banking_registration",
+      "policy_label_ko": "개인 인터넷뱅킹·SOL 가입",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.securities_linked_account_application",
+      "operation_code": "securities_linked_account_application",
+      "label_ko": "증권계좌 연계 개설 신청",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 53,
+      "policy_key": "securities_linked_account_application",
+      "policy_label_ko": "증권계좌 연계 개설 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.shinhan_certificate_issuance",
+      "operation_code": "shinhan_certificate_issuance",
+      "label_ko": "신한인증서 발급",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 56,
+      "policy_key": "shinhan_certificate_issuance",
+      "policy_label_ko": "신한인증서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "shinhan.transaction_statement_issuance",
+      "operation_code": "transaction_statement_issuance",
+      "label_ko": "거래내역서 발급",
+      "bank_code": "SHINHAN",
+      "bank_slug": "shinhan",
+      "bank_label_ko": "신한은행",
+      "policy_version_id": 51,
+      "policy_key": "transaction_statement_issuance",
+      "policy_label_ko": "거래내역서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.balance_certificate_issuance",
+      "operation_code": "balance_certificate_issuance",
+      "label_ko": "예금잔액증명서 발급",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 10,
+      "policy_key": "balance_certificate_issuance",
+      "policy_label_ko": "예금잔액증명서 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.dormant_deposit_claim",
+      "operation_code": "dormant_deposit_claim",
+      "label_ko": "휴면예금 지급 신청",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 13,
+      "policy_key": "dormant_deposit_claim",
+      "policy_label_ko": "휴면예금 지급 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.inheritance_deposit_claim",
+      "operation_code": "inheritance_deposit_claim",
+      "label_ko": "상속예금 지급 신청",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 14,
+      "policy_key": "inheritance_deposit_claim",
+      "policy_label_ko": "상속예금 지급 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "draft",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.joint_certificate_issuance",
+      "operation_code": "joint_certificate_issuance",
+      "label_ko": "공동인증서 발급·재발급",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 15,
+      "policy_key": "joint_certificate_issuance",
+      "policy_label_ko": "공동인증서 발급·재발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.minor_account_termination",
+      "operation_code": "minor_account_termination",
+      "label_ko": "미성년 자녀 계좌 대리 해지",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 12,
+      "policy_key": "minor_account_termination",
+      "policy_label_ko": "미성년 자녀 계좌 대리 해지",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.minor_internet_banking_registration",
+      "operation_code": "minor_internet_banking_registration",
+      "label_ko": "미성년자 인터넷뱅킹 신규 신청",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 8,
+      "policy_key": "minor_internet_banking_registration",
+      "policy_label_ko": "미성년자 인터넷뱅킹 신규 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.other_bank_certificate_registration",
+      "operation_code": "other_bank_certificate_registration",
+      "label_ko": "타기관 공동인증서 등록",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 16,
+      "policy_key": "other_bank_certificate_registration",
+      "policy_label_ko": "타기관 공동인증서 등록",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.overseas_account_preopening",
+      "operation_code": "overseas_account_preopening",
+      "label_ko": "미국 현지계좌 사전개설",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 9,
+      "policy_key": "overseas_account_preopening",
+      "policy_label_ko": "미국 현지계좌 사전개설",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.personal_internet_banking_registration",
+      "operation_code": "personal_internet_banking_registration",
+      "label_ko": "개인 인터넷뱅킹 신규 신청",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 7,
+      "policy_key": "personal_internet_banking_registration",
+      "policy_label_ko": "개인 인터넷뱅킹 신규 신청",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "operation_id": "woori.transaction_statement_proxy_issuance",
+      "operation_code": "transaction_statement_proxy_issuance",
+      "label_ko": "거래내역서 대리 발급",
+      "bank_code": "WOORI",
+      "bank_slug": "woori",
+      "bank_label_ko": "우리은행",
+      "policy_version_id": 11,
+      "policy_key": "transaction_statement_proxy_issuance",
+      "policy_label_ko": "거래내역서 대리 발급",
+      "customer_type": "individual",
+      "account_type": "banking_service",
+      "status": "published",
+      "verified_at": "2026-09-03"
+    }
+  ],
+  "policies": [
+    {
+      "policy_version_id": 1,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.branch.representative.official_minimum",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": null,
+          "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대표자 방문 기본 준비사항이다.",
+          "documents": [
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "법인 사업자등록증 원본",
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            }
+          ],
+          "preparations": [
+            {
+              "code": "representative_identity_document",
+              "label_ko": "대표자 실명확인증표",
+              "notes": "주민등록증 또는 운전면허증 등"
+            },
+            {
+              "code": "account_seal",
+              "label_ko": "통장에 사용할 도장",
+              "notes": "신규 통장에 등록할 도장"
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "법인 통장 신규를 할 때 필요한 서류를 알려주세요",
+            "url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+            "checked_at": "2026-08-20",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "hana.branch.agent.official_minimum",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "agent",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": null,
+          "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대리인 방문 기본 준비사항이다.",
+          "documents": [
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "법인 사업자등록증 원본",
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "corporate_seal_certificate",
+              "label_ko": "법인인감증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "계좌개설 FAQ에는 발급기한이 별도로 기재되지 않았다.",
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "power_of_attorney",
+              "label_ko": "법인 위임장",
+              "issuer": "해당 법인",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "법인인감 날인 필수",
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [
+            {
+              "code": "agent_identity_document",
+              "label_ko": "대리인 실명확인증표",
+              "notes": "주민등록증 또는 운전면허증 등"
+            },
+            {
+              "code": "account_seal",
+              "label_ko": "통장에 사용할 도장",
+              "notes": "대리인 개설은 서명 사용 불가"
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "법인 통장 신규를 할 때 필요한 서류를 알려주세요",
+            "url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+            "checked_at": "2026-08-20",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "hana.branch.recommended_additional",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative_or_agent",
+          "requirement_level": "recommended_additional",
+          "eligibility_notes": null,
+          "notes": "계좌개설 FAQ의 공통 필수목록이 아니라 고객확인과 기업뱅킹 공식 안내에 근거한 추가 준비자료다.",
+          "documents": [
+            {
+              "doc_type": "corporate_registry_certificate",
+              "label_ko": "법인등기사항전부증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "최근 3개월 이내 발급분 준비 권장",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "corporate_seal_certificate",
+              "label_ko": "법인인감증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "최근 3개월 이내 발급분 준비 권장",
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "shareholder_registry",
+              "label_ko": "주주명부",
+              "issuer": "해당 법인",
+              "submission_method": "original",
+              "issued_within_days": 365,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "실제소유자 확인자료, 최근 1년 이내 발급분 준비 권장",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "articles_of_incorporation",
+              "label_ko": "정관",
+              "issuer": "해당 법인",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "법인의 설립 목적 확인자료",
+              "acquisition": {},
+              "source_url": "https://biz.hanabank.com/cont/download/file/pdf_241126_02.pdf",
+              "sort_order": 4
+            }
+          ],
+          "preparations": [
+            {
+              "code": "corporate_seal",
+              "label_ko": "법인인감도장",
+              "notes": "법인인감증명서의 인감과 일치해야 함"
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙자료",
+              "notes": "거래계약서, 전자세금계산서, 매출자료, 인허가서, 임대차계약서 등"
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "기업뱅킹 신규손님 이용 절차",
+            "url": "https://biz.kebhana.com/cont/customer/customer03/customer032/index.jsp",
+            "checked_at": "2026-08-20",
+            "is_primary": false
+          }
+        },
+        {
+          "requirement_code": "hana.non_face_to_face.representative.official_required",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "representative",
+          "requirement_level": "official_required",
+          "eligibility_notes": "비대면 실명확인을 통해 처리할 수 있는 법인은 제한적이므로 신청 가능 여부 확인이 필요하다.",
+          "notes": "하나은행 비대면 법인계좌 개설 안내가 직접 명시한 준비사항이다.",
+          "documents": [
+            {
+              "doc_type": "business_registration_verification",
+              "label_ko": "사업자등록증명",
+              "issuer": "국세청",
+              "submission_method": "auto_submit",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "본점 사업장 기준",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "corporate_registry_certificate",
+              "label_ko": "법인등기사항전부증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": "발급용, 등기기록 전부 중 유효부분, 주민등록번호 미공개",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "shareholder_registry",
+              "label_ko": "주주명부",
+              "issuer": "해당 법인",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": "beneficial_owner_evidence",
+              "bundle_code": null,
+              "notes": "대표자를 제외한 주주의 주민등록번호 뒷자리 마스킹",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "share_change_statement",
+              "label_ko": "주식등변동상황명세서",
+              "issuer": "해당 법인",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": "beneficial_owner_evidence",
+              "bundle_code": null,
+              "notes": "주주명부와 대체 관계",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 4
+            },
+            {
+              "doc_type": "vat_tax_base_certificate",
+              "label_ko": "부가가치세과세표준증명",
+              "issuer": "국세청",
+              "submission_method": "auto_submit",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": "sales_evidence",
+              "bundle_code": null,
+              "notes": "100만원 이상 매출 증빙",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 5
+            },
+            {
+              "doc_type": "standard_financial_statement_certificate",
+              "label_ko": "표준재무제표증명",
+              "issuer": "국세청",
+              "submission_method": "auto_submit",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": false,
+              "choice_group": "sales_evidence",
+              "bundle_code": null,
+              "notes": "100만원 이상 매출 증빙",
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 6
+            }
+          ],
+          "preparations": [
+            {
+              "code": "representative_mobile_phone",
+              "label_ko": "대표자 명의 휴대전화",
+              "notes": null
+            },
+            {
+              "code": "representative_identity_document",
+              "label_ko": "대표자 주민등록증 또는 운전면허증",
+              "notes": "모바일운전면허증 가능"
+            },
+            {
+              "code": "corporate_account_verification",
+              "label_ko": "기존 법인계좌 인증",
+              "notes": "하나은행 또는 다른 은행 법인계좌"
+            },
+            {
+              "code": "corporate_certificate",
+              "label_ko": "법인사업자 공동인증서 또는 금융인증서",
+              "notes": "홈택스에 등록된 인증서"
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "법인 고객 비대면 계좌개설 및 제변경 서비스 안내",
+            "url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+            "checked_at": "2026-08-20",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 2,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.non_face_to_face.account_holder.official_required",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": "카카오뱅크 입출금통장의 한도계좌를 일반계좌로 전환하려는 본인",
+          "notes": "limit_release_evidence 그룹의 6개 bundle 중 하나를 선택한다. 같은 bundle_code의 문서는 모두 있어야 한다.",
+          "documents": [
+            {
+              "doc_type": "utility_bill",
+              "label_ko": "공과금 고지서",
+              "issuer": null,
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "utility_bill",
+              "notes": "공과금 고지서 단독 묶음",
+              "acquisition": {
+                "url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "steps": [
+                  "전기·도시가스·수도 중 본인 명의로 이용 중인 공급기관을 확인합니다.",
+                  "공급기관 앱·웹의 요금 조회·고지서 메뉴를 이용하거나 고객센터에 고지서 재발급을 요청합니다.",
+                  "명의, 공급 주소, 고객번호와 청구금액이 모두 보이는 원본을 출력합니다."
+                ],
+                "title": "이용 중인 전기·가스·수도 공급기관에서 확보",
+                "channel": "utility_provider_online_or_customer_center",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "본인에게 청구된 공과금 고지서 또는 납부확인서를 해당 공급기관의 앱·웹이나 고객센터에서 준비하세요.",
+                "action_label": "카카오뱅크 인정 서류 확인",
+                "last_checked": "2026-08-31",
+                "source_title": "카카오뱅크 한도계좌 해제 인정 서류 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "management_fee_notice",
+              "label_ko": "관리비 고지서",
+              "issuer": "공동주택 관리주체",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "management_fee_and_resident_copy",
+              "notes": "주민등록등본과 함께 제출",
+              "acquisition": {
+                "url": null,
+                "steps": [
+                  "관리사무소 또는 이용 중인 관리비 서비스에서 현재 청구분을 요청합니다.",
+                  "입주자명, 현재 주소와 동·호수, 청구금액이 보이는지 확인합니다.",
+                  "원본 문서를 출력해 카카오뱅크 앱에서 촬영할 준비를 합니다."
+                ],
+                "title": "관리사무소 또는 관리비 서비스에서 확보",
+                "channel": "issuer_direct",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "현재 거주지의 관리비 고지서를 관리사무소나 이용 중인 관리비 앱·웹에서 준비하세요.",
+                "action_label": "관리사무소에 요청하기",
+                "last_checked": "2026-08-29",
+                "source_title": "카카오뱅크 인정 서류 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "resident_registration_copy",
+              "label_ko": "주민등록표 등본",
+              "issuer": "행정안전부",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "management_fee_and_resident_copy",
+              "notes": "관리비 고지서와 함께 제출",
+              "acquisition": {
+                "url": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015&tp_seq=04",
+                "steps": [
+                  "정부24의 주민등록표 등본(초본) 발급 서비스에 접속합니다.",
+                  "주민등록표 등본을 선택하고 본인 인증 후 발급 내용을 확인합니다.",
+                  "현재 주소가 관리비 고지서와 같은지 확인한 뒤 원본을 출력합니다."
+                ],
+                "title": "정부24에서 주민등록표 등본 발급",
+                "channel": "government_online_or_offline",
+                "verified": true,
+                "source_url": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015&tp_seq=04",
+                "description": "본인 신청은 정부24 인터넷 발급, 주민센터 방문 또는 무인민원발급기를 이용할 수 있습니다.",
+                "action_label": "정부24 발급 페이지 열기",
+                "last_checked": "2026-08-29",
+                "source_title": "주민등록표 등본(초본) 발급 | 정부24"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "tax_bill",
+              "label_ko": "세금 고지서",
+              "issuer": null,
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "tax_bill",
+              "notes": "세금 고지서 단독 묶음. 지방세는 위택스 또는 관할 지방자치단체를 이용한다.",
+              "acquisition": {
+                "url": "https://www.hometax.go.kr/",
+                "steps": [
+                  "고지서의 발행기관을 보고 국세인지 지방세인지 확인합니다.",
+                  "국세는 홈택스의 고지내역, 지방세는 위택스 또는 관할 지방자치단체에서 본인 고지내역을 조회합니다.",
+                  "명의, 세목, 납부금액과 납부기한이 모두 보이는 고지서를 출력합니다."
+                ],
+                "title": "국세는 홈택스, 지방세는 위택스·관할기관에서 확인",
+                "channel": "tax_online_or_offline",
+                "verified": true,
+                "source_url": "https://www.hometax.go.kr/",
+                "description": "받은 세금의 종류를 먼저 확인한 뒤 국세는 홈택스, 지방세는 위택스 또는 관할 지방자치단체에서 고지내역과 출력 방법을 확인하세요.",
+                "action_label": "국세청 홈택스 열기",
+                "last_checked": "2026-08-31",
+                "source_title": "국세청 홈택스 고지내역 조회"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 4
+            },
+            {
+              "doc_type": "health_insurance_certificate",
+              "label_ko": "건강보험자격득실확인서",
+              "issuer": "국민건강보험공단",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "health_insurance_qualification",
+              "notes": "건강보험자격득실확인서 단독 묶음",
+              "acquisition": {
+                "url": "https://www.nhis.or.kr/nhis/index.do",
+                "steps": [
+                  "국민건강보험공단 홈페이지나 The건강보험 앱에서 본인 인증을 합니다.",
+                  "민원 서비스에서 자격득실확인서 발급을 선택하고 조회 조건을 확인합니다.",
+                  "가입자 구분과 자격 취득·상실 내역이 보이는 원본을 출력합니다."
+                ],
+                "title": "국민건강보험공단에서 자격득실확인서 발급",
+                "channel": "insurer_online_or_offline",
+                "verified": true,
+                "source_url": "https://www.nhis.or.kr/static/html/wbmh/b/wbmhb0508.html",
+                "description": "국민건강보험공단 홈페이지·The건강보험 앱·무인민원발급기 등에서 건강보험 자격득실확인서를 발급할 수 있습니다.",
+                "action_label": "국민건강보험공단 열기",
+                "last_checked": "2026-08-31",
+                "source_title": "국민건강보험공단 자격득실확인서 발급 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 5
+            },
+            {
+              "doc_type": "employment_contract",
+              "label_ko": "근로계약서",
+              "issuer": "고용주",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "employment_contract_and_employer_registration",
+              "notes": "고용주 사업자등록증과 함께 제출",
+              "acquisition": {
+                "url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "steps": [
+                  "회사 인사 담당자나 고용주에게 본인과 사용자가 서명한 근로계약서 사본을 요청합니다.",
+                  "근로자명, 회사명, 근로기간, 임금과 서명·날인이 보이는지 확인합니다.",
+                  "함께 제출할 고용주의 사업자등록증과 회사명이 같은지 확인하고 출력합니다."
+                ],
+                "title": "근무 중인 회사·고용주에게 근로계약서 사본 요청",
+                "channel": "employer_direct",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "본인이 보관한 근로계약서가 없다면 현재 고용주 또는 인사 담당자에게 서명된 근로계약서 사본을 요청하세요.",
+                "action_label": "카카오뱅크 인정 서류 확인",
+                "last_checked": "2026-08-31",
+                "source_title": "카카오뱅크 한도계좌 해제 인정 서류 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 6
+            },
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "employment_contract_and_employer_registration",
+              "notes": "근로계약서의 고용주 사업자등록증",
+              "acquisition": {
+                "url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "steps": [
+                  "회사 인사·총무 담당자 또는 고용주에게 사업자등록증 사본을 요청합니다.",
+                  "사업자등록번호, 상호와 대표자가 모두 보이는지 확인합니다.",
+                  "근로계약서의 회사명과 사업자등록증의 상호가 같은지 확인하고 출력합니다."
+                ],
+                "title": "고용주·회사 담당자에게 사업자등록증 사본 요청",
+                "channel": "employer_direct",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "이 조합에서는 본인 사업장이 아니라 근로계약서에 적힌 고용주의 사업자등록증이 필요합니다.",
+                "action_label": "카카오뱅크 인정 서류 확인",
+                "last_checked": "2026-08-31",
+                "source_title": "카카오뱅크 한도계좌 해제 인정 서류 안내"
+              },
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 7
+            },
+            {
+              "doc_type": "mobile_phone_payment_certificate",
+              "label_ko": "휴대폰 요금 납부계좌 등록 및 납부확인서",
+              "issuer": "이동통신사",
+              "submission_method": "printed_original_photo",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": true,
+              "choice_group": "limit_release_evidence",
+              "bundle_code": "mobile_phone_payment",
+              "notes": "휴대폰 요금 납부계좌 등록 및 납부확인서 묶음",
+              "acquisition": {
+                "url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "steps": [
+                  "이용 중인 이동통신사의 앱·웹 요금 메뉴 또는 고객센터에 접속합니다.",
+                  "휴대폰 요금 납부계좌 등록 및 납부확인서 발급 가능 여부를 확인합니다.",
+                  "가입자명, 휴대전화번호, 납부계좌 정보와 실제 납부내역이 보이는 원본을 출력합니다."
+                ],
+                "title": "이용 중인 이동통신사에서 납부확인서 확보",
+                "channel": "telecom_online_or_customer_center",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "본인 명의 이동통신사의 앱·웹 또는 고객센터에서 납부계좌 등록 정보와 납부내역이 함께 확인되는 서류를 요청하세요.",
+                "action_label": "카카오뱅크 인정 서류 확인",
+                "last_checked": "2026-08-31",
+                "source_title": "카카오뱅크 한도계좌 해제 인정 서류 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 8
+            }
+          ],
+          "preparations": [
+            {
+              "code": "kakaobank_app_access",
+              "label_ko": "카카오뱅크 앱 접근",
+              "notes": "계좌 관리 > 한도 해제 > 해제 신청하기에서 서류를 촬영해 제출한다."
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "내 카카오뱅크 계좌는 왜 한도계좌죠?",
+            "url": "https://blog.kakaobank.com/posts/service-limit-account",
+            "checked_at": "2026-08-28",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 3,
+      "requirement_sets": [
+        {
+          "requirement_code": "kb.purpose.salary",
+          "purpose_code": "salary",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "급여 수령 목적",
+          "notes": "나열된 자료는 예시이며 추가자료가 요청될 수 있다.",
+          "documents": [
+            {
+              "doc_type": "employment_certificate",
+              "label_ko": "재직증명서",
+              "issuer": "재직기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "salary_evidence",
+              "bundle_code": "employment_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "earned_income_withholding_receipt",
+              "label_ko": "근로소득원천징수영수증",
+              "issuer": "원천징수의무자",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "salary_evidence",
+              "bundle_code": "earned_income_withholding_receipt",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "health_insurance_certificate",
+              "label_ko": "건강보험자격득실확인서",
+              "issuer": "국민건강보험공단",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "salary_evidence",
+              "bundle_code": "health_insurance_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.pension",
+          "purpose_code": "pension",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "연금 수령 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "pension_certificate",
+              "label_ko": "연금증서",
+              "issuer": "연금 지급기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "pension_evidence",
+              "bundle_code": "pension_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "beneficiary_confirmation",
+              "label_ko": "수급권자 확인서",
+              "issuer": "연금 지급기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "pension_evidence",
+              "bundle_code": "beneficiary_confirmation",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.part_time_wage",
+          "purpose_code": "part_time_wage",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "아르바이트비 수령 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "part_time_evidence",
+              "bundle_code": "employer_business_registration",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "employment_contract",
+              "label_ko": "근로계약서",
+              "issuer": "고용주",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "part_time_evidence",
+              "bundle_code": "employment_contract",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "salary_statement",
+              "label_ko": "급여명세표",
+              "issuer": "고용주",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "part_time_evidence",
+              "bundle_code": "salary_statement",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.business_funds",
+          "purpose_code": "business_funds",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "사업자금 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "business_transaction_contract",
+              "label_ko": "사업관련 거래계약서",
+              "issuer": "계약 당사자",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "business_funds_evidence",
+              "bundle_code": "business_transaction_contract",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "salary_statement",
+              "label_ko": "급여명세표",
+              "issuer": "고용주",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "business_funds_evidence",
+              "bundle_code": "counterparty_salary_statement",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.group_account",
+          "purpose_code": "group_account",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "모임통장 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "member_roster",
+              "label_ko": "구성원 명부",
+              "issuer": "해당 모임·단체",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "group_evidence",
+              "bundle_code": "member_roster",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "organization_rules",
+              "label_ko": "회칙·정관",
+              "issuer": "해당 모임·단체",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "group_evidence",
+              "bundle_code": "organization_rules",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "organization_proof",
+              "label_ko": "단체 입증서류",
+              "issuer": "해당 단체·관할기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "group_evidence",
+              "bundle_code": "organization_proof",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "representative_proof",
+              "label_ko": "대표자 입증서류",
+              "issuer": "해당 모임·단체",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "group_evidence",
+              "bundle_code": "representative_proof",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 4
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.living_expense",
+          "purpose_code": "living_expense",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "공과금·관리비 등 이체 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "utility_bill",
+              "label_ko": "공과금 고지서",
+              "issuer": null,
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "living_expense_evidence",
+              "bundle_code": "utility_bill",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "management_fee_notice",
+              "label_ko": "관리비 고지서",
+              "issuer": "공동주택 관리주체",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "living_expense_evidence",
+              "bundle_code": "management_fee_notice",
+              "notes": null,
+              "acquisition": {
+                "url": null,
+                "steps": [
+                  "관리사무소 또는 이용 중인 관리비 서비스에서 현재 청구분을 요청합니다.",
+                  "입주자명, 현재 주소와 동·호수, 청구금액이 보이는지 확인합니다.",
+                  "원본 문서를 출력해 카카오뱅크 앱에서 촬영할 준비를 합니다."
+                ],
+                "title": "관리사무소 또는 관리비 서비스에서 확보",
+                "channel": "issuer_direct",
+                "verified": false,
+                "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+                "description": "현재 거주지의 관리비 고지서를 관리사무소나 이용 중인 관리비 앱·웹에서 준비하세요.",
+                "action_label": "관리사무소에 요청하기",
+                "last_checked": "2026-08-29",
+                "source_title": "카카오뱅크 인정 서류 안내"
+              },
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "tax_bill",
+              "label_ko": "세금 고지서",
+              "issuer": null,
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "living_expense_evidence",
+              "bundle_code": "tax_or_insurance_notice",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.research_funds",
+          "purpose_code": "research_funds",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "연구비 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "research_fund_contract",
+              "label_ko": "연구비 계약서",
+              "issuer": "연구비 지급기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "research_evidence",
+              "bundle_code": "research_fund_contract",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "research_evidence",
+              "bundle_code": "payer_business_registration",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.overseas_use",
+          "purpose_code": "overseas_use",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "해외사용 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "admission_letter",
+              "label_ko": "입학허가서",
+              "issuer": "교육기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "overseas_evidence",
+              "bundle_code": "admission_letter",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "visa",
+              "label_ko": "비자",
+              "issuer": "정부·영사기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "overseas_evidence",
+              "bundle_code": "visa",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.existing_business",
+          "purpose_code": "existing_business",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "기존 법인·개인사업자",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "supply_contract",
+              "label_ko": "물품공급계약서",
+              "issuer": "계약 당사자",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "supply_contract",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "tax_invoice",
+              "label_ko": "(전자)세금계산서",
+              "issuer": "국세청·공급자",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "tax_invoice",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "business_registration_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "withholding_tax_return",
+              "label_ko": "원천징수이행상황신고서",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "withholding_tax_return",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 4
+            },
+            {
+              "doc_type": "tax_payment_certificate",
+              "label_ko": "납세증명서",
+              "issuer": "국세청·지방자치단체",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "tax_payment_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 5
+            },
+            {
+              "doc_type": "vat_tax_base_certificate",
+              "label_ko": "부가가치세과세표준증명",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "vat_tax_base_certificate",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 6
+            },
+            {
+              "doc_type": "standard_financial_statement_certificate",
+              "label_ko": "표준재무제표증명",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "financial_statement",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+              "sort_order": 7
+            },
+            {
+              "doc_type": "franchise_agreement",
+              "label_ko": "프랜차이즈가맹점 계약서",
+              "issuer": "가맹본부·가맹점주",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "existing_business_evidence",
+              "bundle_code": "franchise_agreement",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 8
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.new_business",
+          "purpose_code": "new_business",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "신설 법인·개인사업자",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "workplace_lease",
+              "label_ko": "사업장임대차계약서",
+              "issuer": "임대인·임차인",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "workplace_lease",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "franchise_agreement",
+              "label_ko": "프랜차이즈가맹점 계약서",
+              "issuer": "가맹본부·가맹점주",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "franchise_agreement",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "business_website_evidence",
+              "label_ko": "사업자 홈페이지 자료",
+              "issuer": "해당 사업자",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "business_website",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "office_purchase_receipt",
+              "label_ko": "사무실 인테리어 등 구입 영수증",
+              "issuer": "판매자",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "office_purchase_receipt",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 4
+            },
+            {
+              "doc_type": "startup_agency_material",
+              "label_ko": "창업관련기관 발급 자료",
+              "issuer": "창업 관련 기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "startup_agency_material",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 5
+            },
+            {
+              "doc_type": "storefront_photo",
+              "label_ko": "간판사진",
+              "issuer": "사용자 촬영",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "storefront_photo",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 6
+            },
+            {
+              "doc_type": "portal_roadview_evidence",
+              "label_ko": "포털 사이트 로드뷰 자료",
+              "issuer": "포털 지도 서비스",
+              "submission_method": "photo_or_pdf",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "new_business_evidence",
+              "bundle_code": "portal_roadview",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 7
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        },
+        {
+          "requirement_code": "kb.purpose.other",
+          "purpose_code": "other",
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_minimum",
+          "eligibility_notes": "기타 거래 목적",
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "objective_transaction_evidence",
+              "label_ko": "거래목적을 확인할 수 있는 객관적 증빙자료",
+              "issuer": null,
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "other_evidence",
+              "bundle_code": "objective_transaction_evidence",
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 1
+            }
+          ],
+          "preparations": [],
+          "source": {
+            "publisher": "KB국민은행",
+            "title": "금융거래목적확인 의무 시행 안내",
+            "url": "https://obank.kbstar.com/quics?articleClass=1&articleId=134693&bbsMode=view&boardId=669&compId=b058334&page=C020721&viewPage=3",
+            "checked_at": "2026-09-02",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 7,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.personal_internet_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "bankbook_or_account",
+              "label_ko": "거래 통장 또는 계좌",
+              "notes": null
+            },
+            {
+              "code": "account_seal_or_signature",
+              "label_ko": "거래 인감 또는 서명",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "인터넷뱅킹 신규 신청 안내",
+            "url": "https://spot.wooribank.com/pot/Dream?withyou=CQIBG0052",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 8,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.minor_internet_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "family_relation_certificate",
+              "label_ko": "가족관계증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "basic_certificate_detailed",
+              "label_ko": "기본증명서(상세)",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [
+            {
+              "code": "representative_identity_document",
+              "label_ko": "법정대리인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "인터넷뱅킹 신규 신청 안내",
+            "url": "https://spot.wooribank.com/pot/Dream?withyou=CQIBG0052",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 9,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.overseas_account_preopening.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "passport_copy",
+              "label_ko": "여권 사본",
+              "issuer": "외교부 또는 외국 정부",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "user_owned_original"
+              },
+              "source_url": "https://www.passport.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "visa",
+              "label_ko": "비자",
+              "issuer": "정부·영사기관",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://obank.kbstar.com/quics?articleId=134693",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "signature_card",
+              "label_ko": "서명카드",
+              "issuer": "해당 은행",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "bank_form"
+              },
+              "source_url": "https://spot.wooribank.com/pot/Dream?withyou=FXSTB0027",
+              "sort_order": 3
+            },
+            {
+              "doc_type": "w8ben_form",
+              "label_ko": "W-8BEN",
+              "issuer": "미국 국세청",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_form",
+                "source_url": "https://www.irs.gov/forms-pubs/about-form-w-8-ben"
+              },
+              "source_url": "https://www.irs.gov/forms-pubs/about-form-w-8-ben",
+              "sort_order": 4
+            },
+            {
+              "doc_type": "i20_form",
+              "label_ko": "I-20",
+              "issuer": "미국 교육기관",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": "student_visa_only",
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "school_direct"
+              },
+              "source_url": "https://spot.wooribank.com/pot/Dream?withyou=FXSTB0027",
+              "sort_order": 5
+            }
+          ],
+          "preparations": [
+            {
+              "code": "post_arrival_identity_check",
+              "label_ko": "입국 후 여권 원본 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "해외계좌 사전개설 서비스",
+            "url": "https://spot.wooribank.com/pot/Dream?withyou=FXSTB0027",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 10,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.balance_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "internet_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "잔액증명서 발급",
+            "url": "https://sbiz.wooribank.com/biz/Dream?withyou=BZBKM0145",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 11,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.transaction_statement_proxy_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "agent",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "receipt_number",
+              "label_ko": "사전 신청 접수번호",
+              "notes": null
+            },
+            {
+              "code": "agent_identity_document",
+              "label_ko": "대리인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "인터넷뱅킹/모바일뱅킹 FAQ",
+            "url": "https://m.wooribank.com/mw/mws?ARTICLE_ID=42233&BOARD_ID=B00070&cc=c029541%3Ac029603&withyou=MWCSC0003",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 12,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.minor_account_termination.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "family_relation_certificate",
+              "label_ko": "가족관계증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "basic_certificate_detailed",
+              "label_ko": "기본증명서(상세)",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [
+            {
+              "code": "receipt_number",
+              "label_ko": "사전 신청 접수번호",
+              "notes": null
+            },
+            {
+              "code": "representative_identity_document",
+              "label_ko": "법정대리인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "인터넷뱅킹/모바일뱅킹 FAQ",
+            "url": "https://m.wooribank.com/mw/mws?ARTICLE_ID=42233&BOARD_ID=B00070&cc=c029541%3Ac029603&withyou=MWCSC0003",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 13,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.dormant_deposit_claim.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "휴면예금 관련 필요서류",
+            "url": "https://m.wooribank.com/mw/mws?ARTICLE_ID=59111&BOARD_ID=B00070&cc=c029541%3Ac029603&withyou=MWCSC0003",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 14,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.inheritance_deposit_claim.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative_or_agent",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "family_relation_certificate",
+              "label_ko": "가족관계증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "basic_certificate_detailed",
+              "label_ko": "기본증명서(상세)",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [
+            {
+              "code": "heir_identity_documents",
+              "label_ko": "상속인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "인터넷뱅킹/모바일뱅킹 FAQ",
+            "url": "https://m.wooribank.com/mw/mws?ARTICLE_ID=42233&BOARD_ID=B00070&cc=c029541%3Ac029603&withyou=MWCSC0003",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 15,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.joint_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "internet_banking_enrollment",
+              "label_ko": "우리은행 인터넷뱅킹 가입",
+              "notes": null
+            },
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "공동인증서 이용안내",
+            "url": "https://svc.wooribank.com/svc/Dream?fromSite=pib&withyou=CTCER0001",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 16,
+      "requirement_sets": [
+        {
+          "requirement_code": "woori.other_bank_certificate_registration.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "other_institution_certificate",
+              "label_ko": "타기관에서 발급한 공동인증서",
+              "notes": null
+            },
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "우리은행",
+            "title": "공동인증서 이용안내",
+            "url": "https://svc.wooribank.com/svc/Dream?fromSite=pib&withyou=CTCER0001",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 17,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.demand_deposit_opening.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "금융거래 목적 확인 증빙자료 예시",
+            "url": "https://image.kebhana.com/cont/customer/customer07/customer0701/customer070101/__icsFiles/afieldfile/2024/08/29/240827-0283_1.pdf",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 18,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.limit_account_release.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "금융거래 목적 확인 증빙자료 예시",
+            "url": "https://image.kebhana.com/cont/customer/customer07/customer0701/customer070101/__icsFiles/afieldfile/2024/08/29/240827-0283_1.pdf",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 19,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.dormant_account_revival.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "금융거래 목적 확인 증빙자료 예시",
+            "url": "https://image.kebhana.com/cont/customer/customer07/customer0701/customer070101/__icsFiles/afieldfile/2024/08/29/240827-0283_1.pdf",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 20,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.balance_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "bankbook",
+              "label_ko": "통장",
+              "notes": null
+            },
+            {
+              "code": "account_seal",
+              "label_ko": "거래 인감",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "예금잔액증명서 발급 FAQ",
+            "url": "https://www.kebhana.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C5.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 21,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.balance_certificate_proxy_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "agent",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "power_of_attorney",
+              "label_ko": "법인 위임장",
+              "issuer": "해당 법인",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "personal_seal_certificate",
+              "label_ko": "인감증명서",
+              "issuer": "행정안전부",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://www.gov.kr/"
+              },
+              "source_url": "https://www.gov.kr/",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [
+            {
+              "code": "agent_identity_document",
+              "label_ko": "대리인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "bankbook",
+              "label_ko": "통장",
+              "notes": null
+            },
+            {
+              "code": "account_seal",
+              "label_ko": "거래 인감",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "예금잔액증명서 발급 FAQ",
+            "url": "https://www.kebhana.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C5.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 22,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.personal_internet_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "account",
+              "label_ko": "하나은행 계좌",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "하나은행 개인뱅킹",
+            "url": "https://www.kebhana.com/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 23,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.phone_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "account",
+              "label_ko": "하나은행 계좌",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "폰뱅킹서비스 이용안내",
+            "url": "https://www.kebhana.com/cont/info/info02/info0201/index.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 24,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.joint_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "internet_banking_enrollment",
+              "label_ko": "인터넷뱅킹 가입",
+              "notes": null
+            },
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "하나은행 개인뱅킹",
+            "url": "https://www.kebhana.com/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 25,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.other_financial_account_registration.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "eligible_user_authority",
+              "label_ko": "등록 권한이 있는 사용자",
+              "notes": null
+            },
+            {
+              "code": "other_bank_account",
+              "label_ko": "조회할 다른 금융기관 계좌",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "오픈뱅킹 다른금융계좌 조회",
+            "url": "https://biz.kebhana.com/cob/wccob701_02i.do",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 26,
+      "requirement_sets": [
+        {
+          "requirement_code": "hana.individual_irp_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            },
+            {
+              "code": "eligibility_confirmation",
+              "label_ko": "가입자격 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "하나은행",
+            "title": "개인형 IRP 상품설명서",
+            "url": "https://image.kebhana.com/cont/download/documents/manual/1100013000101_20240527_m.pdf",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 27,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.demand_deposit_opening.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "금융거래 목적 확인 증빙 안내",
+            "url": "https://blog.ibk.co.kr/2327",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 28,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.limit_account_release.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "금융거래 목적 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "금융거래 한도계좌 안내",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/popup/popup_FntrLmac.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 29,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.dormant_account_revival.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "account_status_check",
+              "label_ko": "거래중지계좌 상태 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 30,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.quick_account_inquiry_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            }
+          ],
+          "preparations": [
+            {
+              "code": "representative_identity_document",
+              "label_ko": "대표자 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "account_seal_or_signature",
+              "label_ko": "거래통장 인감 또는 서명",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "인터넷뱅킹 FAQ",
+            "url": "https://mybank.ibk.co.kr/uib/jsp/popup/PFAQ.jsp?category=2&ebnk_dscd=P",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 31,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.corporate_internet_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "agent",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "business_registration_certificate",
+              "label_ko": "사업자등록증",
+              "issuer": "국세청",
+              "submission_method": "original_or_copy",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "power_of_attorney",
+              "label_ko": "법인 위임장",
+              "issuer": "해당 법인",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "corporate_seal_certificate",
+              "label_ko": "법인인감증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": 90,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [
+            {
+              "code": "agent_identity_document",
+              "label_ko": "대리인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "corporate_or_account_seal",
+              "label_ko": "법인인감 또는 거래통장 인감",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "인터넷뱅킹 FAQ",
+            "url": "https://mybank.ibk.co.kr/uib/jsp/popup/PFAQ.jsp?category=2&ebnk_dscd=P",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 32,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.balance_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 33,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.financial_transaction_confirmation_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 34,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.debt_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 35,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.loan_payoff_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 36,
+      "requirement_sets": [
+        {
+          "requirement_code": "ibk.withholding_receipt_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_banking_login",
+              "label_ko": "기업인터넷뱅킹 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "IBK기업은행",
+            "title": "IBK기업은행 기업인터넷뱅킹",
+            "url": "https://kiup.ibk.co.kr/uib/jsp/guest/esc/_PrivateMain.jsp",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 37,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.demand_deposit_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "mobile_identity_verification",
+              "label_ko": "모바일 본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "입출금통장",
+            "url": "https://www.kakaobank.com/products/withdrawal",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 38,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.personal_business_account_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_information_check",
+              "label_ko": "사업자정보 확인",
+              "notes": null
+            },
+            {
+              "code": "mobile_identity_verification",
+              "label_ko": "모바일 본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "개인사업자통장",
+            "url": "https://www.kakaobank.com/products/sohoAccounts",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 39,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.personal_to_business_account_conversion.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "existing_personal_account",
+              "label_ko": "기존 카카오뱅크 개인입출식통장",
+              "notes": null
+            },
+            {
+              "code": "business_information_check",
+              "label_ko": "사업자정보 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "개인사업자통장",
+            "url": "https://www.kakaobank.com/products/sohoAccounts",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 40,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.transaction_statement_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "app_login",
+              "label_ko": "카카오뱅크 앱 로그인",
+              "notes": null
+            },
+            {
+              "code": "delivery_method_selection",
+              "label_ko": "PDF·팩스·이메일 등 수령방법 선택",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "거래내역서 발급 안내",
+            "url": "https://blog.kakaobank.com/posts/service-transaction-statement",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 41,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.child_account_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "representative",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "parent_identity_verification",
+              "label_ko": "부모 본인확인",
+              "notes": null
+            },
+            {
+              "code": "child_information",
+              "label_ko": "자녀 정보 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "아이 첫 계좌 만들기",
+            "url": "https://blog.kakaobank.com/posts/saving-child-account",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 42,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.living_expense_account_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "app_login",
+              "label_ko": "카카오뱅크 앱 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "생활비통장",
+            "url": "https://blog.kakaobank.com/posts/living-expense-account",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 43,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.mortgage_loan_application.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "chatbot_information_entry",
+              "label_ko": "주택·소득·대출 정보 입력",
+              "notes": null
+            },
+            {
+              "code": "certificate_auto_submission",
+              "label_ko": "인증서를 통한 공공서류 자동 제출",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "주택담보대출",
+            "url": "https://www.kakaobank.com/products/mortgageLoan",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 44,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.personal_business_real_estate_mortgage_application.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "business_information_check",
+              "label_ko": "사업자정보 확인",
+              "notes": null
+            },
+            {
+              "code": "certificate_auto_submission",
+              "label_ko": "인증서를 통한 외부기관 서류 제출",
+              "notes": null
+            },
+            {
+              "code": "collateral_information",
+              "label_ko": "담보 부동산 정보",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "개인사업자 부동산담보대출",
+            "url": "https://blog.kakaobank.com/posts/real-estate-mortgage",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 45,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.other_financial_account_registration.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "adult_eligibility",
+              "label_ko": "만 19세 이상 여부",
+              "notes": null
+            },
+            {
+              "code": "other_bank_account",
+              "label_ko": "본인 명의 다른 금융기관 계좌",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "카카오뱅크 홈·오픈뱅킹 안내",
+            "url": "https://event.kakaobank.com/p/home_2_20",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 46,
+      "requirement_sets": [
+        {
+          "requirement_code": "kakaobank.certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "app_login",
+              "label_ko": "카카오뱅크 앱 로그인",
+              "notes": null
+            },
+            {
+              "code": "certificate_type_selection",
+              "label_ko": "발급할 증명서 종류 선택",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "카카오뱅크",
+            "title": "카카오뱅크 전체탭 증명서 검색 안내",
+            "url": "https://m.kakaobank.com/Notices/view/15566",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 47,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.demand_deposit_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "mobile_identity_verification",
+              "label_ko": "모바일 본인확인 수단",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_confirmation",
+              "label_ko": "금융거래 목적 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "금융거래 한도계좌 안내",
+            "url": "https://m.shinhan.com/?cr=250MS0112000",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 48,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.limit_account_release.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "financial_purpose_evidence",
+              "label_ko": "거래 목적별 증빙",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "금융거래 한도계좌 안내",
+            "url": "https://m.shinhan.com/?cr=250MS0112000",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 49,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.minor_account_opening.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "family_relation_certificate",
+              "label_ko": "가족관계증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "basic_certificate_detailed",
+              "label_ko": "기본증명서(상세)",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 2
+            }
+          ],
+          "preparations": [
+            {
+              "code": "legal_representative_consent",
+              "label_ko": "친권자 또는 법정대리인 동의",
+              "notes": null
+            },
+            {
+              "code": "representative_identity_document",
+              "label_ko": "법정대리인 실명확인증표",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "미성년자 금융거래 법정대리인 동의서",
+            "url": "https://img.shinhan.com/sbank2016/form/20200615000000520002WF00003000000007.PDF?1629771621955=",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 50,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.balance_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "sol_app_login",
+              "label_ko": "신한 SOL뱅크 로그인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "신한 SOL뱅크 이용가이드",
+            "url": "https://nsol.shinhan.com/contents/guide/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 51,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.transaction_statement_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "sol_app_login",
+              "label_ko": "신한 SOL뱅크 로그인",
+              "notes": null
+            },
+            {
+              "code": "account_and_period_selection",
+              "label_ko": "계좌와 조회기간 선택",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "신한 SOL뱅크 이용가이드",
+            "url": "https://nsol.shinhan.com/contents/guide/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 52,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.inheritance_deposit_claim.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "representative_or_agent",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [
+            {
+              "doc_type": "family_relation_certificate",
+              "label_ko": "가족관계증명서",
+              "issuer": "대한민국 법원",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://efamily.scourt.go.kr/"
+              },
+              "source_url": "https://efamily.scourt.go.kr/",
+              "sort_order": 1
+            },
+            {
+              "doc_type": "personal_seal_certificate",
+              "label_ko": "인감증명서",
+              "issuer": "행정안전부",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {
+                "channel": "official_online_or_offline",
+                "source_url": "https://www.gov.kr/"
+              },
+              "source_url": "https://www.gov.kr/",
+              "sort_order": 2
+            },
+            {
+              "doc_type": "power_of_attorney",
+              "label_ko": "법인 위임장",
+              "issuer": "해당 법인",
+              "submission_method": "original",
+              "issued_within_days": null,
+              "validity_days": null,
+              "original_required": null,
+              "choice_group": null,
+              "bundle_code": null,
+              "notes": null,
+              "acquisition": {},
+              "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+              "sort_order": 3
+            }
+          ],
+          "preparations": [
+            {
+              "code": "heir_identity_documents",
+              "label_ko": "상속인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "heir_seals",
+              "label_ko": "상속인 인감",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "상속예금 관련 위임장",
+            "url": "https://img.shinhan.com/sbank2016/form/20060419535300010002WF0000300004.PDF?1605665377274=",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 53,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.securities_linked_account_application.official_guide",
+          "purpose_code": null,
+          "channel": "branch",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "identity_document",
+              "label_ko": "본인 실명확인증표",
+              "notes": null
+            },
+            {
+              "code": "designated_application_form",
+              "label_ko": "증권계좌 개설 신청서",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "증권계좌 개설 신청서",
+            "url": "https://img.shinhan.com/sbank2016/form/20170619812000010005WF00001000000001.PDF?1774625128943=",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 54,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.individual_irp_opening.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "internet_banking_login",
+              "label_ko": "신한 인터넷뱅킹 로그인",
+              "notes": null
+            },
+            {
+              "code": "eligibility_confirmation",
+              "label_ko": "가입자격 확인",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "인터넷뱅킹 개인형 IRP 신규 안내",
+            "url": "https://img.shinhan.com/new_hpe/retire/text/irp_join.pdf",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 55,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.personal_internet_banking_registration.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "mobile_phone",
+              "label_ko": "본인 명의 휴대전화",
+              "notes": null
+            },
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "신한 SOL뱅크 이용가이드",
+            "url": "https://nsol.shinhan.com/contents/guide/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    },
+    {
+      "policy_version_id": 56,
+      "requirement_sets": [
+        {
+          "requirement_code": "shinhan.shinhan_certificate_issuance.official_guide",
+          "purpose_code": null,
+          "channel": "non_face_to_face",
+          "visitor_type": "account_holder",
+          "requirement_level": "official_required",
+          "eligibility_notes": null,
+          "notes": null,
+          "documents": [],
+          "preparations": [
+            {
+              "code": "shinhan_super_sol",
+              "label_ko": "신한 슈퍼SOL 앱",
+              "notes": null
+            },
+            {
+              "code": "mobile_phone",
+              "label_ko": "지원 OS의 본인 스마트폰",
+              "notes": null
+            },
+            {
+              "code": "identity_verification",
+              "label_ko": "본인확인 수단",
+              "notes": null
+            }
+          ],
+          "source": {
+            "publisher": "신한은행",
+            "title": "신한인증서 발급 안내",
+            "url": "https://portal.sign.shinhan.com/",
+            "checked_at": "2026-09-03",
+            "is_primary": true
+          }
+        }
+      ]
+    }
+  ]
+}

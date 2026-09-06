@@ -7,31 +7,42 @@
 ```text
 자연어 query
   → 식별번호 형태의 숫자·이메일 마스킹
-  → LLM: 서비스 후보 + 사용자가 언급한 은행 추출
-  → 서버: 응답 검증 + 은행·서비스 카탈로그 대조
-  → 은행 · 서비스 후보와 공식 링크 반환
-  → 사용자 확인 또는 추가 선택
+  → LLM: 카탈로그의 업무 하나 선택 + 사용자가 언급한 은행·채널·방문자·목적 추출
+  → 서버: 응답 검증 + 은행 그라운딩 + 업무 카탈로그 대조
+  → 서류가 갈리는 축이 남아 있으면 버튼으로 되묻기
+  → 확정되면 데이터베이스의 필요 서류 목록과 공식 출처 반환
 ```
+
+LLM은 업무를 **고르기만** 한다. 필요 서류는 모델을 거치지 않고 데이터베이스 값을
+그대로 내보낸다. 모델이 서류 이름이나 인정기간을 바꿔 쓰는 경로를 만들지 않는다.
 
 ## 구현 경계
 
+- 업무·서류 데이터: 정책 데이터베이스의 `pg_dump` 결과를 `scripts/extract_policy_catalog.py`로
+  `apps/web/server/task-intent/catalog.generated.json`에 평탄화한다. 서버는 실행 중에
+  데이터베이스에 접속하지 않는다. 덤프가 갱신되면 스크립트를 다시 실행한다.
 - 서버 모듈: `apps/web/server/task-intent/`. 화면이나 Next.js에 의존하지 않는 함수로 분리.
 - HTTP: Next.js의 `POST /api/v1/tasks/resolve`. 기존 웹 앱의 서버에서 실행.
 - 화면: 자연어 입력과 후보 선택. 업무 찾기 요청만 같은 출처의 API를 사용.
 - 분석·삭제·ZIP 요청은 기존 `NEXT_PUBLIC_PROOFBRIDGE_API_BASE_URL` 서버를 사용.
 - 문서 규칙, 준비 완료 판정, 상속 서류 심사와 상속 키트는 추가하지 않았다.
 
-현재 카탈로그는 카카오뱅크·우리은행의 한도계좌 해제, KB국민은행의 상속인
-금융거래 조회·상속예금 지급으로 구성한다. 카카오뱅크 항목만 기존 문서 분석
-화면으로 연결한다. 나머지는 `GUIDE_ONLY`로 공식 안내만 제공한다.
-`SUPPORTED`는 기존 분석 흐름으로 연결하는 식별자이며, 외부 분석 서버 배포나
-가용성을 보장하는 상태가 아니다.
+현재 카탈로그는 6개 은행(하나·KB국민·우리·신한·IBK기업·카카오뱅크)의 업무 56건이며
+53건의 정책 버전에 66개의 요건 조합이 붙어 있다. 정책 상태가 `draft`인 항목은
+응답에서 `confirmation_status: "IN_REVIEW"`로 표시하고 화면에도 확인 중임을 밝힌다.
+공식 확인이 끝난 항목만 `CONFIRMED`다.
 
-은행 이름을 아는 것과 해당 은행의 업무를 지원하는 것은 다르다. 예를 들어
-우리은행 상속예금을 요청하면 상속 의도와 우리은행을 보존하면서 등록된 조합이
-없음을 반환한다. KB국민은행으로 임의 대체하지 않는다.
+은행 이름을 아는 것과 해당 은행의 업무를 지원하는 것은 다르다. 사용자가 말한 은행에
+그 업무가 없으면 같은 업무를 가진 다른 은행을 후보로 제시하고, 임의로 대체하지 않는다.
 
 ## 실행
+
+카탈로그를 먼저 생성한다.
+
+```bash
+npm --prefix apps/web run catalog -- <덤프>.sql \
+  --out apps/web/server/task-intent/catalog.generated.json
+```
 
 `apps/web/.env.local`에 서버 전용 `OPENAI_API_KEY`를 설정한다.
 모델은 `PROOFBRIDGE_TASK_INTENT_MODEL`로 변경할 수 있으며 기본값은
@@ -53,45 +64,35 @@ curl http://localhost:3000/api/v1/tasks/resolve \
 설정이 없거나 모델 호출에 실패하면 오류를 반환한다. 업무 찾기에는 가짜 LLM
 결과나 키워드 성공 폴백을 사용하지 않는다. 기존 합성 문서 데모는 별도 경로다.
 
-## API 계약 v2
+## API 계약 v3
 
-입력은 `{ "query": "사용자 표현" }`이며 2~300자, 요청 본문은 4,096바이트 이하다.
-출력은 `apps/web/server/task-intent/types.ts`를 정본으로 사용한다.
+요청은 두 가지 형태다. 본문은 4,096바이트 이하다.
 
 ```json
-{
-  "schema_version": "2.0",
-  "normalized_query": "상속인 금융거래 조회 · 상속예금 지급",
-  "resolution": "NEEDS_CONFIRMATION",
-  "intent": {
-    "services": [
-      {"service_id": "inheritance_inquiry", "label_ko": "상속인 금융거래 조회"},
-      {"service_id": "inheritance_deposit_payment", "label_ko": "상속예금 지급"}
-    ],
-    "bank_code": null,
-    "bank_label": null
-  },
-  "selected_task": null,
-  "candidates": [],
-  "clarification_question": "먼저 하려는 업무와 이용할 은행을 선택해주세요.",
-  "reason": "입력하신 상황에서 관련 있는 은행 업무를 찾았어요.",
-  "interpretation_method": "llm"
-}
+{ "query": "부모님이 돌아가셔서 재산 정리하려고요" }
+{ "operation_id": "kb.limited_account_release", "selections": { "purpose_code": "salary" } }
 ```
 
-위 예시는 후보 배열만 생략했다. 실제 `candidates`에는 KB국민은행의 두 업무가
-관련 서비스 순서대로 포함되며 각 후보에 `task_id`, `bank_code`, `bank_label`,
-`service_id`, `service_label`, `label_ko`, `support_status`, `source_url`,
-`source_title`, `last_checked`가 들어간다.
+첫 번째는 2~300자의 자연어이며 모델을 호출한다. 두 번째는 사용자가 버튼을 누른
+뒤의 재요청이며 모델을 호출하지 않는다(`interpretation_method: "selection"`).
+출력은 `apps/web/server/task-intent/types.ts`를 정본으로 사용한다.
 
-- `RESOLVED`: 은행이 명시되고 한 업무로 해석됨. 사용자 확인 뒤 이동한다.
-- `NEEDS_CONFIRMATION`: 은행 미지정, 복수 업무, 모호한 입력 또는 낮은 신뢰도.
-- `UNSUPPORTED`: 업무 또는 요청한 은행·업무 조합이 카탈로그에 없음.
+- `resolution`
+  - `RESOLVED`: 은행과 업무가 확정되고 남은 선택지가 없음. `requirements`가 채워진다.
+  - `NEEDS_CONFIRMATION`: 은행 미확인이거나 선택이 더 필요함. `requirements`는 항상 빈 배열이다.
+  - `UNSUPPORTED`: 카탈로그에 해당 업무가 없음.
+- `pending_choice`: 다음에 물어볼 축 하나(`channel` · `visitor_type` · `purpose_code`)와
+  그 업무에 실제로 존재하는 선택지만 담는다. 카탈로그에 없는 조합은 버튼에 나오지 않는다.
+- `selections`: 모델이 추출했거나 사용자가 고른 값 중 **그 업무의 요건 조합에 실제로
+  존재하는 값만** 남는다. 모델이 없는 값을 냈으면 버린다.
+- `requirements`: 요건 조합별 서류 묶음. `choice_group`이 같은 서류는 택1이다.
+  각 묶음에 공식 출처의 발행처·제목·URL·확인일이 붙는다.
+- `confirmation_status`: 정책이 `published`면 `CONFIRMED`, `draft`면 `IN_REVIEW`.
 
-은행을 말하지 않았다면 후보가 하나여도 `selected_task`는 `null`이다.
+은행을 확인하기 전에는 서류를 내보내지 않는다. 은행이 다르면 서류가 달라지므로,
+잘못된 은행의 목록을 먼저 보여주는 것이 가장 위험한 실패다.
 LLM의 자기평가 confidence를 사용자에게 정확도나 유사도 백분율로 표시하지 않는다.
-기존 v1의 `lexical_score`, `vector_score`, `embedding_model`은 제거했다.
-이 구현은 벡터 검색을 실행하지 않는다.
+v1의 `lexical_score`, `vector_score`, `embedding_model`은 제거했고 벡터 검색은 실행하지 않는다.
 
 ## 데이터와 실패 처리
 
@@ -128,25 +129,23 @@ API 키가 있는 환경에서 다음 질의를 실제 모델로 추가 검증�
 
 | 입력 | 기대 결과 |
 | --- | --- |
-| 부모님이 돌아가셔서 재산을 정리하고 싶음 | 상속 조회·지급 후보, 은행 미정 |
-| 아버지가 어느 은행에 돈을 두셨는지 모르겠어요 | 상속인 금융거래 조회, 은행 미정 |
-| 국민은행에 있는 돌아가신 아버지 예금을 받고 싶어요 | KB국민은행 · 상속예금 지급, 안내만 |
-| 우리은행의 상속예금을 찾고 싶어요 | 상속 의도 유지, 해당 조합 미등록 |
-| 우리 아버지가 돌아가셔서 재산을 정리하려고요 | 우리은행으로 오인하지 않음 |
-| 카뱅 한도계좌를 해제하고 싶어요 | 카카오뱅크 · 한도제한계좌 해제 |
-| 카뱅 송금 한도가 너무 적어요 | 한도제한계좌 여부 추가 확인 |
-| 부모님께 미리 재산을 증여받고 싶어요 | 현재 카탈로그 밖 업무 |
+| 우리은행에서 아이 인터넷뱅킹 만들어주려고요 | 우리은행 · 미성년자 인터넷뱅킹, 서류 확정 |
+| 국민은행 한도계좌 좀 풀고 싶어요 | KB국민은행 · 한도해제, 거래 목적 버튼 |
+| 하나은행에서 법인 통장 만들려고요 | 하나은행 · 법인계좌 개설, 채널 버튼 |
+| 카카오뱅크 한도계좌 해제하고 싶어요 | 카카오뱅크 · 한도계좌 해제, 서류 확정 |
+| 신한은행 예금잔액증명서 떼려고요 | 신한은행 · 잔액증명서 발급 |
+| 부모님이 돌아가셔서 재산을 정리하고 싶어요 | 상속 업무 인식, 은행 먼저 확인 |
+| 우리 아버지가 돌아가셔서 재산 정리하려고요 | 우리은행으로 오인하지 않음 |
+| 부모님께 재산을 미리 증여받고 싶어요 | 현재 카탈로그 밖 업무 |
 
-새 업무는 `catalog.ts`의 서비스 정의와 공식 출처가 있는 은행·업무 조합을
-추가하고 대응 합성 테스트·실제 모델 질의 정답표를 함께 확장한다.
+새 업무는 정책 데이터베이스에 추가한 뒤 덤프를 다시 받아 `npm run catalog`를 실행한다.
+코드에 업무를 손으로 적지 않는다. 카탈로그가 바뀌면 위 정답표도 함께 갱신한다.
 
 ## 출처
 
-업무 카탈로그 확인일: 2026-09-06. 문서 요건의 검증일이나 준비 완료 규칙이 아니다.
+업무·서류 데이터의 공식 출처는 데이터베이스의 `sources` 테이블이 정본이며,
+응답의 각 요건 묶음에 발행처·제목·URL·확인일이 함께 실린다. 이 문서에 복제하지 않는다.
+카탈로그 생성일과 원본 덤프 파일명은 `catalog.generated.json`에 기록된다.
 
-- [카카오뱅크 한도계좌 안내](https://blog.kakaobank.com/posts/service-limit-account)
-- [우리은행 금융거래 목적 확인 안내](https://spot.wooribank.com/pot/Dream?ARTICLE_ID=46497&BOARD_ID=B00445&bbsMode=view&withyou=CQCNT0009)
-- [KB국민은행 상속인 금융거래 조회](https://obank.kbstar.com/quics?page=C033712)
-- [KB국민은행 상속예금 안내](https://obank1.kbstar.com/quics?page=C112064)
 - [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 - [OpenAI GPT-5.4 mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini)

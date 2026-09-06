@@ -12,7 +12,8 @@
     "test": "npm run test:intent && npm run build && node --test tests/rendered-html.test.mjs",
     "test:intent": "node --experimental-strip-types --test tests/task-intent.test.ts",
     "test:intent:live": "node tests/task-intent.live.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "catalog": "python3 ../../scripts/extract_policy_catalog.py"
   },
   "dependencies": {
     "next": "16.2.6",

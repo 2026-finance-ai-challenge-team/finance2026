@@ -1,5 +1,7 @@
 import type { TaskResolutionResponse } from "../server/task-intent/types";
-export type { TaskResolutionCandidate, TaskResolutionResponse } from "../server/task-intent/types";
+export type {
+  OperationCandidate, PendingChoice, RequirementView, TaskResolutionResponse,
+} from "../server/task-intent/types";
 
 export type ApiDocumentStatus =
   | "READY"
@@ -208,13 +210,21 @@ export async function listAnalysisTasks(): Promise<ApiTaskSummary[]> {
   return (await response.json()) as ApiTaskSummary[];
 }
 
-export async function resolveTask(query: string): Promise<TaskResolutionResponse> {
+export interface TaskSelections {
+  channel?: string | null;
+  visitor_type?: string | null;
+  purpose_code?: string | null;
+}
+
+export async function resolveTask(
+  input: { query: string } | { operation_id: string; selections: TaskSelections },
+): Promise<TaskResolutionResponse> {
   let response: Response;
   try {
     response = await fetch("/api/v1/tasks/resolve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify(input),
     });
   } catch {
     throw new AnalysisApiError(
