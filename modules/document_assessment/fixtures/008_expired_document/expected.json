@@ -1,0 +1,11 @@
+{
+  "expected": {
+    "requirements": {
+      "CORPORATE_REGISTRY_REQUIRED": {
+        "status": "UNSATISFIED",
+        "reason_code": "DOCUMENT_EXPIRED"
+      }
+    },
+    "overall_status": "ACTION_REQUIRED"
+  }
+}

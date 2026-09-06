@@ -1,0 +1,17 @@
+{
+  "doc_type": "income_certificate",
+  "label_ko": "소득금액증명",
+  "issuer": "국세청",
+  "issuer_aliases": ["세무서", "홈택스", "정부24"],
+  "title_patterns": ["소?\\s*득\\s*금\\s*액\\s*증\\s*명"],
+  "required_anchors": ["소득금액", "세무서|국세청"],
+  "negative_anchors": ["과세표준확정신고", "접수증"],
+  "doc_number_label": "접수번호",
+  "issued_at_labels": ["발급일", "증명일"],
+  "validity_days": 90,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "실제 정부24 발급본으로 확인(2026-08-18, 7쪽=귀속연도별). 제목 첫 글자 '소'가 OCR에서 누락돼 '득 금 액 증 명'으로 읽히므로 패턴에서 선택적으로 뒀다."
+}

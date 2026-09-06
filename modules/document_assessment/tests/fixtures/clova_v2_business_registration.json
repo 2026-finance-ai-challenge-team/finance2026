@@ -1,0 +1,58 @@
+{
+  "_comment": "Synthetic CLOVA General OCR V2 response; no real customer data.",
+  "version": "V2",
+  "requestId": "synthetic-business-registration-request",
+  "timestamp": 1755400000000,
+  "images": [
+    {
+      "uid": "synthetic-business-registration-page-1",
+      "name": "synthetic-business-registration",
+      "inferResult": "SUCCESS",
+      "message": "SUCCESS",
+      "validationResult": {"result": "NO_REQUESTED"},
+      "convertedImageInfo": {"width": 1280, "height": 1147, "pageIndex": 0},
+      "fields": [
+        {
+          "valueType": "ALL",
+          "boundingPoly": {"vertices": [{"x": 74, "y": 148}, {"x": 474, "y": 148}, {"x": 474, "y": 190}, {"x": 74, "y": 190}]},
+          "inferText": "사업자등록증명",
+          "inferConfidence": 0.9987,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": {"vertices": [{"x": 74, "y": 220}, {"x": 620, "y": 220}, {"x": 620, "y": 250}, {"x": 74, "y": 250}]},
+          "inferText": "법인명: 주식회사 하나테크",
+          "inferConfidence": 0.991,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": {"vertices": [{"x": 74, "y": 270}, {"x": 620, "y": 270}, {"x": 620, "y": 300}, {"x": 74, "y": 300}]},
+          "inferText": "사업자등록번호: 123-45-67890",
+          "inferConfidence": 0.989,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": {"vertices": [{"x": 74, "y": 320}, {"x": 420, "y": 320}, {"x": 420, "y": 350}, {"x": 74, "y": 350}]},
+          "inferText": "대표자: 김하나",
+          "inferConfidence": 0.987,
+          "type": "NORMAL",
+          "lineBreak": true
+        },
+        {
+          "valueType": "ALL",
+          "boundingPoly": {"vertices": [{"x": 74, "y": 370}, {"x": 420, "y": 370}, {"x": 420, "y": 400}, {"x": 74, "y": 400}]},
+          "inferText": "발급일자: 2026-07-20",
+          "inferConfidence": 0.985,
+          "type": "NORMAL",
+          "lineBreak": true
+        }
+      ]
+    }
+  ]
+}

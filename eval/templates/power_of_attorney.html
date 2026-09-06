@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% block body %}
+<div class="doc-title">위임장</div>
+<div style="font-weight:700; font-size:12pt; margin-bottom:4mm;">하나은행　{{ branch }}지점(부) 앞</div>
+
+<table>
+  <tr>
+    <th rowspan="3" style="width:13%;">수임인<br>(대리인)</th>
+    <th style="width:17%;">성명</th><td>{{ agent }}</td>
+    <th style="width:15%;">생년월일</th><td style="width:22%;">{{ agent_birth }}</td>
+  </tr>
+  <tr><th>본인과의 관계</th><td>직원</td><th>연락처</th><td>010-0000-0000</td></tr>
+  <tr><th>주소</th><td colspan="3">{{ hq_addr }}</td></tr>
+</table>
+
+<table>
+  <tr>
+    <th rowspan="3" style="width:13%;">위임사항<br>(위임내용)</th>
+    <td colspan="2" style="font-size:9.5pt;">※ 해당 □ 에 √ 표시하며 기타의 경우 구체적인 위임내용을 기재합니다</td>
+  </tr>
+  <tr>
+    <th style="width:17%;">신규계좌 개설</th>
+    <td>☑ 입출금이자유로운예금　□ 정기예금　□ 적금　□ 기타 (　　　)</td>
+  </tr>
+  <tr><th>기타 사항</th><td>법인계좌 개설에 필요한 서류 제출 및 수령 일체</td></tr>
+</table>
+
+<div class="statement">본인(위임인)은 귀 은행과의 상기 내용의 금융거래를 위 대리인에게 위임합니다.</div>
+<div class="signdate">{{ issued_ko }}</div>
+
+<table style="margin-top:6mm;">
+  <tr>
+    <th rowspan="3" style="width:13%;">위임인<br>(본인)</th>
+    <th style="width:17%;">성명(업체명)</th><td colspan="3">{{ corp_name }}　대표이사 {{ ceo }}　(인/서명)</td>
+  </tr>
+  <tr><th>사업자번호</th><td style="width:26%;">{{ biz_no }}</td><th style="width:15%;">연락처</th><td>02-0000-0000</td></tr>
+  <tr><th>주소</th><td colspan="3">{{ hq_addr }}</td></tr>
+</table>
+
+<table style="width:46%; margin-left:auto;">
+  <tr><th style="width:44%;">위임내용 확인일시</th><td class="c">{{ confirmed_ko }}</td></tr>
+</table>
+
+<div class="note">
+  ※ 인감증명서의 인감 날인 또는 본인서명사실확인서의 서명 후 인감증명서(본인서명 사실확인서)를 첨부합니다.<br>
+  ※ 위임인이 법인인 경우에는 법인인감증명서를 첨부합니다.
+</div>
+{% endblock %}

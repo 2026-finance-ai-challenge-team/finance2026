@@ -1,0 +1,31 @@
+{
+  "doc_type": "local_income_tax_return",
+  "label_ko": "개인지방소득세 과세표준확정신고 및 납부계산서",
+  "issuer": "",
+  "issuer_aliases": [
+    "지방세법",
+    "위택스"
+  ],
+  "title_patterns": [
+    "개인지방소득세",
+    "종합소득에\\s*대한\\s*개인지방소득세"
+  ],
+  "required_anchors": [
+    "과세표준",
+    "납세지|지방세법"
+  ],
+  "negative_anchors": [
+    "접수증"
+  ],
+  "doc_number_label": "관리번호",
+  "issued_at_labels": [
+    "신고일",
+    "접수일"
+  ],
+  "validity_days": null,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "종합소득세 신고서와 제목 후반부가 같다. '지방소득세'로만 갈린다."
+}

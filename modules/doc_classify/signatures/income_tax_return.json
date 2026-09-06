@@ -1,0 +1,33 @@
+{
+  "doc_type": "income_tax_return",
+  "label_ko": "종합소득세 과세표준확정신고 및 납부계산서",
+  "issuer": "국세청",
+  "issuer_aliases": [
+    "홈택스",
+    "세무서"
+  ],
+  "title_patterns": [
+    "종합소득세.{0,30}과세표준확정신고",
+    "과세표준확정신고\\s*및\\s*납부계산서"
+  ],
+  "required_anchors": [
+    "과세표준",
+    "신고인",
+    "기장\\s*의무|신고\\s*유형"
+  ],
+  "negative_anchors": [
+    "접수증",
+    "지방소득세"
+  ],
+  "doc_number_label": "관리번호",
+  "issued_at_labels": [
+    "신고일",
+    "접수일"
+  ],
+  "validity_days": null,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "실제 홈택스 발급본으로 매칭 확인함. 제출 요건 근거는 미확인."
+}

@@ -1,0 +1,55 @@
+{
+  "application_context": {
+    "corporation_name": "주식회사 하나테크",
+    "business_registration_number": "1234567890",
+    "representative_name": "김하나",
+    "application_date": "2026-08-01"
+  },
+  "files": [
+    {
+      "file_id": "file_business_registration",
+      "pages": [{
+        "page": 1,
+        "blocks": [
+          {"block_id": "br_1", "text": "사업자등록증명", "bbox": [], "confidence": 0.99},
+          {"block_id": "br_2", "text": "법인명: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+          {"block_id": "br_3", "text": "사업자등록번호: 123-45-67890", "bbox": [], "confidence": 0.99},
+          {"block_id": "br_4", "text": "대표자: 김하나", "bbox": [], "confidence": 0.99}
+        ]
+      }]
+    },
+    {
+      "file_id": "file_ambiguous",
+      "pages": [{
+        "page": 1,
+        "blocks": [
+          {"block_id": "amb_1", "text": "법인 관련 증명서", "bbox": [], "confidence": 0.76},
+          {"block_id": "amb_2", "text": "주식회사 하나테크", "bbox": [], "confidence": 0.94},
+          {"block_id": "amb_3", "text": "증명서 발급 내역", "bbox": [], "confidence": 0.81}
+        ]
+      }]
+    },
+    {
+      "file_id": "file_shareholder",
+      "pages": [{
+        "page": 1,
+        "blocks": [
+          {"block_id": "sh_1", "text": "주주명부", "bbox": [], "confidence": 0.99},
+          {"block_id": "sh_2", "text": "법인명: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+          {"block_id": "sh_3", "text": "주주: 이가상 / 지분율: 100%", "bbox": [], "confidence": 0.98}
+        ]
+      }]
+    },
+    {
+      "file_id": "file_sales",
+      "pages": [{
+        "page": 1,
+        "blocks": [
+          {"block_id": "sales_1", "text": "부가가치세과세표준증명", "bbox": [], "confidence": 0.99},
+          {"block_id": "sales_2", "text": "상호: 주식회사 하나테크", "bbox": [], "confidence": 0.99},
+          {"block_id": "sales_3", "text": "사업자등록번호: 123-45-67890", "bbox": [], "confidence": 0.99}
+        ]
+      }]
+    }
+  ]
+}

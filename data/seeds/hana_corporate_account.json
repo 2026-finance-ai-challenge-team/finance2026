@@ -1,0 +1,499 @@
+{
+  "bank": {
+    "code": "KEB_HANA",
+    "slug": "hana",
+    "name_ko": "하나은행"
+  },
+  "policy": {
+    "policy_key": "corporate_account_opening",
+    "label_ko": "하나은행 법인계좌 개설",
+    "customer_type": "corporation",
+    "account_type": "demand_deposit",
+    "version": 1,
+    "status": "published",
+    "verified_at": "2026-08-20",
+    "notes": "지점과 법인의 상황에 따라 추가 서류가 요청될 수 있다."
+  },
+  "sources": [
+    {
+      "source_key": "branch_account_faq",
+      "scope": "branch_account_opening",
+      "publisher": "하나은행",
+      "title": "법인 통장 신규를 할 때 필요한 서류를 알려주세요",
+      "url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+      "checked_at": "2026-08-20",
+      "is_primary": true
+    },
+    {
+      "source_key": "non_face_account",
+      "scope": "non_face_to_face_account_opening",
+      "publisher": "하나은행",
+      "title": "법인 고객 비대면 계좌개설 및 제변경 서비스 안내",
+      "url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "checked_at": "2026-08-20",
+      "is_primary": true
+    },
+    {
+      "source_key": "limit_account_faq",
+      "scope": "limited_account",
+      "publisher": "하나은행",
+      "title": "금융거래한도계좌 안내",
+      "url": "https://www.hanabank.com/cont/customer/customer01/index%2C1%2Clist%2C3.jsp",
+      "checked_at": "2026-08-20",
+      "is_primary": true
+    },
+    {
+      "source_key": "corporate_banking_onboarding",
+      "scope": "supporting_corporate_banking",
+      "publisher": "하나은행",
+      "title": "기업뱅킹 신규손님 이용 절차",
+      "url": "https://biz.kebhana.com/cont/customer/customer03/customer032/index.jsp",
+      "checked_at": "2026-08-20",
+      "is_primary": false
+    },
+    {
+      "source_key": "customer_verification",
+      "scope": "supporting_customer_due_diligence",
+      "publisher": "하나은행",
+      "title": "예금거래 기본약관 고객확인 및 검증 관련 개정 내용",
+      "url": "https://biz.hanabank.com/cont/download/file/pdf_241126_02.pdf",
+      "checked_at": "2026-08-20",
+      "is_primary": false
+    }
+  ],
+  "documents": [
+    {
+      "doc_type": "business_registration_certificate",
+      "label_ko": "사업자등록증",
+      "issuer": "국세청",
+      "issuer_aliases": ["국세청", "홈택스"],
+      "title_patterns": ["사\\s*업\\s*자\\s*등\\s*록\\s*증"],
+      "required_anchors": ["사업자등록번호", "상호", "대표자"],
+      "negative_anchors": ["사업자\\s*등록증명"],
+      "doc_number_label": "사업자등록번호",
+      "issued_at_labels": [],
+      "validity_days": null,
+      "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "하나은행 요구 서류명은 확인했으나 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "business_registration_verification",
+      "label_ko": "사업자등록증명",
+      "issuer": "국세청",
+      "issuer_aliases": ["국세청", "홈택스"],
+      "title_patterns": ["사업자\\s*등록증명"],
+      "required_anchors": ["사업자등록번호", "상호", "대표자"],
+      "negative_anchors": ["사업자\\s*등록증\\s*$"],
+      "doc_number_label": "발급번호",
+      "issued_at_labels": ["발급일자", "발급일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "하나은행 요구 서류명은 확인했으나 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "corporate_registry_certificate",
+      "label_ko": "법인등기사항전부증명서",
+      "issuer": "대한민국 법원",
+      "issuer_aliases": ["인터넷등기소", "등기소"],
+      "title_patterns": ["법인\\s*등기사항전부증명서", "등기사항전부증명서"],
+      "required_anchors": ["법인등록번호", "상호", "본점"],
+      "negative_anchors": [],
+      "doc_number_label": "발행번호",
+      "issued_at_labels": ["발행일", "발급일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "corporate_seal_certificate",
+      "label_ko": "법인인감증명서",
+      "issuer": "대한민국 법원",
+      "issuer_aliases": ["인터넷등기소", "등기소"],
+      "title_patterns": ["법인\\s*인감증명서"],
+      "required_anchors": ["법인등록번호", "상호", "인감"],
+      "negative_anchors": ["개인\\s*인감증명서"],
+      "doc_number_label": "발행번호",
+      "issued_at_labels": ["발행일", "발급일"],
+      "validity_days": null,
+      "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "power_of_attorney",
+      "label_ko": "법인 위임장",
+      "issuer": "해당 법인",
+      "issuer_aliases": [],
+      "title_patterns": ["위\\s*임\\s*장"],
+      "required_anchors": ["위임인", "수임인", "위임사항"],
+      "negative_anchors": [],
+      "doc_number_label": null,
+      "issued_at_labels": ["작성일", "위임일"],
+      "validity_days": null,
+      "source_url": "https://www.hanabank.com/cont/customer/customer01/customer0102/customer010201/index%2C1%2Clist%2C6.jsp",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "법인인감 날인이 필요하며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "shareholder_registry",
+      "label_ko": "주주명부",
+      "issuer": "해당 법인",
+      "issuer_aliases": [],
+      "title_patterns": ["주\\s*주\\s*명\\s*부"],
+      "required_anchors": ["주주", "주식수"],
+      "negative_anchors": ["주식등변동상황명세서"],
+      "doc_number_label": null,
+      "issued_at_labels": ["작성일", "기준일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "인정기간은 업무 조건에 저장하며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "share_change_statement",
+      "label_ko": "주식등변동상황명세서",
+      "issuer": "해당 법인",
+      "issuer_aliases": ["국세청", "홈택스"],
+      "title_patterns": ["주식등변동상황명세서"],
+      "required_anchors": ["사업연도", "주주", "주식수"],
+      "negative_anchors": ["주\\s*주\\s*명\\s*부"],
+      "doc_number_label": null,
+      "issued_at_labels": ["사업연도", "작성일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "주주명부의 대체 문서이며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "articles_of_incorporation",
+      "label_ko": "정관",
+      "issuer": "해당 법인",
+      "issuer_aliases": [],
+      "title_patterns": ["정\\s*관"],
+      "required_anchors": ["총칙", "목적", "상호"],
+      "negative_anchors": [],
+      "doc_number_label": null,
+      "issued_at_labels": ["작성일", "제정일", "개정일"],
+      "validity_days": null,
+      "source_url": "https://biz.hanabank.com/cont/download/file/pdf_241126_02.pdf",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "고객확인 보조자료이며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "vat_tax_base_certificate",
+      "label_ko": "부가가치세과세표준증명",
+      "issuer": "국세청",
+      "issuer_aliases": ["국세청", "홈택스"],
+      "title_patterns": ["부가가치세\\s*과세표준증명"],
+      "required_anchors": ["사업자등록번호", "과세기간", "과세표준"],
+      "negative_anchors": [],
+      "doc_number_label": "발급번호",
+      "issued_at_labels": ["발급일자", "발급일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "비대면 매출 증빙 후보이며 분류 패턴은 실물 검증 전이다."
+    },
+    {
+      "doc_type": "standard_financial_statement_certificate",
+      "label_ko": "표준재무제표증명",
+      "issuer": "국세청",
+      "issuer_aliases": ["국세청", "홈택스"],
+      "title_patterns": ["표준재무제표\\s*증명"],
+      "required_anchors": ["사업자등록번호", "사업연도", "재무제표"],
+      "negative_anchors": [],
+      "doc_number_label": "발급번호",
+      "issued_at_labels": ["발급일자", "발급일"],
+      "validity_days": null,
+      "source_url": "https://biz.kebhana.com/untact/untact_index1.do?nftfBizKindDvCd=8H&nftfChnlKindCd=PW028090A01",
+      "as_of": "2026-08-20",
+      "last_checked": "2026-08-20",
+      "verified": false,
+      "notes": "비대면 매출 증빙 후보이며 분류 패턴은 실물 검증 전이다."
+    }
+  ],
+  "requirement_sets": [
+    {
+      "requirement_code": "hana.branch.representative.official_minimum",
+      "channel": "branch",
+      "visitor_type": "representative",
+      "requirement_level": "official_minimum",
+      "source_key": "branch_account_faq",
+      "eligibility_notes": null,
+      "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대표자 방문 기본 준비사항이다.",
+      "documents": [
+        {
+          "doc_type": "business_registration_certificate",
+          "original_required": true,
+          "issued_within_days": null,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "법인 사업자등록증 원본"
+        }
+      ],
+      "preparations": [
+        {
+          "code": "representative_identity_document",
+          "name_ko": "대표자 실명확인증표",
+          "notes": "주민등록증 또는 운전면허증 등"
+        },
+        {
+          "code": "account_seal",
+          "name_ko": "통장에 사용할 도장",
+          "notes": "신규 통장에 등록할 도장"
+        }
+      ]
+    },
+    {
+      "requirement_code": "hana.branch.agent.official_minimum",
+      "channel": "branch",
+      "visitor_type": "agent",
+      "requirement_level": "official_minimum",
+      "source_key": "branch_account_faq",
+      "eligibility_notes": null,
+      "notes": "하나은행 계좌개설 FAQ가 직접 명시한 대리인 방문 기본 준비사항이다.",
+      "documents": [
+        {
+          "doc_type": "business_registration_certificate",
+          "original_required": true,
+          "issued_within_days": null,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "법인 사업자등록증 원본"
+        },
+        {
+          "doc_type": "corporate_seal_certificate",
+          "original_required": true,
+          "issued_within_days": null,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "계좌개설 FAQ에는 발급기한이 별도로 기재되지 않았다."
+        },
+        {
+          "doc_type": "power_of_attorney",
+          "original_required": true,
+          "issued_within_days": null,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "법인인감 날인 필수"
+        }
+      ],
+      "preparations": [
+        {
+          "code": "agent_identity_document",
+          "name_ko": "대리인 실명확인증표",
+          "notes": "주민등록증 또는 운전면허증 등"
+        },
+        {
+          "code": "account_seal",
+          "name_ko": "통장에 사용할 도장",
+          "notes": "대리인 개설은 서명 사용 불가"
+        }
+      ]
+    },
+    {
+      "requirement_code": "hana.branch.recommended_additional",
+      "channel": "branch",
+      "visitor_type": "representative_or_agent",
+      "requirement_level": "recommended_additional",
+      "source_key": "corporate_banking_onboarding",
+      "eligibility_notes": null,
+      "notes": "계좌개설 FAQ의 공통 필수목록이 아니라 고객확인과 기업뱅킹 공식 안내에 근거한 추가 준비자료다.",
+      "documents": [
+        {
+          "doc_type": "corporate_registry_certificate",
+          "original_required": true,
+          "issued_within_days": 90,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "최근 3개월 이내 발급분 준비 권장"
+        },
+        {
+          "doc_type": "corporate_seal_certificate",
+          "original_required": true,
+          "issued_within_days": 90,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "최근 3개월 이내 발급분 준비 권장"
+        },
+        {
+          "doc_type": "shareholder_registry",
+          "original_required": null,
+          "issued_within_days": 365,
+          "submission_method": "original",
+          "choice_group": null,
+          "notes": "실제소유자 확인자료, 최근 1년 이내 발급분 준비 권장"
+        },
+        {
+          "doc_type": "articles_of_incorporation",
+          "original_required": null,
+          "issued_within_days": null,
+          "submission_method": "original_or_copy",
+          "choice_group": null,
+          "notes": "법인의 설립 목적 확인자료"
+        }
+      ],
+      "preparations": [
+        {
+          "code": "corporate_seal",
+          "name_ko": "법인인감도장",
+          "notes": "법인인감증명서의 인감과 일치해야 함"
+        },
+        {
+          "code": "financial_purpose_evidence",
+          "name_ko": "금융거래 목적 증빙자료",
+          "notes": "거래계약서, 전자세금계산서, 매출자료, 인허가서, 임대차계약서 등"
+        }
+      ]
+    },
+    {
+      "requirement_code": "hana.non_face_to_face.representative.official_required",
+      "channel": "non_face_to_face",
+      "visitor_type": "representative",
+      "requirement_level": "official_required",
+      "source_key": "non_face_account",
+      "eligibility_notes": "비대면 실명확인을 통해 처리할 수 있는 법인은 제한적이므로 신청 가능 여부 확인이 필요하다.",
+      "notes": "하나은행 비대면 법인계좌 개설 안내가 직접 명시한 준비사항이다.",
+      "documents": [
+        {
+          "doc_type": "business_registration_verification",
+          "original_required": false,
+          "issued_within_days": null,
+          "submission_method": "auto_submit",
+          "choice_group": null,
+          "notes": "본점 사업장 기준"
+        },
+        {
+          "doc_type": "corporate_registry_certificate",
+          "original_required": false,
+          "issued_within_days": 90,
+          "submission_method": "photo_or_pdf",
+          "choice_group": null,
+          "notes": "발급용, 등기기록 전부 중 유효부분, 주민등록번호 미공개"
+        },
+        {
+          "doc_type": "shareholder_registry",
+          "original_required": false,
+          "issued_within_days": 90,
+          "submission_method": "photo_or_pdf",
+          "choice_group": "beneficial_owner_evidence",
+          "notes": "대표자를 제외한 주주의 주민등록번호 뒷자리 마스킹"
+        },
+        {
+          "doc_type": "share_change_statement",
+          "original_required": false,
+          "issued_within_days": 90,
+          "submission_method": "photo_or_pdf",
+          "choice_group": "beneficial_owner_evidence",
+          "notes": "주주명부와 대체 관계"
+        },
+        {
+          "doc_type": "vat_tax_base_certificate",
+          "original_required": false,
+          "issued_within_days": null,
+          "submission_method": "auto_submit",
+          "choice_group": "sales_evidence",
+          "notes": "100만원 이상 매출 증빙"
+        },
+        {
+          "doc_type": "standard_financial_statement_certificate",
+          "original_required": false,
+          "issued_within_days": null,
+          "submission_method": "auto_submit",
+          "choice_group": "sales_evidence",
+          "notes": "100만원 이상 매출 증빙"
+        }
+      ],
+      "preparations": [
+        {
+          "code": "representative_mobile_phone",
+          "name_ko": "대표자 명의 휴대전화",
+          "notes": null
+        },
+        {
+          "code": "representative_identity_document",
+          "name_ko": "대표자 주민등록증 또는 운전면허증",
+          "notes": "모바일운전면허증 가능"
+        },
+        {
+          "code": "corporate_account_verification",
+          "name_ko": "기존 법인계좌 인증",
+          "notes": "하나은행 또는 다른 은행 법인계좌"
+        },
+        {
+          "code": "corporate_certificate",
+          "name_ko": "법인사업자 공동인증서 또는 금융인증서",
+          "notes": "홈택스에 등록된 인증서"
+        }
+      ]
+    }
+  ],
+  "policy_conditions": [
+    {
+      "condition_code": "sales_amount_below_1000000",
+      "channel": "non_face_to_face",
+      "source_key": "non_face_account",
+      "expression": {
+        "sales_amount": {
+          "lt": 1000000
+        }
+      },
+      "result_code": "limited_account",
+      "description": "매출액이 100만원 미만이면 금융거래한도계좌로 개설된다."
+    },
+    {
+      "condition_code": "sales_evidence_not_submitted",
+      "channel": "non_face_to_face",
+      "source_key": "non_face_account",
+      "expression": {
+        "sales_evidence_submitted": false
+      },
+      "result_code": "account_opening_unavailable",
+      "description": "매출 증빙을 제출하지 않으면 계좌개설이 불가능하다."
+    },
+    {
+      "condition_code": "existing_limited_account_and_low_sales",
+      "channel": "non_face_to_face",
+      "source_key": "non_face_account",
+      "expression": {
+        "already_has_limited_account": true,
+        "sales_amount": {
+          "lt": 1000000
+        }
+      },
+      "result_code": "account_opening_unavailable",
+      "description": "금융거래한도계좌를 이미 보유하고 매출액이 100만원 미만이면 추가 계좌개설이 불가능하다."
+    },
+    {
+      "condition_code": "financial_purpose_not_confirmed",
+      "channel": "all",
+      "source_key": "limit_account_faq",
+      "expression": {
+        "financial_purpose_confirmed": false
+      },
+      "result_code": "rejected_or_limited_account",
+      "description": "금융거래 목적이 확인되지 않으면 신규가 거절되거나 금융거래한도계좌로 개설될 수 있다."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "expected": {
+    "requirements": {
+      "BUSINESS_REGISTRATION_REQUIRED": {"status": "SATISFIED"},
+      "CORPORATE_REGISTRY_REQUIRED": {"status": "SATISFIED"},
+      "SHAREHOLDER_INFORMATION_REQUIRED": {"status": "SATISFIED"},
+      "SALES_EVIDENCE_REQUIRED": {"status": "SATISFIED"},
+      "CORPORATION_NAME_CONSISTENT": {"status": "SATISFIED"},
+      "REPRESENTATIVE_CONSISTENT": {"status": "SATISFIED"}
+    },
+    "overall_status": "READY"
+  }
+}

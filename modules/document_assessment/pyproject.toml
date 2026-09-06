@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hana-corporate-account-poc"
+version = "0.1.0"
+description = "Deterministic post-OCR corporate account document assessment PoC"
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8,<9",
+]
+
+[tool.setuptools]
+packages = [
+    "hana_poc",
+    "hana_poc.assessment",
+    "hana_poc.classification",
+    "hana_poc.explanation",
+    "hana_poc.extraction",
+    "hana_poc.ocr_adapters",
+    "hana_poc.rule_engine",
+    "hana_poc.validation",
+    "schemas",
+]
+package-dir = { hana_poc = "src/hana_poc", schemas = "schemas" }

@@ -2,38 +2,19 @@
 
 import { useState } from "react";
 
+import { completionOf, loadResult, toRows } from "./classifyResult";
+
 const steps = ["업무 고르기", "공공 경로 나누기", "남은 서류 모으기", "준비 키트 확인"];
 
-const resultItems = [
-  {
-    name: "주민등록등본",
-    meta: "정부24 · 공공 경로로 처리",
-    status: "준비 완료",
-    tone: "ready",
-    note: "다시 PDF로 받을 필요 없이 공식 전송 경로를 먼저 안내해요.",
-  },
-  {
-    name: "관리비 고지서",
-    meta: "합성 사진 · 2026.08.05",
-    status: "정보 불일치",
-    tone: "mismatch",
-    note: "고지서 주소와 등본 주소가 달라요. 현재 주소의 고지서로 바꿔 주세요.",
-  },
-  {
-    name: "현재 주소의 관리비 고지서",
-    meta: "카카오뱅크 공개 예시 기준",
-    status: "추가 필요",
-    tone: "needed",
-    note: "이 한 장을 보완하면 공개 기준 사전 점검을 마칠 수 있어요.",
-  },
-  {
-    name: "재학증명서",
-    meta: "합성 PDF · 문서 인식 예시",
-    status: "이번 업무에는 불필요",
-    tone: "unused",
-    note: "이번 생활비·공과금 목적 묶음에서는 빼둘게요.",
-  },
-];
+// 화면은 더 이상 결과를 직접 적지 않는다. 분류 모듈의 출력 계약(v1.0)을 읽어 그린다.
+// 지금은 합성 샘플 JSON이고, 백엔드가 생기면 classifyResult.ts의 loadResult()만 바꾼다.
+const classifyResult = loadResult();
+const resultItems = toRows(classifyResult);
+
+const completion = completionOf(resultItems);
+const missingNames = resultItems
+  .filter((item) => item.status === "추가 필요")
+  .map((item) => item.name);
 
 const kitCopy = {
   public: {
@@ -290,17 +271,23 @@ export function ProofBridgeDemo() {
                       <>
                         <div className="upload-symbol" aria-hidden="true"><span>PDF</span><span>JPG</span><span>PNG</span></div>
                         <h4>실제 개인정보 문서는 넣지 마세요.</h4>
-                        <p>이 버튼은 이름·주소·날짜를 모두 지어낸 합성 샘플 3개를 불러옵니다.</p>
+                        <p>이 버튼은 이름·주소·날짜를 모두 지어낸 합성 샘플 {classifyResult.documents.length}개를 불러옵니다.</p>
                         <button className="button primary" type="button" onClick={() => setSampleLoaded(true)}>합성 샘플 불러오기</button>
                         <button className="future-button" type="button" disabled>직접 파일 넣기 · AI 연결 후 제공</button>
                       </>
                     ) : (
                       <>
-                        <div className="loaded-head"><div><span aria-hidden="true">✓</span><b>합성 샘플 3개를 불러왔어요.</b></div><button type="button" onClick={() => setSampleLoaded(false)}>비우기</button></div>
+                        <div className="loaded-head"><div><span aria-hidden="true">✓</span><b>합성 샘플 {classifyResult.documents.length}개를 불러왔어요.</b></div><button type="button" onClick={() => setSampleLoaded(false)}>비우기</button></div>
                         <ul className="file-list">
-                          <li><span>PDF</span><div><b>주민등록등본_합성.pdf</b><small>공공 경로 대상 예시</small></div></li>
-                          <li><span>JPG</span><div><b>관리비고지서_합성.jpg</b><small>주소 불일치 예시</small></div></li>
-                          <li><span>PDF</span><div><b>재학증명서_합성.pdf</b><small>불필요 문서 예시</small></div></li>
+                          {classifyResult.documents.map((doc) => (
+                            <li key={doc.file_id}>
+                              <span>{doc.media.kind.toUpperCase()}</span>
+                              <div>
+                                <b>{doc.source_name}</b>
+                                <small>{doc.media.pages}쪽 · 아직 무슨 문서인지 모르는 상태</small>
+                              </div>
+                            </li>
+                          ))}
                         </ul>
                         <div className="split-actions">
                           <button className="button ghost" type="button" onClick={() => go(2)}>이전</button>
@@ -317,10 +304,14 @@ export function ProofBridgeDemo() {
                   <div className="result-summary">
                     <div>
                       <span className="step-kicker">4 / 4 · 공개 기준 사전 점검 예시</span>
-                      <h3>주소가 맞는 고지서<br />한 장만 더 필요해요.</h3>
+                      <h3>
+                        {missingNames.length > 0
+                          ? <>{missingNames[0]}<br />{missingNames.length > 1 ? `외 ${missingNames.length - 1}건이 ` : ""}더 필요해요.</>
+                          : <>가진 문서를<br />모두 확인했어요.</>}
+                      </h3>
                       <p>은행의 승인·통과를 보장하는 결과가 아닙니다. 공개된 예시 기준으로 다음 행동을 정리한 화면입니다.</p>
                     </div>
-                    <div className="score-ring" aria-label="예시 준비 완성도 75퍼센트"><b>75</b><span>%</span><small>예시 완성도</small></div>
+                    <div className="score-ring" aria-label={`이번 업무 필요 항목 ${completion.total}건 중 ${completion.have}건 확보`}><b>{completion.percent}</b><span>%</span><small>{completion.have}/{completion.total} 확보</small></div>
                   </div>
 
                   <div className="result-grid">
@@ -328,7 +319,7 @@ export function ProofBridgeDemo() {
                       <h4>문서와 준비물 <span>{resultItems.length}</span></h4>
                       <ul>
                         {resultItems.map((item) => (
-                          <li key={item.name}>
+                          <li key={item.key}>
                             <div className="doc-title"><span className={`status-dot ${item.tone}`} /><div><b>{item.name}</b><small>{item.meta}</small></div></div>
                             <div className="doc-result"><strong className={item.tone}>{item.status}</strong><p>{item.note}</p></div>
                           </li>
@@ -338,6 +329,7 @@ export function ProofBridgeDemo() {
                         <summary>다섯 가지 상태 모두 보기</summary>
                         <p><b>준비 완료 · 추가 필요 · 기한 만료 · 정보 불일치 · 이번 업무에는 불필요</b></p>
                         <p>기한 만료는 실제 공식 규칙에 유효기간 근거가 있을 때만 표시합니다.</p>
+                        <p>위 화면은 <b>문서 분류 모듈의 실제 출력 스키마(v{classifyResult.schema_version})</b>를 읽어 그립니다. <b>준비 완료</b>와 <b>정보 불일치</b>는 규칙 엔진이 판정하는 상태라 아직 표시하지 않습니다.</p>
                       </details>
                     </div>
 

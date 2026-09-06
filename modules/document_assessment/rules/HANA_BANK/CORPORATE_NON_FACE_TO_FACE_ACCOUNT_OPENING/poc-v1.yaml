@@ -1,0 +1,44 @@
+workflow:
+  bank: HANA_BANK
+  workflow: CORPORATE_NON_FACE_TO_FACE_ACCOUNT_OPENING
+  version: poc-v1
+
+requirements:
+
+  - id: BUSINESS_REGISTRATION_REQUIRED
+    blocking: true
+    document_presence:
+      any_of:
+        - BUSINESS_REGISTRATION_CERTIFICATE
+
+  - id: CORPORATE_REGISTRY_REQUIRED
+    blocking: true
+    document_presence:
+      any_of:
+        - CORPORATE_REGISTRY
+    freshness:
+      max_age_days: 90
+
+  - id: SHAREHOLDER_INFORMATION_REQUIRED
+    blocking: true
+    document_presence:
+      any_of:
+        - SHAREHOLDER_REGISTER
+        - STOCK_CHANGE_STATEMENT
+
+  - id: SALES_EVIDENCE_REQUIRED
+    blocking: true
+    document_presence:
+      any_of:
+        - VAT_TAX_BASE_CERTIFICATE
+        - STANDARD_FINANCIAL_STATEMENT_CERTIFICATE
+
+  - id: CORPORATION_NAME_CONSISTENT
+    blocking: true
+    consistency_check:
+      check_id: COMPANY_NAME_MATCH
+
+  - id: REPRESENTATIVE_CONSISTENT
+    blocking: true
+    consistency_check:
+      check_id: REPRESENTATIVE_NAME_MATCH

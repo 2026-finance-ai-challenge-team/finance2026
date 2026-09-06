@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+# ProofBridge 개발 환경 (venv: finance)
+# 설치: python -m venv finance && finance/Scripts/activate && pip install -r requirements.txt
+
+-r ocr_test/requirements.txt   # requests — CLOVA OCR 호출
+reportlab>=4,<5                # scripts/build_proposal_pdf.py 제안서 PDF 생성
+pypdf>=6,<7                    # 텍스트 PDF 우선 추출 및 제목 글자 크기 탐지
+openai>=2,<3                   # 규칙 분류 실패 시 개인정보 최소화 LLM 보조 분류
+psycopg[binary]>=3.2,<4        # PostgreSQL 정책·서류 데이터베이스
+python-dotenv>=1,<2             # 로컬 .env 설정 로드

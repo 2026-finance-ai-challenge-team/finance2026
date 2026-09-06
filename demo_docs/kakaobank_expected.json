@@ -1,0 +1,22 @@
+{
+  "task_id": "kakaobank.limit_account_release",
+  "synthetic_only": true,
+  "documents": [
+    {"filename": "합성_전기요금청구서.pdf", "scan_filename": "합성_전기요금청구서_스캔.jpg", "doc_type": "utility_bill", "bundle_code": "utility_bill"},
+    {"filename": "합성_관리비고지서.pdf", "scan_filename": "합성_관리비고지서_스캔.jpg", "doc_type": "management_fee_notice", "bundle_code": "management_fee_and_resident_copy"},
+    {"filename": "합성_주민등록표등본.pdf", "scan_filename": "합성_주민등록표등본_스캔.jpg", "doc_type": "resident_registration_copy", "bundle_code": "management_fee_and_resident_copy"},
+    {"filename": "합성_세금고지서.pdf", "scan_filename": "합성_세금고지서_스캔.jpg", "doc_type": "tax_bill", "bundle_code": "tax_bill"},
+    {"filename": "합성_건강보험자격득실확인서.pdf", "scan_filename": "합성_건강보험자격득실확인서_스캔.jpg", "doc_type": "health_insurance_certificate", "bundle_code": "health_insurance_qualification"},
+    {"filename": "합성_근로계약서.pdf", "scan_filename": "합성_근로계약서_스캔.jpg", "doc_type": "employment_contract", "bundle_code": "employment_contract_and_employer_registration"},
+    {"filename": "합성_사업자등록증.pdf", "scan_filename": "합성_사업자등록증_스캔.jpg", "doc_type": "business_registration_certificate", "bundle_code": "employment_contract_and_employer_registration"},
+    {"filename": "합성_휴대폰요금납부확인서.pdf", "scan_filename": "합성_휴대폰요금납부확인서_스캔.jpg", "doc_type": "mobile_phone_payment_certificate", "bundle_code": "mobile_phone_payment"}
+  ],
+  "ready_bundles": [
+    ["합성_전기요금청구서.pdf"],
+    ["합성_관리비고지서.pdf", "합성_주민등록표등본.pdf"],
+    ["합성_세금고지서.pdf"],
+    ["합성_건강보험자격득실확인서.pdf"],
+    ["합성_근로계약서.pdf", "합성_사업자등록증.pdf"],
+    ["합성_휴대폰요금납부확인서.pdf"]
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "doc_type": "tax_return_receipt",
+  "label_ko": "종합소득세 신고서 접수증",
+  "issuer": "국세청",
+  "issuer_aliases": [
+    "홈택스"
+  ],
+  "title_patterns": [
+    "종합소득세\\s*신고서\\s*접수증",
+    "신고서\\s*접수증"
+  ],
+  "required_anchors": [
+    "접수번호",
+    "접수일시|접수결과",
+    "제출내역|신고서종류"
+  ],
+  "negative_anchors": [],
+  "doc_number_label": "접수번호",
+  "issued_at_labels": [
+    "접수일시",
+    "접수일"
+  ],
+  "validity_days": null,
+  "verified": false,
+  "source_url": null,
+  "as_of": null,
+  "last_checked": null,
+  "note": "신고서 본문이 아니라 접수 사실 증빙이다. 둘을 섞으면 안 된다."
+}

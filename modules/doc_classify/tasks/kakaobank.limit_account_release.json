@@ -1,0 +1,25 @@
+{
+  "task_id": "kakaobank.limit_account_release",
+  "label_ko": "카카오뱅크 한도계좌 해제",
+  "bank_code": "KAKAO_BANK",
+  "policy_key": "limit_account_release",
+  "channel": "non_face_to_face",
+  "visitor_type": "account_holder",
+  "required": [],
+  "conditional": [],
+  "alternatives": [
+    "utility_bill",
+    "management_fee_notice",
+    "resident_registration_copy",
+    "tax_bill",
+    "health_insurance_certificate",
+    "employment_contract",
+    "business_registration_certificate",
+    "mobile_phone_payment_certificate"
+  ],
+  "verified": true,
+  "source_url": "https://blog.kakaobank.com/posts/service-limit-account",
+  "as_of": "2026-01-22",
+  "last_checked": "2026-08-28",
+  "note": "인정 증빙과 제출 방식은 카카오뱅크 공식 안내로 확인했다. 복합 증빙 묶음과 최종 판정은 PostgreSQL 정책 엔진이 담당한다."
+}

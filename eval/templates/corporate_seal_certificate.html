@@ -1,0 +1,35 @@
+{% extends "_base.html" %}
+{% block body %}
+<div style="font-size:9pt;">[등기소 서식 4-1] 법인인감증명서</div>
+<div class="doc-title">인감증명서</div>
+<div class="doc-subtitle">( 법인 )</div>
+<div style="text-align:right; letter-spacing:.08em;">법인등록번호 : {{ corp_no }}</div>
+
+<div style="width:46mm; height:46mm; border:1px solid #333; margin:6mm auto 8mm; text-align:center;">
+  <div style="margin-top:14mm; font-size:9pt; color:#555;">인감</div>
+  <div style="display:inline-block; margin-top:2mm; width:20mm; height:20mm; border:1.6pt solid #7f1d1d;
+              border-radius:50%; color:#7f1d1d; font-size:8pt; line-height:20mm;">법인인감</div>
+</div>
+
+<table class="plain" style="width:78%; margin:0 auto;">
+  <tr><th>상호</th><td>{{ corp_name }}</td></tr>
+  <tr><th>본점</th><td>{{ hq_addr }}</td></tr>
+  <tr><th>자격 / 성명</th><td>대표이사　{{ ceo }}</td></tr>
+</table>
+
+<div style="text-align:center; font-size:9.5pt; margin-top:6mm;">
+  관할등기소 : {{ registry_office }} / 발행등기소 : {{ registry_office }}
+</div>
+<div class="statement" style="font-size:12.5pt;">이 인감은 등기소(과)에 제출되어 있는 인감과 틀림없음을 증명합니다.</div>
+<div class="signdate">발행일　{{ issued_ko }}</div>
+<div class="signer" style="font-size:13pt;">법원행정처 등기정보중앙관리소<span class="seal">인</span></div>
+
+<div class="note">
+  수수료 1,000원 영수함.<br>
+  1. 문서 하단의 바코드를 스캐너로 확인하거나, 인터넷등기소(http://www.iros.go.kr)의 인감증명서
+  발급확인 메뉴에서 발급확인번호를 입력하여 위·변조 여부를 확인할 수 있습니다.<br>
+  2. 법인인감증명서 발급사실 등 문자전송 서비스를 신청하면, 발급사실을 휴대폰 문자로 통보받을 수 있습니다.
+</div>
+<div style="text-align:right; font-size:9.5pt;">발행번호 {{ issue_no }}</div>
+<div class="pageno">- 1/1 -</div>
+{% endblock %}
