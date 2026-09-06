@@ -11,7 +11,8 @@ import {
   resolveTask,
   type AnalysisResponse,
   type ApiDocumentStatus,
-  type TaskResolutionCandidate,
+  type OperationCandidate,
+  type TaskSelections,
   type TaskResolutionResponse,
 } from "./analysisApi";
 import {
@@ -177,52 +178,106 @@ function TaskDiscoveryAside() {
 
 function TaskMatchCard({
   resolution,
+  busy,
+  onChoose,
   onConfirm,
   onReset,
 }: {
   resolution: TaskResolutionResponse;
-  onConfirm: (task: TaskResolutionCandidate) => void;
+  busy: boolean;
+  onChoose: (operationId: string, selections: TaskSelections) => void;
+  onConfirm: (task: OperationCandidate) => void;
   onReset: () => void;
 }) {
-  const [chosenTaskId, setChosenTaskId] = useState(resolution.selected_task?.task_id ?? "");
-  const task = resolution.candidates.find((candidate) => candidate.task_id === chosenTaskId);
   if (resolution.resolution === "UNSUPPORTED") {
     return (
       <div className="task-match-card unsupported" role="status">
         <span className="match-icon"><Icon name="info"/></span>
         <div><span>아직 연결할 수 없는 업무예요</span><h2>{resolution.normalized_query || "하려는 일을 조금 더 알려주세요"}</h2><p>{resolution.reason}</p></div>
+        {resolution.candidates.length > 0 && (
+          <div className="choice-options">
+            {resolution.candidates.map((candidate) => (
+              <button key={candidate.operation_id} type="button" disabled={busy}
+                onClick={() => onChoose(candidate.operation_id, {})}>{candidate.label_ko}</button>
+            ))}
+          </div>
+        )}
         <button className="secondary-action" type="button" onClick={onReset}>다시 입력</button>
       </div>
     );
   }
+
+  const task = resolution.selected_operation;
+  const askingBank = resolution.pending_choice === null && resolution.requirements.length === 0;
+  const selections = resolution.selections;
+
   return (
     <div className="task-match-card" role="status">
       <div className="match-heading">
         <span className="match-icon" aria-hidden="true"><Icon name="search"/></span>
         <div>
-          <span>{resolution.resolution === "RESOLVED" ? "이 업무로 이해했어요" : "한 번만 확인해주세요"}</span>
-          <h2>{task?.label_ko ?? resolution.intent.services.map((service) => service.label_ko).join(" · ")}</h2>
+          <span>{resolution.resolution === "RESOLVED" ? "이 업무로 이해했어요" : "한 가지만 더 확인할게요"}</span>
+          <h2>{task?.label_ko ?? resolution.normalized_query}</h2>
           <p>{resolution.clarification_question ?? resolution.reason}</p>
         </div>
       </div>
-      <div className="task-candidate-picker">
-        <label htmlFor="task-candidate">은행 · 서비스</label>
-        <select id="task-candidate" value={chosenTaskId} onChange={(event) => setChosenTaskId(event.target.value)}>
-          <option value="">처리할 은행과 업무를 선택해주세요</option>
-          {resolution.candidates.map((candidate) => <option key={candidate.task_id} value={candidate.task_id}>{candidate.label_ko}</option>)}
-        </select>
-        {!resolution.intent.bank_code && <p>은행을 아직 확인하지 않았어요. 선택 목록에는 공식 안내가 등록된 은행만 있어요.</p>}
-      </div>
-      {task && <>
-        <p className="task-support-note">{task.support_status === "GUIDE_ONLY" ? "공식 안내 제공 · 서류 자동 점검은 아직 지원하지 않아요." : "서류 점검 단계로 연결할 수 있어요."}</p>
-        <a className="match-source" href={task.source_url} target="_blank" rel="noreferrer">{task.source_title} · {task.last_checked} 확인 <Icon name="external"/></a>
-      </>}
+
+      {task?.confirmation_status === "IN_REVIEW" && (
+        <p className="task-support-note">공식 안내 확인이 진행 중인 업무예요. 영업점 방문 전에 은행에 한 번 더 확인해주세요.</p>
+      )}
+
+      {askingBank && resolution.candidates.length > 0 && (
+        <div className="choice-options" role="group" aria-label="은행 선택">
+          {resolution.candidates.map((candidate) => (
+            <button key={candidate.operation_id} type="button" disabled={busy}
+              onClick={() => onChoose(candidate.operation_id, selections)}>{candidate.bank_label_ko}</button>
+          ))}
+        </div>
+      )}
+
+      {resolution.pending_choice && task && (
+        <div className="choice-options" role="group" aria-label={resolution.pending_choice.question}>
+          {resolution.pending_choice.options.map((option) => (
+            <button key={option.value} type="button" disabled={busy}
+              onClick={() => onChoose(task.operation_id, { ...selections, [resolution.pending_choice!.axis]: option.value })}>
+              {option.label_ko}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {resolution.requirements.map((requirement) => (
+        <section className="requirement-block" key={requirement.requirement_code}>
+          <header>
+            <b>{requirement.level_label_ko}</b>
+            <span>{requirement.channel_label_ko} · {requirement.visitor_label_ko}{requirement.purpose_label_ko ? ` · ${requirement.purpose_label_ko}` : ""}</span>
+          </header>
+          {requirement.document_groups.map((group, index) => (
+            <ul key={group.choice_group ?? `group-${index}`} className={group.choice_group ? "document-choice" : undefined}>
+              {group.choice_group && group.documents.length > 1 && <li className="choice-label">아래 중 하나만 준비하면 돼요</li>}
+              {group.documents.map((document) => (
+                <li key={document.doc_type}>
+                  <b>{document.label_ko}</b>
+                  <span>{document.submission_label_ko}{document.validity_note ? ` · ${document.validity_note}` : ""}</span>
+                  {document.notes && <p>{document.notes}</p>}
+                </li>
+              ))}
+            </ul>
+          ))}
+          {requirement.preparations.length > 0 && (
+            <p className="preparation-note">함께 챙길 것: {requirement.preparations.map((item) => item.label_ko).join(", ")}</p>
+          )}
+          {requirement.notes && <p className="preparation-note">{requirement.notes}</p>}
+          <a className="match-source" href={requirement.source.url} target="_blank" rel="noreferrer">
+            {requirement.source.publisher} · {requirement.source.title} · {requirement.source.checked_at} 확인 <Icon name="external"/>
+          </a>
+        </section>
+      ))}
+
       <div className="match-actions">
         <button className="secondary-action" type="button" onClick={onReset}>다른 업무 입력</button>
-        {task?.support_status === "GUIDE_ONLY" ? (
-          <a className="primary-action" href={task.source_url} target="_blank" rel="noreferrer">공식 업무 안내 보기 <Icon name="external"/></a>
-        ) : (
-          <button className="primary-action" type="button" disabled={!task} onClick={() => { if (task) onConfirm(task); }}>맞아요, 서류 준비하기 <Icon name="arrow"/></button>
+        {task && resolution.requirements.length > 0 && (
+          <button className="primary-action" type="button" onClick={() => onConfirm(task)}>서류 준비 시작 <Icon name="arrow"/></button>
         )}
       </div>
     </div>
@@ -293,7 +348,7 @@ export function ProofBridgeDemo() {
   const [view, setView] = useState<View>("task");
   const [taskQuery, setTaskQuery] = useState("");
   const [taskResolution, setTaskResolution] = useState<TaskResolutionResponse | null>(null);
-  const [selectedTask, setSelectedTask] = useState<TaskResolutionCandidate | null>(null);
+  const [selectedTask, setSelectedTask] = useState<OperationCandidate | null>(null);
   const [resolvingTask, setResolvingTask] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
@@ -339,7 +394,7 @@ export function ProofBridgeDemo() {
     setError(null);
     setNotice(null);
     try {
-      const result = await resolveTask(query);
+      const result = await resolveTask({ query });
       if (searchId === taskSearchId.current) setTaskResolution(result);
     } catch (caught) {
       const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("입력한 업무를 찾지 못했어요.");
@@ -349,8 +404,22 @@ export function ProofBridgeDemo() {
     }
   };
 
-  const confirmTask = (task: TaskResolutionCandidate) => {
-    if (task.support_status !== "SUPPORTED") return;
+  const chooseTask = async (operationId: string, selections: TaskSelections) => {
+    const searchId = ++taskSearchId.current;
+    setResolvingTask(true);
+    setError(null);
+    try {
+      const result = await resolveTask({ operation_id: operationId, selections });
+      if (searchId === taskSearchId.current) setTaskResolution(result);
+    } catch (caught) {
+      const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("업무를 불러오지 못했어요.");
+      if (searchId === taskSearchId.current) setError({ message: apiError.message, recovery: apiError.recovery });
+    } finally {
+      if (searchId === taskSearchId.current) setResolvingTask(false);
+    }
+  };
+
+  const confirmTask = (task: OperationCandidate) => {
     setSelectedTask(task);
     setView("prepare");
     setError(null);
@@ -402,7 +471,7 @@ export function ProofBridgeDemo() {
     setNotice(null);
     setStaticDemo(false);
     try {
-      setAnalysis(await analyzeDocuments(files, selectedTask?.task_id));
+      setAnalysis(await analyzeDocuments(files, selectedTask?.operation_id));
       setView("result");
     } catch (caught) {
       const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("문서를 분석하지 못했어요.");
@@ -533,6 +602,8 @@ export function ProofBridgeDemo() {
               {taskResolution && (
                 <TaskMatchCard
                   resolution={taskResolution}
+                  busy={resolvingTask}
+                  onChoose={chooseTask}
                   onConfirm={confirmTask}
                   onReset={() => { setTaskResolution(null); setTaskQuery(""); }}
                 />

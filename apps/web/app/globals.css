@@ -810,3 +810,26 @@ em { color: var(--coral); font-style: normal; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.choice-options { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 2px; }
+.choice-options button {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  border-radius: 999px; padding: 8px 14px; font-size: 0.92rem; cursor: pointer;
+}
+.choice-options button:hover:not(:disabled) { background: color-mix(in srgb, currentColor 11%, transparent); }
+.choice-options button:disabled { opacity: 0.5; cursor: progress; }
+
+.requirement-block { margin-top: 14px; }
+.requirement-block > header { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin-bottom: 8px; }
+.requirement-block > header b { font-size: 0.95rem; }
+.requirement-block > header span { font-size: 0.83rem; opacity: 0.7; }
+.requirement-block ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.requirement-block ul.document-choice {
+  border-left: 2px solid color-mix(in srgb, currentColor 20%, transparent); padding-left: 12px;
+}
+.requirement-block li { display: grid; gap: 2px; }
+.requirement-block li.choice-label { font-size: 0.8rem; opacity: 0.7; }
+.requirement-block li b { font-size: 0.95rem; }
+.requirement-block li span { font-size: 0.82rem; opacity: 0.72; }
+.requirement-block li p, .preparation-note { font-size: 0.82rem; opacity: 0.72; margin: 2px 0 0; }

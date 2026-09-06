@@ -1,4 +1,4 @@
-import { resolveQuery } from "../../../../../server/task-intent/resolve.ts";
+import { resolveQuery, type ResolveInput } from "../../../../../server/task-intent/resolve.ts";
 import { TaskIntentError } from "../../../../../server/task-intent/types.ts";
 
 export const runtime = "nodejs";
@@ -9,7 +9,7 @@ let activeRequests = 0;
 let windowStarted = 0;
 let windowRequests = 0;
 
-async function readQuery(request: Request): Promise<unknown> {
+async function readInput(request: Request): Promise<ResolveInput> {
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
     throw new TaskIntentError("INVALID_CONTENT_TYPE", "입력 형식을 확인해주세요.", 415);
   }
@@ -31,7 +31,10 @@ async function readQuery(request: Request): Promise<unknown> {
     }
     body += decoder.decode();
     const payload = JSON.parse(body);
-    return payload?.query;
+    if (typeof payload !== "object" || payload === null) {
+      throw new TaskIntentError("INVALID_JSON", "입력 형식을 확인해주세요.", 400);
+    }
+    return payload as ResolveInput;
   } catch (error) {
     if (error instanceof TaskIntentError) throw error;
     throw new TaskIntentError("INVALID_JSON", "입력 형식을 확인해주세요.", 400);
@@ -44,7 +47,7 @@ export async function POST(request: Request): Promise<Response> {
   let admitted = false;
   const headers = { "Cache-Control": "no-store" };
   try {
-    const query = await readQuery(request);
+    const input = await readInput(request);
     if (Date.now() - windowStarted >= 60000) {
       windowStarted = Date.now();
       windowRequests = 0;
@@ -57,7 +60,7 @@ export async function POST(request: Request): Promise<Response> {
     admitted = true;
     activeRequests += 1;
     windowRequests += 1;
-    return Response.json(await resolveQuery(query), { headers });
+    return Response.json(await resolveQuery(input), { headers });
   } catch (error) {
     const failure = error instanceof TaskIntentError ? error
       : new TaskIntentError("INTENT_UNAVAILABLE", "업무를 찾지 못했어요. 잠시 후 다시 시도해주세요.", 503);
