@@ -59,7 +59,10 @@ class PostgreSQLPolicyService:
         if not self._database_url:
             raise PolicyDataError("PostgreSQL database URL is missing")
 
-        connection = connect_database(self._database_url)
+        try:
+            connection = connect_database(self._database_url)
+        except Exception as error:
+            raise PolicyDataError("PostgreSQL connection is unavailable") from error
         try:
             policy = find_requirements(
                 connection,
@@ -75,6 +78,8 @@ class PostgreSQLPolicyService:
             raise PolicySelectionRequired(str(error)) from error
         except LookupError as error:
             raise PolicyDataError(str(error)) from error
+        except Exception as error:
+            raise PolicyDataError("PostgreSQL policy query failed") from error
         finally:
             connection.close()
 

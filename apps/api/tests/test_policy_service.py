@@ -3,13 +3,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from proofbridge_api.catalog import TaskCatalog
 from proofbridge_api.contracts import (
     DocumentResult,
     DocumentStatus,
     OverallStatus,
 )
-from proofbridge_api.policy_service import PolicyContext, PostgreSQLPolicyService
+from proofbridge_api.policy_service import (
+    PolicyContext,
+    PolicyDataError,
+    PostgreSQLPolicyService,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -196,3 +202,17 @@ def test_no_upload_description_contains_all_document_paths_and_links() -> None:
     }
     assert all(item.source.url for item in result.documents)
     assert any(item.acquisition.url for item in result.documents)
+
+
+def test_database_connection_failure_is_exposed_as_policy_data_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, task, _ = _service_and_task()
+    service = PostgreSQLPolicyService("postgresql://invalid")
+    monkeypatch.setattr(
+        "proofbridge_api.policy_service.connect_database",
+        lambda _database_url: (_ for _ in ()).throw(RuntimeError("connection failed")),
+    )
+
+    with pytest.raises(PolicyDataError, match="connection is unavailable"):
+        service.load(task)
