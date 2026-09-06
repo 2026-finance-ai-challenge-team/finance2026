@@ -489,8 +489,12 @@ def _build_completion_plan(
     task: TaskSummary,
     requirements: list,
     documents: list[DocumentResult],
-) -> CompletionPlan:
+) -> CompletionPlan | None:
+    if not requirements:
+        return None
     requirement = next((item for item in requirements if item.blocking), requirements[0])
+    if not requirement.bundles:
+        return None
     bundle = next(
         (
             item
