@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="740" viewBox="0 0 1440 740" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">FORM:E — Whatever the form, FORM:E it.</title>
+  <desc id="description">A sculpted white FORM:E wordmark on cobalt blue. Layered documents become an ordered preparation card. 어떤 서류든, 준비된 형태로.</desc>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1440" y2="740" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2464FF"/><stop offset=".58" stop-color="#184DEB"/><stop offset="1" stop-color="#102E91"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="320" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white"/><stop offset=".55" stop-color="#F2F6FF"/><stop offset="1" stop-color="#BED0F5"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white"/><stop offset="1" stop-color="#DBE6FF"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="242" y1="0" x2="296" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BACDF2"/><stop offset="1" stop-color="#F7FAFF"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-35%" width="200%" height="190%">
+      <feDropShadow dx="0" dy="18" stdDeviation="19" flood-color="#082263" flood-opacity=".32"/>
+    </filter>
+    <clipPath id="bounds"><rect width="1440" height="740" rx="28"/></clipPath>
+  </defs>
+  <g clip-path="url(#bounds)">
+    <path fill="url(#blue)" d="M0 0h1440v740H0z"/>
+    <path d="M864-52 1480 564M990-84l568 568M1100-84l458 458" stroke="#B4CAFF" stroke-opacity=".12" stroke-width="1.5"/>
+    <circle cx="1357" cy="82" r="282" stroke="#A9C4FF" stroke-opacity=".12"/>
+    <g fill="#EAF1FF" font-family="'Segoe UI',Arial,sans-serif" font-size="22">
+      <text x="84" y="62">Financial paperwork, made clear.</text>
+      <text x="1356" y="62" text-anchor="end">2026 / Finance AI Challenge</text>
+    </g>
+    <!-- The wordmark is drawn as paths so its proportions do not depend on installed fonts. -->
+    <g transform="translate(84 114) scale(1.34)" fill="url(#edge)">
+      <path d="M0 0h124v32H34v39h77v32H34v65H0z"/>
+      <path fill-rule="evenodd" d="M197 0h64q39 0 39 39v90q0 39-39 39h-64q-39 0-39-39V39q0-39 39-39zm5 32q-10 0-10 10v84q0 10 10 10h54q10 0 10-10V42q0-10-10-10z"/>
+      <path fill-rule="evenodd" d="M336 0h99q43 0 43 43v19q0 29-26 39l35 67h-39l-32-62h-46v62h-34zm34 32v43h59q15 0 15-15V47q0-15-15-15z"/>
+      <path d="M514 168V0h38l54 91 54-91h38v168h-34V62l-47 78h-22l-47-78v106z"/>
+      <rect x="738" y="42" width="30" height="30" rx="6"/>
+      <rect x="738" y="108" width="30" height="30" rx="6"/>
+      <path d="M806 0h142v32H840v36h94v32h-94v36h108v32H806z"/>
+    </g>
+    <path d="M84 378h640" stroke="#D5E2FF" stroke-opacity=".4"/>
+    <g font-family="'Segoe UI',Arial,sans-serif" fill="white">
+      <text x="84" y="455" font-size="49" letter-spacing="-1.7">Whatever the form,</text>
+      <text x="80" y="524" font-size="70" font-weight="700" letter-spacing="-3">FORM:E it.</text>
+      <text x="84" y="592" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="27" fill="#E1EBFF">어떤 서류든, 준비된 형태로.</text>
+    </g>
+    <!-- Paper, scan and a structured card: a brand illustration, not a product screenshot. -->
+    <g transform="translate(1016 380) rotate(14)" filter="url(#shadow)">
+      <rect width="267" height="262" rx="15" fill="#8FB0FC"/>
+      <path d="M29 40h155M29 63h114M29 99h204M29 119h204M29 139h164" stroke="#D3E1FF" stroke-width="7"/>
+    </g>
+    <g transform="translate(884 399) rotate(-12)" filter="url(#shadow)">
+      <rect width="258" height="249" rx="14" fill="#C2D5FF"/>
+      <rect x="25" y="27" width="208" height="125" rx="7" fill="#92AFE9"/>
+      <path d="m39 136 50-56 44 34 27-21 54 43" stroke="#EAF1FF" stroke-width="6"/>
+      <circle cx="190" cy="62" r="13" fill="#EAF1FF"/>
+      <path d="M26 180h181M26 203h135" stroke="#8DA8DE" stroke-width="7"/>
+    </g>
+    <g transform="translate(986 354) rotate(3)" filter="url(#shadow)">
+      <path d="M16 0h226l54 54v236q0 16-16 16H16q-16 0-16-16V16Q0 0 16 0" fill="url(#paper)"/>
+      <path d="M242 0v39q0 15 15 15h39" fill="url(#fold)"/>
+      <g font-family="'Segoe UI',Arial,sans-serif">
+        <text x="29" y="46" fill="#174EDB" font-size="23" font-weight="750" letter-spacing="-1">FORM:E</text>
+        <text x="29" y="88" fill="#112749" font-size="26" font-weight="650" letter-spacing="-.6">Your next step.</text>
+        <text x="29" y="125" fill="#576987" font-size="17">Document</text>
+        <text x="29" y="166" fill="#576987" font-size="17">Issue date</text>
+        <text x="29" y="207" fill="#576987" font-size="17">Owner</text>
+      </g>
+      <path d="M157 119h105M157 160h82M157 201h62" stroke="#839DCB" stroke-width="7" stroke-linecap="round"/>
+      <path d="M29 230h236" stroke="#CAD8EF"/>
+      <rect x="29" y="248" width="236" height="34" rx="8" fill="#194EDB"/>
+      <g fill="white"><circle cx="47" cy="260" r="2.6"/><circle cx="47" cy="270" r="2.6"/></g>
+      <text x="65" y="271" fill="white" font-family="'Segoe UI',Arial,sans-serif" font-size="16">Know what to prepare</text>
+    </g>
+    <path d="M84 660h724" stroke="#A8C4FF" stroke-opacity=".4"/>
+    <text x="84" y="698" fill="#DCE8FF" font-family="'Segoe UI',Arial,sans-serif" font-size="19">Less paperwork. More possibility.</text>
+    <path d="M1321 694h34m-12-12 12 12-12 12" stroke="#DCE8FF" stroke-width="2.5"/>
+  </g>
+</svg>

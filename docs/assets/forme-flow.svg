@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="320" viewBox="0 0 1440 320" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">From your files to your next step</title>
+  <desc id="description">업무 선택, 서류 인식, 요건 대조, 준비 안내. 네 단계를 거쳐 파일이 다음 행동으로 연결됩니다.</desc>
+  <style>
+    .bg{fill:#F1F5FE}.ink{fill:#102B53}.muted{fill:#4B6283}.line{stroke:#BCD0F2}.icon{stroke:#245BEB}.paper{fill:white;stroke:#C3D3EF}
+    @media(prefers-color-scheme:dark){.bg{fill:#101E36}.ink{fill:#EDF3FF}.muted{fill:#B0C2E0}.line{stroke:#385478}.icon{stroke:#8FAFFF}.paper{fill:#213657;stroke:#5976A4}}
+  </style>
+  <rect class="bg" width="1440" height="320" rx="22"/>
+  <path class="line" d="M260 107h151m-9-8 9 8-9 8m205-8h151m-9-8 9 8-9 8m205-8h151m-9-8 9 8-9 8" stroke-width="2"/>
+  <g transform="translate(147 61)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect class="paper" width="66" height="85" rx="11"/>
+    <path class="icon" d="M18 23h30M18 39h18M18 55h25"/>
+    <circle cx="62" cy="76" r="20" fill="#245BEB"/>
+    <path d="m54 76 6 6 10-13" stroke="white"/>
+  </g>
+  <g transform="translate(505 61)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect class="paper" width="66" height="85" rx="11"/>
+    <path class="icon" d="M18 23h30M18 39h18M18 55h25M-9 15V0h15m51 0h18v15M-9 69v16H6m51 0h18V69"/>
+    <path d="M-17 45h100" stroke="#FF784A" stroke-width="4"/>
+  </g>
+  <g transform="translate(864 65)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect class="paper" x="-13" y="-4" width="92" height="85" rx="12"/>
+    <path class="icon" d="m2 17 5 5 8-10m-13 31 5 5 8-10m14-22h30M29 43h30M29 67h20"/>
+    <circle cx="8" cy="67" r="5" stroke="#E5673C"/>
+  </g>
+  <g transform="translate(1220 65)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path class="paper" d="M-12 10q0-10 10-10h23l12 13h32q10 0 10 10v47q0 10-10 10H-2q-10 0-10-10z"/>
+    <path class="icon" d="M17 49h34m-12-12 12 12-12 12"/>
+  </g>
+  <g class="ink" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="29" font-weight="700" text-anchor="middle">
+    <text x="180" y="206">업무를 고르면</text><text x="539" y="206">서류를 읽고</text><text x="899" y="206">조건을 맞춰</text><text x="1258" y="206">다음을 안내</text>
+  </g>
+  <g class="muted" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="21" text-anchor="middle">
+    <text x="180" y="247">은행 · 목적 · 방문 조건</text><text x="539" y="247">문서명 · 날짜 · 명의</text><text x="899" y="247">누락 · 기한 · 일치 여부</text><text x="1258" y="247">발급 경로 · 준비 체크리스트</text>
+  </g>
+</svg>
