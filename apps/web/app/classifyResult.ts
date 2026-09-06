@@ -9,6 +9,11 @@
  */
 
 import sample from "./sample-result.json";
+import type {
+  AnalysisResponse,
+  ApiDocumentResult,
+  ApiRequirementBundle,
+} from "./analysisApi";
 
 export const SCHEMA_VERSION = "1.0";
 
@@ -68,7 +73,7 @@ export interface ClassifyResult {
 }
 
 /**
- * 결과를 가져온다. 백엔드가 생기면 여기만 fetch로 바꾼다.
+ * 정적 합성 샘플을 가져온다. API 업로드 UI를 연결할 때 fetch로 교체한다.
  *
  *   const res = await fetch("/api/classify", { method: "POST", body: form });
  *   return (await res.json()) as ClassifyResult;
@@ -77,10 +82,10 @@ export function loadResult(): ClassifyResult {
   return sample as unknown as ClassifyResult;
 }
 
-/** 아직 규칙 엔진이 없어 화면이 만들어낼 수 없는 상태. */
+/** 현재 정적 데모가 API 규칙 결과를 읽지 않아 표시하지 않는 상태. */
 export const NOT_YET_DERIVABLE = ["준비 완료", "정보 불일치"] as const;
 
-export type Tone = "ready" | "expired" | "needed" | "unused";
+export type Tone = "ready" | "expired" | "needed" | "unused" | "mismatch";
 
 export interface DisplayRow {
   key: string;
@@ -91,14 +96,145 @@ export interface DisplayRow {
   note: string;
 }
 
-const DOC_LABELS: Record<string, string> = {
+export const DOC_LABELS: Record<string, string> = {
   utility_bill: "공공요금 고지서·납부확인서",
+  management_fee_notice: "관리비 고지서",
   resident_registration_copy: "주민등록표 등본",
   resident_registration_abstract: "주민등록표 초본",
   family_relation_certificate: "가족관계증명서",
   health_insurance_certificate: "건강보험 자격득실 확인서",
   income_certificate: "소득금액증명",
+  tax_bill: "세금 고지서",
+  employment_contract: "근로계약서",
+  business_registration_certificate: "사업자등록증",
+  mobile_phone_payment_certificate: "휴대폰 요금 납부확인서",
 };
+
+export const DOCUMENT_TYPE_OPTIONS = Object.entries(DOC_LABELS).map(
+  ([docType, label]) => ({ docType, label }),
+);
+
+function apiDocumentRow(doc: ApiDocumentResult): DisplayRow {
+  const base = {
+    key: doc.document_id,
+    name: doc.label_ko ?? doc.source_name,
+    meta: `${doc.source_name} · 분류 신뢰도 ${Math.round(doc.confidence * 100)}%`,
+  };
+  switch (doc.status) {
+    case "READY":
+      return { ...base, status: "준비 완료", tone: "ready", note: "공개 기준에서 사용할 수 있는 문서로 확인했어요." };
+    case "EXPIRED":
+      return { ...base, status: "기한 만료", tone: "expired", note: "발급일 또는 인정기간을 다시 확인하고 새로 준비해주세요." };
+    case "MISMATCH":
+      return { ...base, status: "정보 불일치", tone: "mismatch", note: "다른 문서의 핵심 정보와 달라 확인이 필요해요." };
+    case "UNNECESSARY":
+      return {
+        ...base,
+        status: "이번 업무에는 불필요",
+        tone: "unused",
+        note: doc.reason_code === "CLEARLY_UNRELATED_DOCUMENT"
+          ? "내용을 확인했지만 선택한 업무의 인정 서류가 아니어서 제출 묶음에서 제외해요."
+          : "문서 종류는 확인했지만 이번 업무의 인정 서류가 아니어서 제출 묶음에서 제외해요.",
+      };
+    case "MISSING":
+      return { ...base, status: "추가 필요", tone: "needed", note: "이번 업무에 필요한 문서를 찾지 못했어요." };
+    case "REVIEW_REQUIRED":
+    default:
+      return {
+        ...base,
+        status: "확인 필요",
+        tone: "needed",
+        note: doc.reason_code === "UNVERIFIED_DOCUMENT_SIGNATURE"
+          ? "문서 종류는 찾았지만 실제 양식 표본 검증 전이라 한 번 더 확인해야 해요."
+          : doc.reason_code === "AI_CLASSIFICATION_NEEDS_CONFIRMATION"
+            ? "AI가 문서 종류를 제안했습니다. 아래에서 맞는지 확인해주세요."
+            : doc.reason_code === "USER_CONFIRMED_DOCUMENT_TYPE"
+              ? "문서 종류를 확인했습니다. 진위·발급일·내용은 원문 확인이 필요해요."
+              : "자동 판정을 확정하기 어려워 사용자의 확인이 필요해요.",
+      };
+  }
+}
+
+function closestBundle(bundles: ApiRequirementBundle[]): ApiRequirementBundle | undefined {
+  return [...bundles].sort((a, b) => {
+    const specialRank = (bundle: ApiRequirementBundle) =>
+      bundle.status === "MISMATCH" ? -2 : bundle.status === "REVIEW_REQUIRED" ? -1 : 0;
+    return (
+      specialRank(a) - specialRank(b)
+      || b.evidence_document_ids.length - a.evidence_document_ids.length
+      || a.missing_document_types.length - b.missing_document_types.length
+    );
+  })[0];
+}
+
+export function toUploadedDocumentRows(result: AnalysisResponse): DisplayRow[] {
+  return result.documents.map(apiDocumentRow);
+}
+
+export function toRequirementRows(result: AnalysisResponse): DisplayRow[] {
+  const rows: DisplayRow[] = [];
+  result.requirements.forEach((requirement) => {
+    const bundle = requirement.matched_bundle_code
+      ? requirement.bundles.find((item) => item.bundle_code === requirement.matched_bundle_code)
+      : closestBundle(requirement.bundles);
+    if (!bundle) {
+      if (requirement.status === "MISSING") {
+        const docType = requirement.requirement_id || requirement.label_ko;
+        rows.push({
+          key: `api-missing-${docType}`,
+          name: DOC_LABELS[docType] ?? DOC_LABELS[requirement.label_ko] ?? requirement.label_ko,
+          meta: "필수 조합 · 아직 없음",
+          status: "추가 필요",
+          tone: "needed",
+          note: "이 문서를 보완하면 현재 가장 가까운 제출 조합을 이어서 확인할 수 있어요.",
+        });
+      }
+      return;
+    }
+
+    bundle.missing_document_types.forEach((docType) => {
+      rows.push({
+        key: `api-missing-${requirement.requirement_id}-${docType}`,
+        name: DOC_LABELS[docType] ?? docType,
+        meta: `${bundle.label_ko} · 아직 없음`,
+        status: "추가 필요",
+        tone: "needed",
+        note: "이 문서를 보완하면 선택한 제출 조합을 완성할 수 있어요.",
+      });
+    });
+    if (requirement.status === "MISMATCH") {
+      rows.push({
+        key: `api-mismatch-${requirement.requirement_id}`,
+        name: "문서 정보 교차 확인",
+        meta: bundle.label_ko,
+        status: "정보 불일치",
+        tone: "mismatch",
+        note: "명의·주소 또는 법인명이 서로 다릅니다. 원문을 확인해주세요.",
+      });
+    }
+  });
+  return rows;
+}
+
+export function toApiRows(result: AnalysisResponse): DisplayRow[] {
+  return [
+    ...toUploadedDocumentRows(result),
+    ...toRequirementRows(result),
+  ];
+}
+
+export function analysisHeadline(result: AnalysisResponse, rows: DisplayRow[]): string {
+  if (result.overall_status === "READY") return "공개 기준 사전 점검이 끝났어요.";
+  if (rows.some((row) => row.tone === "mismatch")) return "문서 정보가 서로 달라요.";
+  const missing = rows.filter((row) => row.status === "추가 필요");
+  if (missing.length) {
+    const name = `${missing[0].name}${missing.length > 1 ? ` 외 ${missing.length - 1}건` : ""}`;
+    const last = name.charCodeAt(name.length - 1);
+    const hasFinalConsonant = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
+    return `${name}${hasFinalConsonant ? "이" : "가"} 더 필요해요.`;
+  }
+  return "문서는 찾았지만 확인이 필요해요.";
+}
 
 function metaOf(doc: ClassifiedDocument): string {
   const parts: string[] = [];
@@ -114,7 +250,8 @@ function metaOf(doc: ClassifiedDocument): string {
 /**
  * 분류 결과 한 건을 화면 표시로 바꾼다.
  *
- * **`준비 완료`는 만들지 않는다.** 그 판정은 규칙 엔진의 몫이고 아직 없다.
+ * **`준비 완료`는 만들지 않는다.** 이 변환기는 문서 분류 결과만 취급하며,
+ * 최종 판정은 FastAPI에 연결된 PostgreSQL 정책 규칙의 결과를 사용해야 한다.
  * 여기서 낼 수 있는 건 분류·유효기간·업무 관련성에서 직접 유도되는 것뿐이다.
  */
 export function toDisplayRow(doc: ClassifiedDocument): DisplayRow {

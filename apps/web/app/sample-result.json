@@ -1,18 +1,16 @@
 {
   "schema_version": "1.0",
-  "task_id": "kakaobank.limit_release.living_expense",
-  "task_label": "카카오뱅크 한도제한계좌 해제 · 생활비/공과금",
-  "task_verified": false,
-  "checked_at": "2026-08-19",
+  "task_id": "kakaobank.limit_account_release",
+  "task_label": "카카오뱅크 한도계좌 해제",
+  "task_verified": true,
+  "checked_at": "2026-08-28",
   "ocr_calls_total": 2,
   "missing": {
     "required": [
-      "utility_bill"
+      "management_fee_notice"
     ],
     "conditional": [],
-    "alternatives": [
-      "family_relation_certificate"
-    ]
+    "alternatives": []
   },
   "documents": [
     {
