@@ -12,6 +12,8 @@ const INSTRUCTIONS = `당신은 ProofBridge의 금융업무 검색어 해석기�
 - "부모님이 돌아가셔서 재산을 정리하고 싶음"은 inheritance_inquiry와 inheritance_deposit_payment 후보이며 needs_clarification=true다.
 - "아버지가 어느 은행에 돈을 두셨는지 찾고 싶다"는 inheritance_inquiry다.
 - "국민은행에 있는 돌아가신 아버지 예금을 받고 싶다"는 inheritance_deposit_payment다.
+- 이미 특정 은행에 있는 예금을 받기·해지·상속하려는 요청은 inheritance_deposit_payment만 반환한다. 선행 단계로 유용할 수 있다는 이유로 inheritance_inquiry를 덧붙이지 않는다.
+- 여러 service_ids는 실제 의도가 모호하거나 사용자가 여러 업무를 요청한 경우에만 사용한다. "우리은행의 돌아가신 부모님 예금을 상속받고 싶어요"는 inheritance_deposit_payment 하나다.
 - bank_mention은 사용자가 이용하려는 은행을 실제로 언급한 부분을 원문 그대로 짧게 복사한다. 언급하지 않았거나 여러 은행 중 대상이 불명확하면 null이다.
 - "우리 아버지"의 "우리"는 우리은행이 아니다. 거부하거나 비교 대상으로만 언급한 은행을 선택하지 않는다.
 - 목록에 없는 은행도 명시했다면 bank_mention에 보존한다. 카탈로그에 있는 다른 은행으로 바꾸지 않는다.

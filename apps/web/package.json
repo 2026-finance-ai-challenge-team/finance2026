@@ -11,6 +11,7 @@
     "start": "next start",
     "test": "npm run test:intent && npm run build && node --test tests/rendered-html.test.mjs",
     "test:intent": "node --experimental-strip-types --test tests/task-intent.test.ts",
+    "test:intent:live": "node tests/task-intent.live.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
