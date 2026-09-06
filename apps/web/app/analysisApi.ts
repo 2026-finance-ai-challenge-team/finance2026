@@ -1,3 +1,6 @@
+import type { TaskResolutionResponse } from "../server/task-intent/types";
+export type { TaskResolutionCandidate, TaskResolutionResponse } from "../server/task-intent/types";
+
 export type ApiDocumentStatus =
   | "READY"
   | "MISSING"
@@ -30,43 +33,6 @@ export interface ApiTaskSummary {
   as_of: string | null;
   last_checked: string | null;
   demo_available: boolean;
-}
-
-export type TaskResolutionStatus = "RESOLVED" | "NEEDS_CONFIRMATION" | "UNSUPPORTED";
-
-export interface TaskResolutionCandidate {
-  task_id: string;
-  label_ko: string;
-  bank_code: string;
-  support_status: "SUPPORTED" | "GUIDE_ONLY" | "PLANNED";
-  confidence: number;
-  lexical_score: number;
-  vector_score: number;
-  matched_aliases: string[];
-}
-
-export interface TaskKnowledgeEvidence {
-  chunk_id: string;
-  title: string;
-  excerpt: string;
-  source_url: string;
-  verified: boolean;
-  last_checked: string;
-  score: number;
-}
-
-export interface TaskResolutionResponse {
-  schema_version: "1.0";
-  query: string;
-  normalized_query: string;
-  resolution: TaskResolutionStatus;
-  selected_task: TaskResolutionCandidate | null;
-  candidates: TaskResolutionCandidate[];
-  clarification_question: string | null;
-  reason: string;
-  evidence: TaskKnowledgeEvidence[];
-  retrieval_methods: ("alias" | "vector")[];
-  embedding_model: string;
 }
 
 export interface ApiRequirementBundle {
@@ -245,7 +211,7 @@ export async function listAnalysisTasks(): Promise<ApiTaskSummary[]> {
 export async function resolveTask(query: string): Promise<TaskResolutionResponse> {
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/v1/tasks/resolve`, {
+    response = await fetch("/api/v1/tasks/resolve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
@@ -253,7 +219,7 @@ export async function resolveTask(query: string): Promise<TaskResolutionResponse
   } catch {
     throw new AnalysisApiError(
       "업무를 찾는 서버에 연결하지 못했어요.",
-      "FastAPI가 실행 중인지 확인한 뒤 다시 시도해주세요.",
+      "잠시 후 다시 시도해주세요.",
     );
   }
   if (!response.ok) throw await apiError(response, "입력한 업무를 해석하지 못했어요.");

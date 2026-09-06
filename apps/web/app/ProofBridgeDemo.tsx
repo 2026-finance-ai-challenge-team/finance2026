@@ -166,11 +166,11 @@ function TaskDiscoveryAside() {
       <div className="aside-head"><span>AI 업무 찾기</span><b>근거 있는 연결</b></div>
       <ol className="discovery-steps">
         <li><span>01</span><div><b>편한 표현 그대로 입력</b><p>은행명이나 정확한 업무명을 몰라도 괜찮아요.</p></div></li>
-        <li><span>02</span><div><b>별칭·벡터로 업무 검색</b><p>확인된 업무 카탈로그 안에서만 가장 가까운 후보를 찾습니다.</p></div></li>
+        <li><span>02</span><div><b>상황에 맞는 은행 업무</b><p>한도계좌 해제 · 상속인 금융거래 조회 · 상속예금 지급</p></div></li>
         <li><span>03</span><div><b>한 번 확인하고 시작</b><p>짧거나 모호한 표현은 자동 확정하지 않고 질문합니다.</p></div></li>
       </ol>
       <div className="official-note"><Icon name="check"/><div><b>현재 자동 점검 가능</b><p>카카오뱅크 한도계좌 해제 · 공식 출처 확인</p></div></div>
-      <div className="ai-boundary-card"><Icon name="spark"/><div><b>RAG는 업무를 연결합니다</b><p>필요 서류와 준비 상태는 연결 후 기존 공식 규칙 엔진이 판정합니다.</p></div></div>
+      <div className="ai-boundary-card"><Icon name="info"/><div><b>상속 업무는 공식 안내 제공</b><p>상속 서류의 자동 점검과 준비 키트는 아직 제공하지 않습니다.</p></div></div>
     </aside>
   );
 }
@@ -184,33 +184,47 @@ function TaskMatchCard({
   onConfirm: (task: TaskResolutionCandidate) => void;
   onReset: () => void;
 }) {
-  if (resolution.resolution === "UNSUPPORTED" || !resolution.selected_task) {
+  const [chosenTaskId, setChosenTaskId] = useState(resolution.selected_task?.task_id ?? "");
+  const task = resolution.candidates.find((candidate) => candidate.task_id === chosenTaskId);
+  if (resolution.resolution === "UNSUPPORTED") {
     return (
       <div className="task-match-card unsupported" role="status">
         <span className="match-icon"><Icon name="info"/></span>
-        <div><span>지원 업무를 찾지 못했어요</span><h2>표현을 조금 더 구체적으로 적어주세요</h2><p>은행명과 하려는 행동을 함께 적으면 더 정확해요. 예: 카카오뱅크 한도계좌 해제</p></div>
+        <div><span>아직 연결할 수 없는 업무예요</span><h2>{resolution.normalized_query || "하려는 일을 조금 더 알려주세요"}</h2><p>{resolution.reason}</p></div>
         <button className="secondary-action" type="button" onClick={onReset}>다시 입력</button>
       </div>
     );
   }
-  const task = resolution.selected_task;
   return (
     <div className="task-match-card" role="status">
       <div className="match-heading">
-        <div className="bank-badge" aria-hidden="true">K</div>
+        <span className="match-icon" aria-hidden="true"><Icon name="search"/></span>
         <div>
           <span>{resolution.resolution === "RESOLVED" ? "이 업무로 이해했어요" : "한 번만 확인해주세요"}</span>
-          <h2>{task.label_ko}</h2>
+          <h2>{task?.label_ko ?? resolution.intent.services.map((service) => service.label_ko).join(" · ")}</h2>
           <p>{resolution.clarification_question ?? resolution.reason}</p>
         </div>
       </div>
-      <div className="retrieval-proof">
-        <span><Icon name="search"/> 별칭 + 벡터 검색</span>
-        <span><Icon name="check"/> 공식 출처 근거</span>
-        <span>일치도 {Math.round(task.confidence * 100)}%</span>
+      <div className="task-candidate-picker">
+        <label htmlFor="task-candidate">은행 · 서비스</label>
+        <select id="task-candidate" value={chosenTaskId} onChange={(event) => setChosenTaskId(event.target.value)}>
+          <option value="">처리할 은행과 업무를 선택해주세요</option>
+          {resolution.candidates.map((candidate) => <option key={candidate.task_id} value={candidate.task_id}>{candidate.label_ko}</option>)}
+        </select>
+        {!resolution.intent.bank_code && <p>은행을 아직 확인하지 않았어요. 선택 목록에는 공식 안내가 등록된 은행만 있어요.</p>}
       </div>
-      {resolution.evidence[0] && <a className="match-source" href={resolution.evidence[0].source_url} target="_blank" rel="noreferrer">{resolution.evidence[0].title} · {resolution.evidence[0].last_checked} 확인 <Icon name="external"/></a>}
-      <div className="match-actions"><button className="secondary-action" type="button" onClick={onReset}>다른 업무 입력</button><button className="primary-action" type="button" onClick={() => onConfirm(task)}>맞아요, 서류 준비하기 <Icon name="arrow"/></button></div>
+      {task && <>
+        <p className="task-support-note">{task.support_status === "GUIDE_ONLY" ? "공식 안내 제공 · 서류 자동 점검은 아직 지원하지 않아요." : "서류 점검 단계로 연결할 수 있어요."}</p>
+        <a className="match-source" href={task.source_url} target="_blank" rel="noreferrer">{task.source_title} · {task.last_checked} 확인 <Icon name="external"/></a>
+      </>}
+      <div className="match-actions">
+        <button className="secondary-action" type="button" onClick={onReset}>다른 업무 입력</button>
+        {task?.support_status === "GUIDE_ONLY" ? (
+          <a className="primary-action" href={task.source_url} target="_blank" rel="noreferrer">공식 업무 안내 보기 <Icon name="external"/></a>
+        ) : (
+          <button className="primary-action" type="button" disabled={!task} onClick={() => { if (task) onConfirm(task); }}>맞아요, 서류 준비하기 <Icon name="arrow"/></button>
+        )}
+      </div>
     </div>
   );
 }
@@ -292,6 +306,7 @@ export function ProofBridgeDemo() {
   const [downloadingKit, setDownloadingKit] = useState(false);
   const [documentTypes, setDocumentTypes] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const taskSearchId = useRef(0);
 
   const uploadedRows = useMemo<DisplayRow[]>(() => {
     if (analysis) return toUploadedDocumentRows(analysis);
@@ -312,6 +327,7 @@ export function ProofBridgeDemo() {
 
   const findTask = async (event?: FormEvent, suggestedQuery?: string) => {
     event?.preventDefault();
+    const searchId = ++taskSearchId.current;
     const query = (suggestedQuery ?? taskQuery).trim();
     if (query.length < 2) {
       setError({ message: "하려는 업무를 두 글자 이상 적어주세요.", recovery: "예: 카뱅 한도계좌" });
@@ -323,16 +339,18 @@ export function ProofBridgeDemo() {
     setError(null);
     setNotice(null);
     try {
-      setTaskResolution(await resolveTask(query));
+      const result = await resolveTask(query);
+      if (searchId === taskSearchId.current) setTaskResolution(result);
     } catch (caught) {
       const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("입력한 업무를 찾지 못했어요.");
-      setError({ message: apiError.message, recovery: apiError.recovery });
+      if (searchId === taskSearchId.current) setError({ message: apiError.message, recovery: apiError.recovery });
     } finally {
-      setResolvingTask(false);
+      if (searchId === taskSearchId.current) setResolvingTask(false);
     }
   };
 
   const confirmTask = (task: TaskResolutionCandidate) => {
+    if (task.support_status !== "SUPPORTED") return;
     setSelectedTask(task);
     setView("prepare");
     setError(null);
@@ -394,6 +412,8 @@ export function ProofBridgeDemo() {
   };
 
   const runDemo = async () => {
+    taskSearchId.current += 1;
+    setResolvingTask(false);
     setView("analyzing");
     setError(null);
     setNotice(null);
@@ -501,15 +521,15 @@ export function ProofBridgeDemo() {
                 <label htmlFor="task-query">어떤 업무를 준비하고 있나요?</label>
                 <div>
                   <Icon name="search"/>
-                  <input id="task-query" value={taskQuery} maxLength={300} onChange={(event) => { setTaskQuery(event.target.value); setTaskResolution(null); }} placeholder="예: 카뱅 한도계좌" autoComplete="off"/>
+                  <input id="task-query" value={taskQuery} maxLength={300} onChange={(event) => { taskSearchId.current += 1; setResolvingTask(false); setTaskQuery(event.target.value); setTaskResolution(null); }} placeholder="지금 상황을 적어주세요" autoComplete="off"/>
                   <button className="primary-action" type="submit" disabled={resolvingTask}>{resolvingTask ? "찾는 중…" : "업무 찾기"} <Icon name="arrow"/></button>
                 </div>
               </form>
               <div className="query-examples" aria-label="입력 예시">
                 <span>이렇게 적어보세요</span>
-                {["카뱅 한도계좌", "카카오 한도 풀기", "송금 한도가 너무 적어요"].map((query) => <button type="button" key={query} onClick={() => findTask(undefined, query)}>{query}</button>)}
+                {["카뱅 한도계좌", "부모님이 돌아가셔서 재산을 정리하고 싶어요", "국민은행에 있는 아버지 예금을 상속받고 싶어요"].map((query) => <button type="button" key={query} onClick={() => findTask(undefined, query)}>{query}</button>)}
               </div>
-              {resolvingTask && <div className="task-searching" role="status"><span className="pulse-dot"/><div><b>지원 업무와 공식 근거를 찾고 있어요</b><p>별칭 검색과 소형 벡터 인덱스를 함께 확인합니다.</p></div></div>}
+              {resolvingTask && <div className="task-searching" role="status"><span className="pulse-dot"/><div><b>상황에 맞는 은행 업무를 찾고 있어요</b></div></div>}
               {taskResolution && (
                 <TaskMatchCard
                   resolution={taskResolution}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const description =
-  "하려는 금융업무를 편하게 입력하면 공식 출처 기반 RAG로 절차를 연결하고, 증빙의 누락·확인 항목과 발급 경로를 정리하는 ProofBridge입니다.";
+  "하려는 상황을 편하게 입력하면 관련 은행 업무와 공식 안내를 찾고, 지원 업무의 증빙 준비를 돕는 ProofBridge입니다.";
 const publicOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export function generateMetadata(): Metadata {
