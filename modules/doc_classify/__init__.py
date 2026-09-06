@@ -5,5 +5,6 @@
 """
 
 from .classify import classify_files, load_signatures, load_task
+from .metadata import extract_file_metadata
 
-__all__ = ["classify_files", "load_signatures", "load_task"]
+__all__ = ["classify_files", "extract_file_metadata", "load_signatures", "load_task"]
