@@ -19,11 +19,11 @@ from .task_resolution import TaskResolver
 def create_app(settings: Settings | None = None) -> FastAPI:
     runtime_settings = settings or Settings.from_env()
     app = FastAPI(
-        title="ProofBridge API",
+        title="FORM:E API",
         version="0.1.0",
         description=(
             "공식 출처 기반 규칙으로 금융업무 증빙 준비 상태를 점검하는 "
-            "ProofBridge의 HTTP 경계입니다."
+            "FORM:E의 HTTP 경계입니다."
         ),
     )
     app.state.settings = runtime_settings

@@ -359,25 +359,6 @@ export async function deleteAnalysisSession(sessionId: string): Promise<boolean>
   }
 }
 
-export async function downloadPreparationKit(
-  sessionId: string,
-): Promise<{ blob: Blob; filename: string }> {
-  let response: Response;
-  try {
-    response = await fetch(`${API_BASE}/api/v1/sessions/${sessionId}/preparation-kit`);
-  } catch {
-    throw new AnalysisApiError(
-      "준비 안내 키트를 내려받지 못했어요.",
-      "분석 서버 연결을 확인한 뒤 다시 시도해주세요.",
-    );
-  }
-  if (!response.ok) throw await apiError(response, "준비 안내 키트를 만들지 못했어요.");
-  const disposition = response.headers.get("content-disposition") ?? "";
-  const filename = disposition.match(/filename="?([^";]+)"?/i)?.[1]
-    ?? `proofbridge-preparation-kit-${sessionId}.zip`;
-  return { blob: await response.blob(), filename };
-}
-
 export async function confirmDocumentClassification(
   sessionId: string,
   documentId: string,

@@ -41,7 +41,7 @@ def test_health_does_not_disclose_secrets(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.json() == {
         "status": "ok",
-        "service": "ProofBridge API",
+        "service": "FORM:E API",
         "version": "0.1.0",
         "environment": "test",
         "ocr_configured": False,

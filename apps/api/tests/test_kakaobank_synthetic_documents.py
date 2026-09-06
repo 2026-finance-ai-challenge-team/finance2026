@@ -155,7 +155,7 @@ def test_manifest_contains_eight_text_pdf_fixtures(client: TestClient) -> None:
         text = "\n".join(page.extract_text() or "" for page in reader.pages)
 
         assert len(reader.pages) == 1
-        assert "ProofBridge 테스트용 합성 샘플" in text
+        assert "FORM:E 테스트용 합성 샘플" in text
         assert "실제 증명서가 아니며 효력이 없습니다" in text
 
         scan_path = repo_root / "demo_docs" / "scans" / document["scan_filename"]
