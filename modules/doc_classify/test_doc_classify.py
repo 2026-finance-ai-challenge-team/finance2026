@@ -133,6 +133,64 @@ def test_분류됐지만_업무에_없으면_불필요다():
     assert judge_relevance("utility_bill", TASK)["status"] == "관련"
 
 
+def test_DB_업무는_legacy_JSON_없이도_OCR까지_진행한다():
+    import modules.doc_classify.classify as classify_module
+
+    task_id = "shinhan.limit_account_release"
+    task = {
+        "task_id": task_id,
+        "label_ko": "신한은행 한도계좌 해제",
+        "policy_status": "published",
+        "requirement_sets": [
+            {
+                "requirement_code": "income_evidence",
+                "documents": [{"doc_type": "utility_bill"}],
+            }
+        ],
+    }
+    original_extract = classify_module.extract
+    original_apply_ocr = classify_module.apply_ocr
+    sample_path = (
+        Path(__file__).resolve().parents[2]
+        / "demo_docs"
+        / "합성_전기요금청구서.pdf"
+    )
+
+    def fake_extract(path, *, use_ocr=False):
+        assert use_ocr is False
+        return Extracted(path=Path(path), kind="pdf", pages=[Page(1, "", "none")])
+
+    def fake_apply_ocr(extracted, *, timeout=30.0, cache_dir=None):
+        extracted.pages[0] = Page(
+            1,
+            "전기 요금 청구서\n한국전력공사\n청구금액 10,000원\n고객번호 1234",
+            "ocr",
+        )
+        extracted.pages[0].title = "전기 요금 청구서"
+        extracted.ocr_calls += 1
+
+    classify_module.extract = fake_extract
+    classify_module.apply_ocr = fake_apply_ocr
+    try:
+        result = classify_module.classify_files(
+            [sample_path],
+            task_id,
+            task_definition=task,
+            signatures=SIGNATURES,
+        )
+    finally:
+        classify_module.extract = original_extract
+        classify_module.apply_ocr = original_apply_ocr
+
+    assert result["task_id"] == task_id
+    assert result["ocr_calls_total"] == 1
+    assert result["documents"][0]["classification"]["doc_type"] == "utility_bill"
+    assert result["documents"][0]["relevance"] == {
+        "status": "관련",
+        "matched_rule": "income_evidence",
+    }
+
+
 def test_발급일을_뽑는다():
     result = classify_one(build(DEUNGBON), SIGNATURES)
     assert result["fields"].get("issued_at") == "2026-08-11", result["fields"]

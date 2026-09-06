@@ -298,6 +298,16 @@ def judge_relevance(doc_type: str | None, task: dict[str, Any]) -> dict[str, Any
     if doc_type is None:
         return {"status": "판단 불가", "matched_rule": None}
 
+    for requirement_set in task.get("requirement_sets") or []:
+        if any(
+            rule.get("doc_type") == doc_type
+            for rule in requirement_set.get("documents") or []
+        ):
+            return {
+                "status": "관련",
+                "matched_rule": requirement_set.get("requirement_code") or "policy",
+            }
+
     for bucket in ("required", "conditional", "alternatives"):
         if doc_type in (task.get(bucket) or []):
             return {"status": "관련", "matched_rule": bucket}
@@ -354,6 +364,7 @@ def classify_files(
     paths: list[str | Path],
     task_id: str,
     *,
+    task_definition: dict[str, Any] | None = None,
     use_ocr: bool = True,
     signatures: list[dict[str, Any]] | None = None,
     cache_dir: Path | None = None,
@@ -364,9 +375,13 @@ def classify_files(
     """모듈의 공개 API. 파일 목록과 업무 ID를 받아 분류 결과 JSON을 만든다.
 
     OCR은 **내장 텍스트만으로 확정되지 않은 파일에만** 호출한다(파일당 최대 1회).
+    DB 연동 호출자는 이미 조회한 정책을 ``task_definition``으로 넘겨 로컬 업무 JSON을
+    중복 생성하지 않는다.
     """
     signatures = signatures if signatures is not None else load_signatures()
-    task = load_task(task_id)
+    task = task_definition if task_definition is not None else load_task(task_id)
+    if task.get("task_id") not in {None, task_id}:
+        raise ValueError(f"업무 정의가 일치하지 않습니다: {task_id}")
 
     documents = []
     for i, path in enumerate(paths, start=1):
@@ -502,7 +517,9 @@ def classify_files(
             "schema_version": SCHEMA_VERSION,
             "task_id": task_id,
             "task_label": task.get("label_ko", task_id),
-            "task_verified": task.get("verified", False),
+            "task_verified": task.get(
+                "verified", task.get("policy_status") == "published"
+            ),
             "checked_at": date.today().isoformat(),
             "ocr_calls_total": sum(d["ocr_calls"] for d in documents),
             "llm_calls_total": sum(d["llm_calls"] for d in documents),

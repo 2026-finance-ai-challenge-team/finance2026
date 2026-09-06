@@ -118,6 +118,7 @@ class DocumentClassificationPipeline:
                 classify_files,
                 paths,
                 task.task_id,
+                task_definition=policy_context.policy,
                 use_ocr=self._settings.ocr_configured,
                 signatures=signatures,
                 cache_dir=request_root / "ocr-cache",
