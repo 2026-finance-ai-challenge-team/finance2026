@@ -16,13 +16,13 @@
 
 <br>
 
-[![로컬에서 시작하기](https://img.shields.io/badge/Start_here-로컬에서_시작하기-245BEB?style=for-the-badge&labelColor=102B53)](#quick-start)
+[![서비스 열기](https://img.shields.io/badge/Open_app-서비스_열기-245BEB?style=for-the-badge&labelColor=102B53)](https://proofbridge-2026.vercel.app)
 [![서비스 기획](https://img.shields.io/badge/Discover-서비스_기획-EAF1FF?style=for-the-badge&labelColor=102B53)](https://www.notion.so/3baf95a7decf80c98d38c63c8e80b66e)
 [![2026 금융 AI Challenge](https://img.shields.io/badge/2026-금융_AI_Challenge-FFB499?style=for-the-badge&labelColor=102B53)](https://daker.ai/public/hackathons/2026-finance-ai-challenge)
 
 <br>
 
-[서비스 흐름](#experience) &nbsp; / &nbsp; [팀 소개](#team) &nbsp; / &nbsp; [기술과 구조](#engineering) &nbsp; / &nbsp; [시작하기](#quick-start)
+[서비스 흐름](#experience) &nbsp; / &nbsp; [팀 소개](#team) &nbsp; / &nbsp; [기술과 구조](#engineering) &nbsp; / &nbsp; [로컬 실행](#quick-start)
 
 </div>
 
@@ -343,6 +343,7 @@ npm test
 
 **참고자료**
 
+- [현재 공개 서비스](https://proofbridge-2026.vercel.app) — 서비스 첫 화면 접근 확인. 화면은 기존 ProofBridge 브랜드이며, 전체 분석 흐름 검증과는 구분합니다.
 - [서비스 기획 · Notion](https://www.notion.so/3baf95a7decf80c98d38c63c8e80b66e)
 - [기존 공개 데모](https://proofbridge-finance-2026.ryuky0896.chatgpt.site) — 이전 브랜드의 데모 링크. 현재 `main`과의 배포 일치 여부는 별도 확인이 필요합니다.
 - [기존 프로젝트 제안서 PDF](output/pdf/proofbridge-project-proposal.pdf) — 이전 브랜드와 당시 기획 기준
