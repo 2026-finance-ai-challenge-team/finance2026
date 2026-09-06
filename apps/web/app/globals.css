@@ -507,6 +507,18 @@ em { color: var(--coral); font-style: normal; }
 .sample-caution { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 11px 0 0; color: #78848e; font-size: 10px; }
 
 .workspace-aside { overflow: hidden; }
+.preparation-choice-aside { position: sticky; top: 92px; }
+.preparation-choice-body { padding: 26px 22px 20px; }
+.choice-symbol { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: var(--teal-soft); color: var(--teal); }
+.choice-symbol svg { width: 21px; }
+.preparation-choice-body h2 { margin: 16px 0 0; font-size: 18px; letter-spacing: -.035em; }
+.preparation-choice-body > p { margin: 7px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 1.65; }
+.preparation-choice-body ul { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
+.preparation-choice-body li { display: flex; align-items: center; gap: 10px; padding: 11px; border-radius: 11px; background: var(--surface-muted); }
+.preparation-choice-body li > svg { width: 17px; color: var(--teal); }
+.preparation-choice-body li b, .preparation-choice-body li small { display: block; }
+.preparation-choice-body li b { font-size: 12px; }
+.preparation-choice-body li small { margin-top: 1px; color: var(--ink-soft); font-size: 10px; }
 .aside-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 22px; border-bottom: 1px solid var(--line); }
 .aside-head span { color: var(--ink-soft); font-size: 11px; }
 .aside-head b { color: var(--teal); font-size: 11px; }
@@ -546,6 +558,48 @@ em { color: var(--coral); font-style: normal; }
 .official-note > svg, .ai-boundary-card > svg, .privacy-card > svg { margin-top: 2px; }
 .official-note b, .ai-boundary-card b, .privacy-card b { display: block; font-size: 11px; }
 .official-note p, .ai-boundary-card p, .privacy-card p { margin: 3px 0 0; color: inherit; font-size: 9px; line-height: 1.55; opacity: .82; }
+
+.checklist-workspace { display: grid; gap: 22px; }
+.checklist-hero { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: clamp(28px, 4vw, 48px); border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(135deg, #fff 0%, #f1f8f6 100%); box-shadow: var(--shadow-sm); }
+.checklist-hero h1 { margin: 12px 0 0; font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.12; letter-spacing: -.055em; }
+.checklist-hero p { max-width: 650px; margin: 13px 0 0; color: var(--ink-soft); font-size: 14px; }
+.checklist-count { min-width: 126px; display: grid; place-items: center; align-content: center; aspect-ratio: 1; border: 1px solid #b7d7d2; border-radius: 50%; background: rgba(255,255,255,.74); color: var(--teal); text-align: center; }
+.checklist-count strong { font-size: 34px; line-height: 1; letter-spacing: -.06em; }
+.checklist-count span { margin-top: 3px; font-size: 12px; font-weight: 800; }
+.checklist-count small { margin-top: 5px; color: var(--ink-soft); font-size: 9px; }
+.checklist-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(290px, .65fr); gap: 22px; align-items: start; }
+.checklist-panel, .checklist-side > section { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.checklist-panel { overflow: hidden; }
+.checklist-document-list { display: grid; gap: 0; margin: 0; padding: 0 26px; list-style: none; }
+.checklist-document-list > li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; padding: 24px 0; border-bottom: 1px solid #e9eded; }
+.checklist-document-list > li:last-child { border-bottom: 0; }
+.checklist-number { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--teal-soft); color: var(--teal); font-size: 10px; font-weight: 900; }
+.checklist-document-title { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.checklist-document-title h3 { margin: 0; font-size: 17px; letter-spacing: -.035em; }
+.checklist-document-title span { padding: 3px 7px; border-radius: 999px; background: var(--amber-soft); color: #875607; font-size: 10px; font-weight: 800; }
+.checklist-document-copy > p { margin: 7px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 1.65; }
+.checklist-document-copy dl { display: flex; flex-wrap: wrap; gap: 8px; margin: 13px 0 0; }
+.checklist-document-copy dl > div { display: flex; gap: 6px; padding: 7px 9px; border-radius: 8px; background: var(--surface-muted); font-size: 10px; }
+.checklist-document-copy dt { color: var(--ink-soft); }
+.checklist-document-copy dd { margin: 0; color: var(--ink); font-weight: 750; }
+.acquisition-steps { display: grid; gap: 4px; margin: 13px 0 0; padding-left: 18px; color: #455864; font-size: 11px; }
+.checklist-document-copy > a { display: inline-flex; align-items: center; gap: 5px; margin-top: 14px; color: var(--teal); font-size: 12px; font-weight: 850; text-decoration: none; }
+.checklist-side { display: grid; gap: 12px; position: sticky; top: 92px; }
+.checklist-side > section { padding: 20px; }
+.checklist-side > section > span { color: var(--teal); font-size: 11px; font-weight: 850; }
+.checklist-side ul { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.checklist-side li { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; }
+.checklist-side li > svg { width: 16px; margin-top: 2px; color: var(--teal); }
+.checklist-side li b, .checklist-side li small { display: block; }
+.checklist-side li small { margin-top: 2px; color: var(--ink-soft); font-size: 10px; }
+.checklist-warning { display: flex; gap: 9px; background: var(--amber-soft) !important; color: #765112; }
+.checklist-warning svg { width: 17px; flex: none; margin-top: 2px; }
+.checklist-warning p { margin: 0; font-size: 11px; line-height: 1.6; }
+.checklist-next { background: var(--navy) !important; color: white; }
+.checklist-next > span { color: #a9dcd5 !important; }
+.checklist-next p { margin: 9px 0 17px; color: rgba(255,255,255,.78); font-size: 12px; line-height: 1.65; }
+.checklist-next .primary-action { width: 100%; border-color: white; background: white; color: var(--navy); box-shadow: none; }
+.text-link-button { justify-self: center; padding: 8px; border: 0; background: transparent; color: var(--ink-soft); font-size: 12px; font-weight: 750; cursor: pointer; }
 
 .analysis-state {
   max-width: 800px;
@@ -746,8 +800,9 @@ em { color: var(--coral); font-style: normal; }
 @media (max-width: 1020px) {
   .product-header { grid-template-columns: 1fr auto; }
   .header-context { display: none; }
-  .workspace-grid, .task-discovery-grid, .result-grid { grid-template-columns: 1fr; }
+  .workspace-grid, .task-discovery-grid, .result-grid, .checklist-grid { grid-template-columns: 1fr; }
   .workspace-aside { display: grid; grid-template-columns: 1fr 1fr; }
+  .preparation-choice-aside, .checklist-side { position: static; }
   .task-discovery-aside { display: grid; grid-template-columns: 1fr 1fr; }
   .task-discovery-aside .aside-head, .task-discovery-aside .discovery-steps { grid-column: 1 / -1; }
   .aside-head, .bundle-list { grid-column: 1 / -1; }
@@ -756,6 +811,8 @@ em { color: var(--coral); font-style: normal; }
   .result-summary { grid-template-columns: 1fr 270px; }
   .service-hero { grid-template-columns: 1fr; }
   .service-preview { max-width: 580px; transform: none; }
+  .checklist-side { grid-template-columns: 1fr 1fr; }
+  .checklist-next { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
   body { font-size: 15px; }
@@ -777,6 +834,13 @@ em { color: var(--coral); font-style: normal; }
   .service-capabilities article { padding: 17px; }
   .support-scope { align-items: flex-start; flex-wrap: wrap; }
   .support-scope p { width: 100%; margin: 0; }
+  .checklist-hero { align-items: flex-start; padding: 27px 21px; }
+  .checklist-count { min-width: 92px; }
+  .checklist-count strong { font-size: 28px; }
+  .checklist-side { grid-template-columns: 1fr; }
+  .checklist-next { grid-column: auto; }
+  .checklist-document-list { padding-inline: 18px; }
+  .checklist-document-list > li { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; }
   .flow-nav { margin-bottom: 25px; justify-content: stretch; }
   .flow-fragment { flex: 1; display: flex; align-items: flex-start; }
   .flow-fragment:first-child { flex: none; }

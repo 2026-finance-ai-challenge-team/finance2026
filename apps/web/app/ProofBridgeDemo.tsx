@@ -30,7 +30,7 @@ import {
   type Tone,
 } from "./classifyResult";
 
-type View = "task" | "prepare" | "analyzing" | "result";
+type View = "task" | "prepare" | "analyzing" | "result" | "checklist";
 type IconName =
   | "alert"
   | "arrow"
@@ -274,43 +274,72 @@ function TaskMatchCard({
   );
 }
 
-function RequirementsAside({
+function PreparationChoiceAside({ task }: { task: TaskResolutionCandidate | null }) {
+  const bank = task ? bankName(task) : "은행";
+  return (
+    <aside className="workspace-aside preparation-choice-aside">
+      <div className="aside-head"><span>선택한 업무</span><b>{bank}</b></div>
+      <div className="preparation-choice-body">
+        <div className="choice-symbol"><Icon name="document"/></div>
+        <h2>어떤 방식으로 시작할까요?</h2>
+        <p>파일을 올려 가진 서류를 점검하거나, 파일 없이 필요한 준비물부터 확인할 수 있어요.</p>
+        <ul>
+          <li><Icon name="upload"/><span><b>파일 점검</b><small>가지고 있는 문서가 필요한지 확인</small></span></li>
+          <li><Icon name="document"/><span><b>준비 목록</b><small>필요 서류와 공식 발급 경로 확인</small></span></li>
+        </ul>
+      </div>
+      <div className="privacy-card"><Icon name="lock"/><div><b>원본은 분석 후 바로 삭제돼요</b><p>파일 없이 목록만 보는 경우에는 문서를 전송하지 않습니다.</p></div></div>
+    </aside>
+  );
+}
+
+function ChecklistWorkspace({
   requirements,
-  loading,
+  onBack,
+  onChangeTask,
 }: {
   requirements: TaskRequirementsResponse | null;
-  loading: boolean;
+  onBack: () => void;
+  onChangeTask: () => void;
 }) {
-  const bank = requirements
-    ? requirements.task.bank_name_ko ?? "은행"
-    : "공식 기준 확인";
+  if (!requirements) return null;
+  const bank = requirements.task.bank_name_ko ?? "은행";
   return (
-    <aside className="workspace-aside" id="requirements-guide" aria-busy={loading}>
-      <div className="aside-head"><span>필요한 서류와 발급 경로</span><b>{bank}</b></div>
-      {loading && <div className="requirements-loading" role="status"><span className="pulse-dot"/><p>공식 정책에서 필요한 서류를 불러오고 있어요.</p></div>}
-      {!loading && requirements && (
-        <div className="requirement-guide-list">
-          {requirements.documents.map((document, index) => (
-            <details className="requirement-guide-item" key={`${document.requirement_code}-${document.doc_type}-${index}`} open={index < 2}>
-              <summary>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div><b>{document.label_ko}</b><small>{requirementLevelLabel(document.requirement_level)}{document.issued_within_days !== null ? ` · ${document.issued_within_days}일 이내 발급` : ""}</small></div>
-                <Icon name="chevron"/>
-              </summary>
-              <div className="requirement-guide-body">
-                <p>{document.acquisition.description}</p>
-                <p className="requirement-format"><b>제출 형태</b> {document.submission_label}</p>
-                {document.acquisition.url && <a href={document.acquisition.url} target="_blank" rel="noreferrer">{document.acquisition.action_label ?? "공식 발급 경로"} <Icon name="external"/></a>}
-              </div>
-            </details>
-          ))}
-          {requirements.preparations.length > 0 && <div className="requirement-preparations"><b>서류와 함께 준비할 것</b><ul>{requirements.preparations.map((item) => <li key={item.code}>{item.label_ko}{item.notes ? ` · ${item.notes}` : ""}</li>)}</ul></div>}
-          {requirements.warnings.length > 0 && <p className="requirement-warning"><Icon name="info"/>{requirements.warnings[0]}</p>}
+    <section className="checklist-workspace">
+      <div className="checklist-hero">
+        <div>
+          <span className="result-eyebrow"><Icon name="check"/>파일 없이 준비 목록을 확인하고 있어요</span>
+          <h1>{bank} {requirements.task.label_ko}<br/>준비 목록입니다.</h1>
+          <p>업로드나 문서 분석 없이, 공개된 공식 기준의 필요 서류와 발급 경로만 정리했어요.</p>
         </div>
-      )}
-      {!loading && !requirements && <div className="requirements-empty"><Icon name="info"/><p>업무를 다시 선택하면 필요한 서류를 확인할 수 있어요.</p></div>}
-      <div className="privacy-card"><Icon name="lock"/><div><b>파일 없이도 먼저 확인할 수 있어요</b><p>서류를 올리지 않아도 필요한 항목과 공식 발급 경로를 볼 수 있습니다.</p></div></div>
-    </aside>
+        <div className="checklist-count"><strong>{requirements.documents.length}</strong><span>개 서류</span><small>공개 기준</small></div>
+      </div>
+      <div className="checklist-grid">
+        <section className="checklist-panel">
+          <div className="panel-heading"><div><span>필요 서류</span><h2>이 순서로 준비하세요</h2></div><b>{requirements.documents.length}개</b></div>
+          <ol className="checklist-document-list">
+            {requirements.documents.map((document, index) => (
+              <li key={`${document.requirement_code}-${document.doc_type}-${index}`}>
+                <span className="checklist-number">{String(index + 1).padStart(2, "0")}</span>
+                <div className="checklist-document-copy">
+                  <div className="checklist-document-title"><h3>{document.label_ko}</h3><span>{requirementLevelLabel(document.requirement_level)}</span></div>
+                  <p>{document.acquisition.description}</p>
+                  <dl><div><dt>제출 형태</dt><dd>{document.submission_label}</dd></div>{document.issued_within_days !== null && <div><dt>발급 기한</dt><dd>{document.issued_within_days}일 이내</dd></div>}</dl>
+                  {document.acquisition.steps.length > 0 && <ol className="acquisition-steps">{document.acquisition.steps.map((step) => <li key={step}>{step}</li>)}</ol>}
+                  {document.acquisition.url && <a href={document.acquisition.url} target="_blank" rel="noreferrer">{document.acquisition.action_label ?? "공식 발급 경로 열기"} <Icon name="external"/></a>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <aside className="checklist-side">
+          {requirements.preparations.length > 0 && <section><span>함께 준비할 것</span><ul>{requirements.preparations.map((item) => <li key={item.code}><Icon name="check"/><div><b>{item.label_ko}</b>{item.notes && <small>{item.notes}</small>}</div></li>)}</ul></section>}
+          {requirements.warnings.length > 0 && <section className="checklist-warning"><Icon name="info"/><p>{requirements.warnings[0]}</p></section>}
+          <section className="checklist-next"><span>가지고 있는 파일이 있나요?</span><p>파일을 올리면 이 목록과 비교해 필요한 서류인지, 무엇이 부족한지 확인해드려요.</p><button type="button" className="primary-action" onClick={onBack}>파일 올려서 점검하기 <Icon name="arrow"/></button></section>
+          <button type="button" className="text-link-button" onClick={onChangeTask}>다른 업무 찾기</button>
+        </aside>
+      </div>
+    </section>
   );
 }
 
@@ -481,6 +510,26 @@ export function ProofBridgeDemo() {
     }
   };
 
+  const openChecklist = async () => {
+    if (!selectedTask) return;
+    setError(null);
+    setNotice(null);
+    if (taskRequirements) {
+      setView("checklist");
+      return;
+    }
+    setLoadingRequirements(true);
+    try {
+      setTaskRequirements(await loadTaskRequirements(selectedTask.task_id));
+      setView("checklist");
+    } catch (caught) {
+      const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("준비 목록을 불러오지 못했어요.");
+      setError({ message: apiError.message, recovery: apiError.recovery });
+    } finally {
+      setLoadingRequirements(false);
+    }
+  };
+
   const runDemo = async () => {
     setView("analyzing");
     setError(null);
@@ -589,7 +638,7 @@ export function ProofBridgeDemo() {
             <div className="workspace-primary">
               <div className="section-kicker"><Icon name="spark"/> 지금 준비할 업무</div>
               <h1>필요한 서류부터 확인하고,<br/><em>가지고 있는 파일은</em> 바로 점검하세요.</h1>
-              <p className="workspace-lead">오른쪽 준비 목록에서 필요한 서류·발급 기한·공식 경로를 먼저 볼 수 있어요. 파일이 있다면 올려서 필요한지, 빠진 것은 무엇인지 함께 확인합니다.</p>
+              <p className="workspace-lead">가지고 있는 파일이 있다면 올려서 필요한지, 빠진 것은 무엇인지 함께 확인합니다. 파일이 없다면 준비 목록에서 공식 발급 경로부터 확인할 수 있어요.</p>
 
               <article className="selected-task-card">
                 <div className="bank-badge" aria-hidden="true">{selectedTask ? bankName(selectedTask).slice(0, 1) : "금"}</div>
@@ -611,12 +660,14 @@ export function ProofBridgeDemo() {
                 </div>
               )}
 
-              <div className="prepare-actions"><a className="secondary-action" href="#requirements-guide"><Icon name="document"/> 파일 없이 준비 목록 보기</a><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>{files.length ? `${files.length}개 파일 확인하기` : "파일을 선택해주세요"} <Icon name="arrow"/></button></div>
+              <div className="prepare-actions"><button className="secondary-action" type="button" disabled={loadingRequirements} onClick={openChecklist}><Icon name="document"/> {loadingRequirements ? "준비 목록 불러오는 중…" : "파일 없이 준비 목록 보기"}</button><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>{files.length ? `${files.length}개 파일 확인하기` : "파일을 선택해주세요"} <Icon name="arrow"/></button></div>
               <p className="sample-caution"><Icon name="info"/> 업로드한 원본은 분석 후 삭제되며 결과에는 필요한 항목만 남습니다.</p>
             </div>
-            <RequirementsAside requirements={taskRequirements} loading={loadingRequirements}/>
+            <PreparationChoiceAside task={selectedTask}/>
           </section>
         )}
+
+        {view === "checklist" && <ChecklistWorkspace requirements={taskRequirements} onBack={() => setView("prepare")} onChangeTask={changeTask}/>} 
 
         {view === "analyzing" && (
           <section className="analysis-state" aria-live="polite" aria-busy="true">
