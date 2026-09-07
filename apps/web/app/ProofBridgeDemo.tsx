@@ -6,7 +6,6 @@ import {
   analyzeDocuments,
   confirmDocumentClassification,
   deleteAnalysisSession,
-  downloadPreparationKit,
   loadDemoAnalysis,
   loadTaskRequirements,
   resolveTask,
@@ -31,7 +30,7 @@ import {
   type Tone,
 } from "./classifyResult";
 
-type View = "task" | "prepare" | "analyzing" | "result";
+type View = "task" | "prepare" | "analyzing" | "result" | "checklist";
 type IconName =
   | "alert"
   | "arrow"
@@ -39,7 +38,6 @@ type IconName =
   | "chevron"
   | "close"
   | "document"
-  | "download"
   | "external"
   | "info"
   | "lock"
@@ -53,17 +51,8 @@ const MAX_FILES = 10;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 const STATIC_SAMPLE_ROWS = toRows(loadResult());
-const BANK_NAMES: Record<string, string> = {
-  KEB_HANA: "하나은행",
-  KB_KOOKMIN: "KB국민은행",
-  KAKAO_BANK: "카카오뱅크",
-  WOORI: "우리은행",
-  IBK: "IBK기업은행",
-  SHINHAN: "신한은행",
-};
-
 function bankName(task: TaskResolutionCandidate) {
-  return task.bank_name_ko ?? BANK_NAMES[task.bank_code] ?? task.bank_code;
+  return task.bank_name_ko ?? "은행";
 }
 
 const bundleDescriptions: Record<string, string> = {
@@ -92,7 +81,6 @@ function Icon({ name }: { name: IconName }) {
     chevron: <path d="m9 7 5 5-5 5"/>,
     close: <><path d="m6 6 12 12M18 6 6 18"/></>,
     document: <><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M10 13h5M10 17h5"/></>,
-    download: <><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></>,
     external: <><path d="M14 5h5v5M19 5l-8 8"/><path d="M18 13v6H5V6h6"/></>,
     info: <><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></>,
     lock: <><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>,
@@ -155,12 +143,17 @@ function metadataStatusLabel(status: ApiMetadataValue<unknown>["status"]) {
 }
 
 function requirementLevelLabel(level: string) {
+  const normalized = level.trim().toLowerCase();
   return {
-    REQUIRED: "필수",
-    CONDITIONAL: "조건부",
-    ALTERNATIVE: "대체 가능",
-    RECOMMENDED: "권장",
-  }[level] ?? level;
+    required: "필수",
+    conditional: "조건부",
+    alternative: "대체 가능",
+    recommended: "권장",
+    official_required: "필수 서류",
+    official_require: "필수 서류",
+    official_minimum: "기본 서류",
+    recommended_additional: "추가 권장",
+  }[normalized] ?? "확인 필요";
 }
 
 function DocumentMetadataDetails({ metadata }: { metadata: ApiDocumentMetadata }) {
@@ -184,7 +177,7 @@ function DocumentMetadataDetails({ metadata }: { metadata: ApiDocumentMetadata }
 
 function FlowNav({ view }: { view: View }) {
   const current = view === "task" ? 1 : view === "prepare" ? 2 : view === "analyzing" ? 3 : 4;
-  const steps = ["업무 확인", "서류 모으기", "서류 확인", "준비 키트"];
+  const steps = ["업무 확인", "서류 모으기", "서류 확인", "결과 확인"];
   return (
     <nav className="flow-nav" aria-label="업무 준비 단계">
       {steps.map((step, index) => {
@@ -210,11 +203,11 @@ function TaskDiscoveryAside() {
       <div className="aside-head"><span>준비 방법</span><b>편한 말로 시작하세요</b></div>
       <ol className="discovery-steps">
         <li><span>01</span><div><b>편한 표현 그대로 입력</b><p>은행명이나 정확한 업무명을 몰라도 괜찮아요.</p></div></li>
-        <li><span>02</span><div><b>은행과 업무를 함께 확인</b><p>AI가 등록된 은행 업무 안에서 가장 가까운 후보를 찾아드려요.</p></div></li>
+        <li><span>02</span><div><b>은행과 업무를 함께 확인</b><p>등록된 공식 업무 중 입력과 가까운 후보를 보여드려요.</p></div></li>
         <li><span>03</span><div><b>한 번 확인하고 시작</b><p>입력이 모호하면 먼저 확인한 뒤 서류 준비를 시작해요.</p></div></li>
       </ol>
-      <div className="official-note"><Icon name="check"/><div><b>현재 지원 업무</b><p>카카오뱅크 한도계좌 해제 · 공식 출처 확인</p></div></div>
-      <div className="ai-boundary-card"><Icon name="spark"/><div><b>AI는 등록된 업무 안에서만 찾아요</b><p>은행이나 업무가 모호하면 임의로 확정하지 않고 후보를 먼저 보여드립니다.</p></div></div>
+      <div className="official-note"><Icon name="check"/><div><b>공식 정책 기반</b><p>등록된 은행과 업무의 확인된 정책만 안내합니다.</p></div></div>
+      <div className="ai-boundary-card"><Icon name="info"/><div><b>모호한 요청은 먼저 확인해요</b><p>은행이나 업무를 임의로 확정하지 않고 후보를 보여드립니다.</p></div></div>
     </aside>
   );
 }
@@ -286,43 +279,72 @@ function TaskMatchCard({
   );
 }
 
-function RequirementsAside({
+function PreparationChoiceAside({ task }: { task: TaskResolutionCandidate | null }) {
+  const bank = task ? bankName(task) : "은행";
+  return (
+    <aside className="workspace-aside preparation-choice-aside">
+      <div className="aside-head"><span>선택한 업무</span><b>{bank}</b></div>
+      <div className="preparation-choice-body">
+        <div className="choice-symbol"><Icon name="document"/></div>
+        <h2>어떤 방식으로 시작할까요?</h2>
+        <p>파일을 올려 가진 서류를 점검하거나, 파일 없이 필요한 준비물부터 확인할 수 있어요.</p>
+        <ul>
+          <li><Icon name="upload"/><span><b>파일 점검</b><small>가지고 있는 문서가 필요한지 확인</small></span></li>
+          <li><Icon name="document"/><span><b>준비 목록</b><small>필요 서류와 공식 발급 경로 확인</small></span></li>
+        </ul>
+      </div>
+      <div className="privacy-card"><Icon name="lock"/><div><b>원본은 분석 후 바로 삭제돼요</b><p>파일 없이 목록만 보는 경우에는 문서를 전송하지 않습니다.</p></div></div>
+    </aside>
+  );
+}
+
+function ChecklistWorkspace({
   requirements,
-  loading,
+  onBack,
+  onChangeTask,
 }: {
   requirements: TaskRequirementsResponse | null;
-  loading: boolean;
+  onBack: () => void;
+  onChangeTask: () => void;
 }) {
-  const bank = requirements
-    ? requirements.task.bank_name_ko ?? BANK_NAMES[requirements.task.bank_code] ?? requirements.task.bank_code
-    : "공식 기준 확인";
+  if (!requirements) return null;
+  const bank = requirements.task.bank_name_ko ?? "은행";
   return (
-    <aside className="workspace-aside" id="requirements-guide" aria-busy={loading}>
-      <div className="aside-head"><span>필요한 서류와 발급 경로</span><b>{bank}</b></div>
-      {loading && <div className="requirements-loading" role="status"><span className="pulse-dot"/><p>공식 정책에서 필요한 서류를 불러오고 있어요.</p></div>}
-      {!loading && requirements && (
-        <div className="requirement-guide-list">
-          {requirements.documents.map((document, index) => (
-            <details className="requirement-guide-item" key={`${document.requirement_code}-${document.doc_type}-${index}`} open={index < 2}>
-              <summary>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div><b>{document.label_ko}</b><small>{requirementLevelLabel(document.requirement_level)}{document.issued_within_days !== null ? ` · ${document.issued_within_days}일 이내 발급` : ""}</small></div>
-                <Icon name="chevron"/>
-              </summary>
-              <div className="requirement-guide-body">
-                <p>{document.acquisition.description}</p>
-                <p className="requirement-format"><b>제출 형태</b> {document.submission_label}</p>
-                {document.acquisition.url && <a href={document.acquisition.url} target="_blank" rel="noreferrer">{document.acquisition.action_label ?? "공식 발급 경로"} <Icon name="external"/></a>}
-              </div>
-            </details>
-          ))}
-          {requirements.preparations.length > 0 && <div className="requirement-preparations"><b>서류와 함께 준비할 것</b><ul>{requirements.preparations.map((item) => <li key={item.code}>{item.label_ko}{item.notes ? ` · ${item.notes}` : ""}</li>)}</ul></div>}
-          {requirements.warnings.length > 0 && <p className="requirement-warning"><Icon name="info"/>{requirements.warnings[0]}</p>}
+    <section className="checklist-workspace">
+      <div className="checklist-hero">
+        <div>
+          <span className="result-eyebrow"><Icon name="check"/>파일 없이 준비 목록을 확인하고 있어요</span>
+          <h1>{bank} {requirements.task.label_ko}<br/>준비 목록입니다.</h1>
+          <p>업로드나 문서 분석 없이, 공개된 공식 기준의 필요 서류와 발급 경로만 정리했어요.</p>
         </div>
-      )}
-      {!loading && !requirements && <div className="requirements-empty"><Icon name="info"/><p>업무를 다시 선택하면 필요한 서류를 확인할 수 있어요.</p></div>}
-      <div className="privacy-card"><Icon name="lock"/><div><b>파일 없이도 먼저 확인할 수 있어요</b><p>서류를 올리지 않아도 필요한 항목과 공식 발급 경로를 볼 수 있습니다.</p></div></div>
-    </aside>
+        <div className="checklist-count"><strong>{requirements.documents.length}</strong><span>개 서류</span><small>공개 기준</small></div>
+      </div>
+      <div className="checklist-grid">
+        <section className="checklist-panel">
+          <div className="panel-heading"><div><span>필요 서류</span><h2>이 순서로 준비하세요</h2></div><b>{requirements.documents.length}개</b></div>
+          <ol className="checklist-document-list">
+            {requirements.documents.map((document, index) => (
+              <li key={`${document.requirement_code}-${document.doc_type}-${index}`}>
+                <span className="checklist-number">{String(index + 1).padStart(2, "0")}</span>
+                <div className="checklist-document-copy">
+                  <div className="checklist-document-title"><h3>{document.label_ko}</h3><span>{requirementLevelLabel(document.requirement_level)}</span></div>
+                  <p>{document.acquisition.description}</p>
+                  <dl><div><dt>제출 형태</dt><dd>{document.submission_label}</dd></div>{document.issued_within_days !== null && <div><dt>발급 기한</dt><dd>{document.issued_within_days}일 이내</dd></div>}</dl>
+                  {document.acquisition.steps.length > 0 && <ol className="acquisition-steps">{document.acquisition.steps.map((step) => <li key={step}>{step}</li>)}</ol>}
+                  {document.acquisition.url && <a href={document.acquisition.url} target="_blank" rel="noreferrer">{document.acquisition.action_label ?? "공식 발급 경로 열기"} <Icon name="external"/></a>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <aside className="checklist-side">
+          {requirements.preparations.length > 0 && <section><span>함께 준비할 것</span><ul>{requirements.preparations.map((item) => <li key={item.code}><Icon name="check"/><div><b>{item.label_ko}</b>{item.notes && <small>{item.notes}</small>}</div></li>)}</ul></section>}
+          {requirements.warnings.length > 0 && <section className="checklist-warning"><Icon name="info"/><p>{requirements.warnings[0]}</p></section>}
+          <section className="checklist-next"><span>가지고 있는 파일이 있나요?</span><p>파일을 올리면 이 목록과 비교해 필요한 서류인지, 무엇이 부족한지 확인해드려요.</p><button type="button" className="primary-action" onClick={onBack}>파일 올려서 점검하기 <Icon name="arrow"/></button></section>
+          <button type="button" className="text-link-button" onClick={onChangeTask}>다른 업무 찾기</button>
+        </aside>
+      </div>
+    </section>
   );
 }
 
@@ -339,26 +361,18 @@ function ServiceIntro({ onDemo }: { onDemo: () => void }) {
     <section className="service-intro" aria-labelledby="service-title">
       <div className="service-hero">
         <div className="service-hero-copy">
-          <div className="service-status"><span/> 공식 기준으로 확인하는 금융업무 준비</div>
-          <h1 id="service-title">모르면 그냥 다 넣으세요.<br/><em>필요한 것만 챙겨드릴게요.</em></h1>
-          <p className="service-lead">공공 경로로 처리할 증빙은 공식 제출 방법으로 연결하고, 가지고 있는 PDF와 사진은 은행의 공개 기준과 대조해 부족한 서류와 다음 행동을 정리합니다.</p>
+          <div className="service-status"><span/> 금융업무 서류 사전 점검</div>
+          <h1 id="service-title">필요한 서류를<br/>한 번에 확인하세요.</h1>
+          <p className="service-lead">하려는 업무를 입력하고 가지고 있는 파일을 올리면, 공식 정책과 대조해 필요한 서류와 확인할 항목을 정리합니다.</p>
           <div className="service-actions">
-            <a className="primary-action" href="#task-finder">내 금융업무 준비하기 <Icon name="arrow"/></a>
-            <button className="secondary-action" type="button" onClick={onDemo}><Icon name="spark"/> 예시로 먼저 체험하기</button>
+            <a className="primary-action" href="#task-finder">업무 선택하기 <Icon name="arrow"/></a>
+            <button className="secondary-action" type="button" onClick={onDemo}>예시 결과 보기</button>
           </div>
           <ul className="service-trust" aria-label="서비스 원칙">
-            <li><Icon name="check"/> 공식 출처 기반 규칙 판정</li>
-            <li><Icon name="lock"/> 비회원·일회성 분석</li>
-            <li><Icon name="trash"/> 원본 즉시 삭제</li>
+            <li><Icon name="check"/> 공식 출처 기준</li>
+            <li><Icon name="lock"/> 비회원 이용</li>
+            <li><Icon name="trash"/> 분석 후 원본 삭제</li>
           </ul>
-        </div>
-        <div className="service-preview" aria-label="ProofBridge 결과 예시">
-          <div className="preview-top"><span>준비 상태 미리보기</span><b>공개 기준 사전 점검</b></div>
-          <div className="preview-score"><div><span>준비 완성도</span><strong>67<small>%</small></strong></div><i><span/></i></div>
-          <div className="preview-document ready"><span><Icon name="check"/></span><div><b>주민등록표 등본</b><small>이건 이미 있어요</small></div><em>준비 완료</em></div>
-          <div className="preview-document needed"><span><Icon name="arrow"/></span><div><b>관리비 고지서</b><small>공식 발급 경로를 안내해드려요</small></div><em>추가 필요</em></div>
-          <div className="preview-route"><Icon name="spark"/><div><span>다음 행동</span><b>발급 → 확인 → 앱 촬영 제출</b></div></div>
-          <p><Icon name="info"/> 은행의 승인 결과가 아닌 공개 기준 사전 점검 예시입니다.</p>
         </div>
       </div>
       <div className="service-capabilities">
@@ -366,7 +380,7 @@ function ServiceIntro({ onDemo }: { onDemo: () => void }) {
         <article><span>02</span><div><b>문서는 한꺼번에</b><p>PDF와 사진을 분류하고 필요한 핵심 항목만 확인합니다.</p></div></article>
         <article><span>03</span><div><b>부족한 것까지 해결</b><p>빠진 서류의 공식 발급 경로와 실제 제출 순서를 안내합니다.</p></div></article>
       </div>
-      <div className="support-scope"><span>현재 지원 업무</span><b>카카오뱅크 한도계좌 해제 준비</b></div>
+      <div className="support-scope"><span>지원 범위</span><b>등록된 은행의 공개 정책 업무</b><p>업무별 지원 상태는 검색 결과에서 확인할 수 있습니다.</p></div>
     </section>
   );
 }
@@ -387,7 +401,6 @@ export function ProofBridgeDemo() {
   const [dragging, setDragging] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
-  const [downloadingKit, setDownloadingKit] = useState(false);
   const [documentTypes, setDocumentTypes] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -502,6 +515,26 @@ export function ProofBridgeDemo() {
     }
   };
 
+  const openChecklist = async () => {
+    if (!selectedTask) return;
+    setError(null);
+    setNotice(null);
+    if (taskRequirements) {
+      setView("checklist");
+      return;
+    }
+    setLoadingRequirements(true);
+    try {
+      setTaskRequirements(await loadTaskRequirements(selectedTask.task_id));
+      setView("checklist");
+    } catch (caught) {
+      const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("준비 목록을 불러오지 못했어요.");
+      setError({ message: apiError.message, recovery: apiError.recovery });
+    } finally {
+      setLoadingRequirements(false);
+    }
+  };
+
   const runDemo = async () => {
     setView("analyzing");
     setError(null);
@@ -552,40 +585,14 @@ export function ProofBridgeDemo() {
     }
   };
 
-  const downloadKit = async () => {
-    if (!analysis) return;
-    setDownloadingKit(true);
-    setError(null);
-    try {
-      const { blob, filename } = await downloadPreparationKit(analysis.session_id);
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = filename;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setNotice("공식 발급 경로와 제출 순서가 담긴 준비 안내 ZIP을 만들었어요.");
-    } catch (caught) {
-      const apiError = caught instanceof AnalysisApiError ? caught : new AnalysisApiError("준비 안내 키트를 내려받지 못했어요.");
-      setError({ message: apiError.message, recovery: apiError.recovery });
-    } finally {
-      setDownloadingKit(false);
-    }
-  };
-
   const headline = analysis ? analysisHeadline(analysis, rows) : "예시 문서의 확인 결과를 살펴보세요.";
   const overall = analysis?.overall_status ?? "REVIEW_REQUIRED";
   const overallLabel = overall === "READY" ? "공개 기준 사전 점검 완료" : overall === "ACTION_REQUIRED" ? "보완할 서류가 있어요" : "확인이 필요한 항목이 있어요";
-  const hasResidentCopy = analysis ? analysis.documents.some((document) => document.doc_type === "resident_registration_copy") : staticDemo;
-  const needsManagementFee = rows.some((row) => row.name.includes("관리비") && row.status === "추가 필요");
-
   return (
     <div className={`product-shell ${largeText ? "large-text" : ""}`}>
       <a className="skip-link" href="#workspace">본문으로 바로가기</a>
       <header className="product-header">
-        <a className="product-brand" href="#workspace" aria-label="ProofBridge 처음으로"><span className="brand-symbol" aria-hidden="true"><i/><i/></span><span>ProofBridge</span></a>
+        <a className="product-brand" href="#workspace" aria-label="FORM:E 처음으로"><span className="brand-symbol" aria-hidden="true">F</span><span>FORM:E</span></a>
         <div className="header-context"><span className="context-dot"/>{selectedTask?.label_ko ?? "금융업무 준비"}</div>
         <div className="header-actions"><a className="header-demo-link" href="#task-finder">준비 시작</a><button className="text-size-button" type="button" aria-pressed={largeText} onClick={() => setLargeText((value) => !value)}>가<span aria-hidden="true">+</span> 글자 크게</button><div className="privacy-pill"><Icon name="lock"/> 비회원 · 즉시 삭제</div></div>
       </header>
@@ -603,8 +610,8 @@ export function ProofBridgeDemo() {
         {view === "task" && (
           <section id="task-finder" className="task-discovery-grid">
             <div className="task-query-card">
-              <div className="section-kicker"><Icon name="spark"/> 업무 선택</div>
-              <h1>하려는 금융업무를<br/><em>편하게 말해주세요.</em></h1>
+              <div className="section-kicker">업무 선택</div>
+              <h1>어떤 금융업무를<br/>준비하고 있나요?</h1>
               <p className="workspace-lead">정확한 메뉴명이나 서류 이름을 몰라도 괜찮아요. 편한 말로 입력하면 현재 지원하는 준비 절차를 찾아드려요.</p>
               <form className="task-search-form" onSubmit={(event) => findTask(event)}>
                 <label htmlFor="task-query">어떤 업무를 준비하고 있나요?</label>
@@ -636,7 +643,7 @@ export function ProofBridgeDemo() {
             <div className="workspace-primary">
               <div className="section-kicker"><Icon name="spark"/> 지금 준비할 업무</div>
               <h1>필요한 서류부터 확인하고,<br/><em>가지고 있는 파일은</em> 바로 점검하세요.</h1>
-              <p className="workspace-lead">오른쪽 준비 목록에서 필요한 서류·발급 기한·공식 경로를 먼저 볼 수 있어요. 파일이 있다면 올려서 필요한지, 빠진 것은 무엇인지 함께 확인합니다.</p>
+              <p className="workspace-lead">가지고 있는 파일이 있다면 올려서 필요한지, 빠진 것은 무엇인지 함께 확인합니다. 파일이 없다면 준비 목록에서 공식 발급 경로부터 확인할 수 있어요.</p>
 
               <article className="selected-task-card">
                 <div className="bank-badge" aria-hidden="true">{selectedTask ? bankName(selectedTask).slice(0, 1) : "금"}</div>
@@ -658,12 +665,14 @@ export function ProofBridgeDemo() {
                 </div>
               )}
 
-              <div className="prepare-actions"><a className="secondary-action" href="#requirements-guide"><Icon name="document"/> 파일 없이 준비 목록 보기</a><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>{files.length ? `${files.length}개 파일 확인하기` : "파일을 선택해주세요"} <Icon name="arrow"/></button></div>
+              <div className="prepare-actions"><button className="secondary-action" type="button" disabled={loadingRequirements} onClick={openChecklist}><Icon name="document"/> {loadingRequirements ? "준비 목록 불러오는 중…" : "파일 없이 준비 목록 보기"}</button><button className="primary-action" type="button" disabled={!files.length} onClick={runAnalysis}>{files.length ? `${files.length}개 파일 확인하기` : "파일을 선택해주세요"} <Icon name="arrow"/></button></div>
               <p className="sample-caution"><Icon name="info"/> 업로드한 원본은 분석 후 삭제되며 결과에는 필요한 항목만 남습니다.</p>
             </div>
-            <RequirementsAside requirements={taskRequirements} loading={loadingRequirements}/>
+            <PreparationChoiceAside task={selectedTask}/>
           </section>
         )}
+
+        {view === "checklist" && <ChecklistWorkspace requirements={taskRequirements} onBack={() => setView("prepare")} onChangeTask={changeTask}/>} 
 
         {view === "analyzing" && (
           <section className="analysis-state" aria-live="polite" aria-busy="true">
@@ -742,7 +751,7 @@ export function ProofBridgeDemo() {
                         <div className="alternative-bundles-head">
                           <span>다른 인정 방법</span>
                           <h3 id="alternative-bundles-title">아래 조합을 전부 준비할 필요는 없어요</h3>
-                          <p>{analysis.task.bank_name_ko ?? BANK_NAMES[analysis.task.bank_code] ?? "은행"}이 안내한 증빙 중 본인에게 가능한 <b>한 가지 조합</b>만 선택하면 됩니다. 현재 업로드한 파일과 가장 가까운 조합을 먼저 보여드려요.</p>
+                          <p>{analysis.task.bank_name_ko ?? "은행"}이 안내한 증빙 중 본인에게 가능한 <b>한 가지 조합</b>만 선택하면 됩니다. 현재 업로드한 파일과 가장 가까운 조합을 먼저 보여드려요.</p>
                         </div>
                         <div className="bundle-option-list">
                           {officialBundles.map((bundle) => {
@@ -773,21 +782,14 @@ export function ProofBridgeDemo() {
                     {analysis.completion_plan.preparations.length > 0 && <div className="preparation-list"><h3>함께 챙길 것</h3><ul>{analysis.completion_plan.preparations.map((item) => <li key={item.code}><Icon name="check"/><span><b>{item.label_ko}</b>{item.notes && <small>{item.notes}</small>}</span></li>)}</ul></div>}
                     <div className="submission-guide"><span>제출 순서</span><h3>{analysis.completion_plan.submission.title}</h3><p>{analysis.completion_plan.submission.description}</p><ol>{analysis.completion_plan.submission.steps.map((step) => <li key={step}>{step}</li>)}</ol>{analysis.completion_plan.submission.expected_review && <p className="review-time"><Icon name="info"/>{analysis.completion_plan.submission.expected_review}</p>}{analysis.completion_plan.submission.url && <a href={analysis.completion_plan.submission.url} target="_blank" rel="noreferrer">{analysis.completion_plan.submission.action_label ?? "공식 제출 안내 열기"} <Icon name="external"/></a>}</div>
                   </>
-                ) : hasResidentCopy && needsManagementFee ? (
-                  <div className="fallback-kit">
-                    <div className="selected-bundle"><span>현재 가장 가까운 증빙 조합</span><b>관리비 고지서 + 주민등록표 등본</b><small>관리비 고지서 보완 필요</small></div>
-                    <div className="fallback-guide">
-                      <span className="guide-check needed"><Icon name="chevron"/></span>
-                      <div><b>관리비 고지서를 확보하세요</b><p>관리사무소 또는 이용 중인 관리비 앱·웹에서 현재 청구분을 요청하고, 입주자명·주소·동호수·청구금액을 확인하세요.</p></div>
-                    </div>
-                    <div className="fallback-guide">
-                      <span className="guide-check needed"><Icon name="check"/></span>
-                      <div><b>등본의 현재 주소를 확인하세요</b><p>관리비 고지서의 주소와 같은지 확인하고 원본을 출력해 촬영할 준비를 합니다.</p><a href="https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015&tp_seq=04" target="_blank" rel="noreferrer">정부24 발급 페이지 <Icon name="external"/></a></div>
-                    </div>
-                    <div className="submission-guide"><span>제출 순서</span><h3>카카오뱅크 앱에서 촬영 제출</h3><ol><li>계좌 관리에서 한도 해제 메뉴를 엽니다.</li><li>해제 신청하기를 선택합니다.</li><li>준비한 원본 서류를 안내에 따라 촬영해 제출합니다.</li></ol><p className="review-time"><Icon name="info"/>서류 제출 후 심사·통보까지 2~3영업일이 걸릴 수 있어요.</p><a href="https://blog.kakaobank.com/posts/service-limit-account" target="_blank" rel="noreferrer">카카오뱅크 공식 안내 <Icon name="external"/></a></div>
-                  </div>
                 ) : (
-                  <div className="empty-kit"><Icon name="info"/><h3>제출 조합을 한 번 더 골라야 해요</h3><p>확인이 필요한 문서 종류를 먼저 선택하면 6가지 인정 증빙 중 가장 가까운 조합과 발급 순서를 정리합니다.</p><a href="https://blog.kakaobank.com/posts/service-limit-account" target="_blank" rel="noreferrer">카카오뱅크 공식 안내 <Icon name="external"/></a></div>
+                  <div className="empty-kit">
+                    <Icon name="info"/>
+                    <h3>이 업무에는 문서 제출 목록이 등록되어 있지 않아요</h3>
+                    <p>업로드한 파일은 참고용으로 확인했습니다. 아래 준비물과 해당 은행의 공식 안내를 최종 확인해주세요.</p>
+                    {taskRequirements?.preparations.length ? <ul>{taskRequirements.preparations.map((item) => <li key={item.code}><b>{item.label_ko}</b>{item.notes ? ` · ${item.notes}` : ""}</li>)}</ul> : null}
+                    {analysis?.task.source_url && <a href={analysis.task.source_url} target="_blank" rel="noreferrer">{analysis.task.bank_name_ko ?? "은행"} 공식 안내 <Icon name="external"/></a>}
+                  </div>
                 )}
               </aside>
             </div>
@@ -795,13 +797,12 @@ export function ProofBridgeDemo() {
             {analysis?.warnings.length ? <details className="warnings-panel"><summary><Icon name="alert"/> 확인해야 할 제한사항 {analysis.warnings.length}개</summary><ul>{analysis.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></details> : null}
             <div className="result-actions">
               <button className="secondary-action" type="button" onClick={resetSession}><Icon name="trash"/> 결과와 세션 삭제</button>
-              {analysis && <div className="kit-download-action"><button className="secondary-action" type="button" disabled={downloadingKit} onClick={downloadKit}><Icon name="download"/> {downloadingKit ? "키트 생성 중…" : "준비 안내 ZIP 받기"}</button><small>공식 경로·체크리스트만 포함 · 업로드 원본 미포함</small></div>}
               <button className="primary-action" type="button" onClick={resetSession}>다른 서류 다시 확인 <Icon name="refresh"/></button>
             </div>
           </section>
         )}
       </main>
-      <footer className="product-footer"><span>ProofBridge</span><p>은행의 최종 심사·승인을 대신하지 않습니다. 공식 출처 기반의 서류 준비 사전 점검 서비스입니다.</p></footer>
+      <footer className="product-footer"><span>FORM:E</span><p>은행의 최종 심사·승인을 대신하지 않습니다. 공식 출처 기반의 서류 준비 사전 점검 서비스입니다.</p></footer>
     </div>
   );
 }

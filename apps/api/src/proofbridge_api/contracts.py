@@ -42,7 +42,7 @@ class DocumentStatus(str, Enum):
 
 class HealthResponse(StrictModel):
     status: HealthStatus = HealthStatus.OK
-    service: Literal["ProofBridge API"] = "ProofBridge API"
+    service: Literal["FORM:E API"] = "FORM:E API"
     version: str
     environment: str
     ocr_configured: bool

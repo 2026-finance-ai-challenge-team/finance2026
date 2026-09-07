@@ -28,7 +28,7 @@ BLUE = HexColor("#315C9B")
 TEAL = HexColor("#177D77")
 RED = HexColor("#B42318")
 YELLOW = HexColor("#FFF6CC")
-FOOTER = "ProofBridge 테스트용 합성 샘플 · 실제 증명서가 아니며 효력이 없습니다"
+FOOTER = "FORM:E 테스트용 합성 샘플 · 실제 증명서가 아니며 효력이 없습니다"
 
 pdfmetrics.registerFont(UnicodeCIDFont(FONT))
 

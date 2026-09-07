@@ -32,7 +32,7 @@ def _status_label(value: object) -> str:
 
 def _markdown(result: AnalysisResponse) -> str:
     lines = [
-        "# ProofBridge 준비 안내 키트",
+        "# FORM:E 준비 안내",
         "",
         f"- 업무: {result.task.label_ko}",
         f"- 전체 상태: {_status_label(result.overall_status)}",
